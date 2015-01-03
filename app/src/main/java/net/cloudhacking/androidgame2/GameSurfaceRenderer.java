@@ -5,6 +5,7 @@ import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.os.ConditionVariable;
+import android.util.Log;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -18,6 +19,8 @@ import javax.microedition.khronos.opengles.GL10;
  * Created by wcauchois on 1/3/15.
  */
 public class GameSurfaceRenderer implements GLSurfaceView.Renderer {
+    private static final String TAG = GameSurfaceRenderer.class.getSimpleName();
+    
     private GameState mGameState;
     private GameSurfaceView mSurfaceView;
     private Context mContext;
@@ -35,9 +38,9 @@ public class GameSurfaceRenderer implements GLSurfaceView.Renderer {
     private FloatBuffer mQuadVertBuffer;
     private static float[] sQuadVertices = new float[] {
             0.0f, 0.0f, 0.0f, // Bottom left
-            0.0f, 200.0f, 0.0f, // Top left
-            200.0f, 200.0f, 0.0f, // Top right
-            200.0f, 0.0f, 0.0f // Bottom right
+            0.0f, 20.0f, 0.0f, // Top left
+            20.0f, 20.0f, 0.0f, // Top right
+            20.0f, 0.0f, 0.0f // Bottom right
     };
     private ShortBuffer mQuadIndexBuffer;
     private static short[] sQuadIndices = new short[] {
@@ -100,6 +103,7 @@ public class GameSurfaceRenderer implements GLSurfaceView.Renderer {
         // Should setup viewport here.
 
         GLES20.glViewport(0, 0, width, height);
+        Log.d(TAG, "Viewport width=" + width + ", height=" + height);
         mViewportWidth = width;
         mViewportHeight = height;
 
