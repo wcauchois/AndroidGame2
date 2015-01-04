@@ -11,6 +11,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
+import java.nio.ShortBuffer;
 
 /**
  * Created by wcauchois on 1/3/15.
@@ -18,13 +23,38 @@ import java.io.InputStreamReader;
 public class Util {
     private static final String TAG = Util.class.getSimpleName();
 
-    public static int loadTexture(Context context, int resourceId) {
+    public static class BitmapInfo {
+        private int mWidth, mHeight;
+
+        public void setWidth(int width) {
+            mWidth = width;
+        }
+
+        public void setHeight(int height) {
+            mHeight = height;
+        }
+
+        public int getWidth() {
+            return mWidth;
+        }
+
+        public int getHeight() {
+            return mHeight;
+        }
+    }
+
+    public static int loadTexture(Context context, int resourceId, BitmapInfo infoOut) {
         int[] textureHandles = new int[1];
         int textureHandle;
 
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inScaled = false; // No pre-scaling
         Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), resourceId);
+
+        if (infoOut != null) {
+            infoOut.setWidth(bitmap.getWidth());
+            infoOut.setHeight(bitmap.getHeight());
+        }
 
         GLES20.glGenTextures(1, textureHandles, 0);
         textureHandle = textureHandles[0];
@@ -43,6 +73,10 @@ public class Util {
         bitmap.recycle();
 
         return textureHandle;
+    }
+
+    public static int loadTexture(Context context, int resourceId) {
+        return loadTexture(context, resourceId, null);
     }
 
     public static String readTextFileFromRawResource(final Context context,
@@ -65,6 +99,30 @@ public class Util {
         }
 
         return body.toString();
+    }
+
+    public static FloatBuffer makeFloatBuffer(float[] array) {
+        ByteBuffer bb = ByteBuffer.allocateDirect(array.length * 4);
+        bb.order(ByteOrder.nativeOrder());
+        FloatBuffer fb = bb.asFloatBuffer();
+        fb.put(array).position(0);
+        return fb;
+    }
+
+    public static IntBuffer makeIntBuffer(int[] array) {
+        ByteBuffer bb = ByteBuffer.allocateDirect(array.length * 4);
+        bb.order(ByteOrder.nativeOrder());
+        IntBuffer ib = bb.asIntBuffer();
+        ib.put(array).position(0);
+        return ib;
+    }
+
+    public static ShortBuffer makeShortBuffer(short[] array) {
+        ByteBuffer bb = ByteBuffer.allocateDirect(array.length * 4);
+        bb.order(ByteOrder.nativeOrder());
+        ShortBuffer sb = bb.asShortBuffer();
+        sb.put(array).position(0);
+        return sb;
     }
 
     public static int loadShader(int type, String shaderCode) {

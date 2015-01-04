@@ -7,10 +7,10 @@ import android.opengl.Matrix;
 import android.os.ConditionVariable;
 import android.util.Log;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -20,20 +20,46 @@ import javax.microedition.khronos.opengles.GL10;
  */
 public class GameSurfaceRenderer implements GLSurfaceView.Renderer {
     private static final String TAG = GameSurfaceRenderer.class.getSimpleName();
-    
+
     private GameState mGameState;
     private GameSurfaceView mSurfaceView;
     private Context mContext;
     private int mViewportWidth;
     private int mViewportHeight;
     private final float[] mProjectionMatrix = new float[16];
+    private SimpleRenderService mRenderService;
+    private GameLevel mLevel;
+    private List<Component> mComponents = new ArrayList<Component>();
+
+    protected <T extends Component> T addComponent(T comp) {
+        mComponents.add(comp);
+        return comp;
+    }
 
     public GameSurfaceRenderer(GameSurfaceView surfaceView, Context context, GameState gameState) {
         mSurfaceView = surfaceView;
         mGameState = gameState;
         mContext = context;
+
+        mRenderService = addComponent(new SimpleRenderService(
+                new SceneInfo() {
+                    public float[] getProjection() {
+                        return mProjectionMatrix;
+                    }
+
+                    public int getViewportWidth() {
+                        return mViewportWidth;
+                    }
+
+                    public int getViewportHeight() {
+                        return mViewportHeight;
+                    }
+                }
+        ));
+        mLevel = addComponent(new GameLevel(mRenderService));
     }
 
+    // TODO(wcauchois): Remove unused quad drawing code!
     // How to draw a quad: http://gamedev.stackexchange.com/a/10741
     private FloatBuffer mQuadVertBuffer;
     private static float[] sQuadVertices = new float[] {
@@ -71,7 +97,11 @@ public class GameSurfaceRenderer implements GLSurfaceView.Renderer {
         GLES20.glDisable(GLES20.GL_DEPTH_TEST);
         GLES20.glDisable(GLES20.GL_CULL_FACE);
 
-        ByteBuffer vertexByteBuffer = ByteBuffer.allocateDirect(sQuadVertices.length * 4);
+        for (Component comp : mComponents) {
+            comp.prepareResources(mContext);
+        }
+
+        /*ByteBuffer vertexByteBuffer = ByteBuffer.allocateDirect(sQuadVertices.length * 4);
         vertexByteBuffer.order(ByteOrder.nativeOrder());
         mQuadVertBuffer = vertexByteBuffer.asFloatBuffer();
         mQuadVertBuffer.put(sQuadVertices).position(0);
@@ -93,7 +123,7 @@ public class GameSurfaceRenderer implements GLSurfaceView.Renderer {
         sMVPMatrixHandle = GLES20.glGetUniformLocation(sProgramHandle, "u_mvpMatrix");
         sTextureUniformHandle = GLES20.glGetUniformLocation(sProgramHandle, "u_texture");
         sTexCoordHandle = GLES20.glGetAttribLocation(sProgramHandle, "a_texCoordinate");
-        Util.checkGlError("get uniform/attribute locations");
+        Util.checkGlError("get uniform/attribute locations");*/
 
         mTextureHandle = Util.loadTexture(mContext, R.drawable.droid_1);
     }
@@ -119,6 +149,9 @@ public class GameSurfaceRenderer implements GLSurfaceView.Renderer {
     public void onDrawFrame(GL10 unused) {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
+        mLevel.draw();
+
+        /*
         // Setup vertex shaders for drawing
         GLES20.glUseProgram(sProgramHandle);
         Util.checkGlError("glUseProgram");
@@ -150,6 +183,7 @@ public class GameSurfaceRenderer implements GLSurfaceView.Renderer {
         GLES20.glDisableVertexAttribArray(sTexCoordHandle);
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
         GLES20.glUseProgram(0);
+        */
     }
 
     public void onViewPause(ConditionVariable syncObj) {
