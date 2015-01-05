@@ -12,6 +12,7 @@ public class GameLevel extends Component {
 
     private boolean mResourcesPrepared=false;
 
+    // TODO: Not sure if this is necessary since map is now automatically scaled.
     private static final float OVERALL_SCALE = 1.0f;
 
     public GameLevel(SimpleRenderService renderService) {
