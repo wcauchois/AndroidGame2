@@ -49,7 +49,6 @@ public class Util {
 
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inScaled = false; // No pre-scaling
-        //Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), resourceId);
         Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), resourceId, options);
 
         if (infoOut != null) {
@@ -63,10 +62,12 @@ public class Util {
 
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle);
 
+        // Changed texture bitmap interpolation (GL_LINEAR -> GL_NEAREST)
+        //  *ref: http://stackoverflow.com/questions/19611745/opengl-black-lines-in-between-tiles
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER,
-                GLES20.GL_LINEAR);
+                GLES20.GL_NEAREST);
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER,
-                GLES20.GL_LINEAR);
+                GLES20.GL_NEAREST);
         Util.checkGlError("loadTexture");
 
         GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);

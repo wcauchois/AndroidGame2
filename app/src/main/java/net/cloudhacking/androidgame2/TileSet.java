@@ -36,7 +36,6 @@ public class TileSet {
         mSetWidth = info.getWidth() / mTileWidth;
         mSetHeight = info.getHeight() / mTileHeight;
 
-        // this prints 960x960
         Log.d(TAG, "Tileset bitmap: width="+info.getWidth()+"px, height="+info.getHeight()+"px");
         Log.d(TAG, "Tileset tilesize: width="+mTileWidth+"px, height="+mTileHeight+"px");
 
@@ -48,10 +47,15 @@ public class TileSet {
         // TODO(wcauchois): Some of these should probably be precomputed.
         float tw = 1.0f / (float) mSetWidth;
         float th = 1.0f / (float) mSetHeight;
-        float tx = ((float) (tileIndex % mSetWidth)) * tw;
+        float tx = (tileIndex % mSetWidth) * tw;
         float ty = (float) Math.floor((float) tileIndex /
                 (float) mSetWidth) * th;
         // FIXME(wcauchois): I was seeing some weird float issues here, like numbers like 0.900004
+
+        /*Log.d(TAG, "quadDrawer input: x="+x+", y="+y
+                +", w="+((float) mTileWidth * sx)+", h="+((float) mTileHeight * sy)
+                +", tx="+tx+", ty="+ty+", tw="+tw+", th="+th
+        );*/
 
         quadDrawer.draw(mTextureID, x, y, (float) mTileWidth * sx, (float) mTileHeight * sy,
                 tx, ty, tw, th);
