@@ -21,12 +21,12 @@ public class TileSet {
         mTileHeight = tileHeight;
     }
 
-    public float getTileWidth() {
-        return (float) mTileWidth;
+    public int getTileWidth() {
+        return mTileWidth;
     }
 
-    public float getTileHeight() {
-        return (float) mTileHeight;
+    public int getTileHeight() {
+        return mTileHeight;
     }
 
     public void loadTexture(Context context, int resourceId) {
@@ -36,8 +36,8 @@ public class TileSet {
         mSetWidth = info.getWidth() / mTileWidth;
         mSetHeight = info.getHeight() / mTileHeight;
 
-        Log.d(TAG, "Tileset bitmap: width="+info.getWidth()+"px, height="+info.getHeight()+"px");
-        Log.d(TAG, "Tileset tilesize: width="+mTileWidth+"px, height="+mTileHeight+"px");
+        /*Log.d(TAG, "Tileset bitmap: width="+info.getWidth()+"px, height="+info.getHeight()+"px");
+        Log.d(TAG, "Tileset tilesize: width="+mTileWidth+"px, height="+mTileHeight+"px");*/
 
         Log.i(TAG, "Loaded tileset of width " + mSetWidth + " and height " + mSetHeight);
     }

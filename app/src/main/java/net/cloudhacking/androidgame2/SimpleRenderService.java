@@ -91,8 +91,10 @@ public class SimpleRenderService extends Component {
 
             float[] mvp = sTempMVP;
             Matrix.setIdentityM(mvp, 0);
+
             MatrixUtil.setTranslation(mvp, x, y);
             MatrixUtil.setScale(mvp, w, h);
+
             Matrix.multiplyMM(mvp, 0, mSceneInfo.getProjection(), 0, mvp, 0);
 
             GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mvp, 0);
