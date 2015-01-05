@@ -43,7 +43,7 @@ public class TileSet {
     }
 
     // Caller is responsible for calling beginDraw and endDraw!
-    public void drawTile(QuadDrawer quadDrawer, int tileIndex, float x, float y, float sx, float sy) {
+    public void drawTile(QuadDrawer quadDrawer, int tileIndex, float x, float y, float rot, float sx, float sy) {
         // TODO(wcauchois): Some of these should probably be precomputed.
         float tw = 1.0f / (float) mSetWidth;
         float th = 1.0f / (float) mSetHeight;
@@ -56,7 +56,7 @@ public class TileSet {
                 +", tx="+tx+", ty="+ty+", tw="+tw+", th="+th
         );*/
 
-        quadDrawer.draw(mTextureID, x, y, (float) mTileWidth * sx, (float) mTileHeight * sy,
+        quadDrawer.draw(mTextureID, x, y, rot, (float) mTileWidth * sx, (float) mTileHeight * sy,
                 tx, ty, tw, th);
     }
 }

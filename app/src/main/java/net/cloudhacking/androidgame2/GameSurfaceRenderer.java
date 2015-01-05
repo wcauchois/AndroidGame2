@@ -31,6 +31,8 @@ public class GameSurfaceRenderer implements GLSurfaceView.Renderer {
     private GameLevel mLevel;
     private List<Component> mComponents = new ArrayList<Component>();
 
+    private AnimatedSprite mTestSprite;
+
 
     protected <T extends Component> T addComponent(T comp) {
         mComponents.add(comp);
@@ -57,7 +59,11 @@ public class GameSurfaceRenderer implements GLSurfaceView.Renderer {
                     }
                 }
         ));
+
         mLevel = addComponent(new GameLevel(mRenderService));
+
+        mTestSprite = addComponent(new AnimatedSprite(mRenderService,
+                                                      R.drawable.tower_animation_test));
     }
 
 
@@ -74,12 +80,14 @@ public class GameSurfaceRenderer implements GLSurfaceView.Renderer {
         }
 
         // Set arena size to size of GameLevel (must be done after GameLevel resources
-        // are prepared.  Projection matrix is based on the arena size, so this ensures that
+        // are prepared).  Projection matrix is based on the arena size, so this ensures that
         // the game level will be nice and centered on the screen.
         //
         // However in the future, aspect ratio of the screen should not matter, so we need to make
         // sure that we have some sort of a camera that can handle any aspect ratio.
         mGameState.setArenaSize(mLevel.getLevelSize());
+
+        mTestSprite.setGridPos(3, 6);
     }
 
 
@@ -117,7 +125,17 @@ public class GameSurfaceRenderer implements GLSurfaceView.Renderer {
     public void onDrawFrame(GL10 unused) {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
+        // TODO: Make a drawing group or something so that for all the components that use the SimpleRenderService we only have to call beginDraw once.
         mLevel.draw();
+
+        // TODO: Should probably start moving this stuff to GameState.
+        mTestSprite.update();  // update sprite
+
+        GLES20.glEnable(GLES20.GL_BLEND);
+        GLES20.glBlendFunc(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
+        mTestSprite.draw();
+        GLES20.glDisable(GLES20.GL_BLEND);
+
     }
 
 

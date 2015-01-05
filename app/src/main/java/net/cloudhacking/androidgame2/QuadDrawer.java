@@ -19,7 +19,7 @@ public interface QuadDrawer {
      * @param tw Horizontal amount of the texture to use (1.0 for the whole texture).
      * @param th Vertical amount of the texture to use (1.0 for the whole texture).
      */
-    public void draw(int textureID, float x, float y, float w, float h, float tx, float ty, float tw, float th);
+    public void draw(int textureID, float x, float y, float rot, float w, float h, float tx, float ty, float tw, float th);
 
     public void endDraw();
 }

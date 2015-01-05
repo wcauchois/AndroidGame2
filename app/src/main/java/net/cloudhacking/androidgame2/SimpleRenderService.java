@@ -77,7 +77,7 @@ public class SimpleRenderService extends Component {
             GLES20.glVertexAttribPointer(mPositionHandle, 3, GLES20.GL_FLOAT, false, 3 * 4, mVertBuffer);
         }
 
-        public void draw(int textureID, float x, float y, float w, float h, float tx, float ty, float tw, float th) {
+        public void draw(int textureID, float x, float y, float rot, float w, float h, float tx, float ty, float tw, float th) {
 
             // setup texture coordinates buffer
             FloatBuffer texCoordBuffer = Util.makeFloatBuffer(new float[] {
@@ -91,6 +91,9 @@ public class SimpleRenderService extends Component {
             // setup MVP matrix
             float[] mvp = sTempMVP;
             Matrix.setIdentityM(mvp, 0);
+
+            // TODO: how da fuk does rotation work in openGL?  I think it has to do with the projection matrix...
+            Matrix.rotateM(mvp, 0, rot, 0, 0, 1);  // move this to MatrixUtil
             MatrixUtil.setTranslation(mvp, x, y);
             MatrixUtil.setScale(mvp, w, h);
             Matrix.multiplyMM(mvp, 0, mSceneInfo.getProjection(), 0, mvp, 0);

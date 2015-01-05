@@ -51,6 +51,7 @@ public class GameLevel extends Component {
                 mTileSet.drawTile(quadDrawer, mMap.getTile(col, row),
                         col * mTileSet.getTileWidth() * OVERALL_SCALE,
                         row * mTileSet.getTileHeight() * OVERALL_SCALE,
+                        0,  // rotate by 0 degrees
                         OVERALL_SCALE,
                         OVERALL_SCALE);
             }
