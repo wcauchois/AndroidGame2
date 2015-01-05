@@ -15,6 +15,7 @@ public class SimpleRenderService extends Component {
     private QuadDrawerImpl mQuadDrawer;
 
     public SimpleRenderService(SceneInfo sceneInfo) {
+        super();
         mSceneInfo = sceneInfo;
         mQuadDrawer = new QuadDrawerImpl();
     }

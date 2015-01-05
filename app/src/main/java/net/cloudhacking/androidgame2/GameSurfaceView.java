@@ -14,6 +14,17 @@ public class GameSurfaceView extends GLSurfaceView {
     private GameSurfaceRenderer mRenderer;
     private final ConditionVariable mSyncObj = new ConditionVariable();
 
+
+    public GameSurfaceView(Context context, GameState gameState) {
+        super(context);
+
+        setEGLContextClientVersion(2);
+
+        mRenderer = new GameSurfaceRenderer(this, context, gameState);
+        setRenderer(mRenderer);
+    }
+
+
     @Override
     public void onPause() {
         super.onPause();
@@ -27,14 +38,5 @@ public class GameSurfaceView extends GLSurfaceView {
         });
         mSyncObj.block();
         Log.d(TAG, "Renderer pause complete");
-    }
-
-    public GameSurfaceView(Context context, GameState gameState) {
-        super(context);
-
-        setEGLContextClientVersion(2);
-
-        mRenderer = new GameSurfaceRenderer(this, context, gameState);
-        setRenderer(mRenderer);
     }
 }

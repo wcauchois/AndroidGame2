@@ -6,14 +6,14 @@ import android.util.Log;
 /**
  * Created by Andrew on 1/5/2015.
  */
-public class AnimatedSprite extends Component {
+public class AnimatedSprite extends Component implements Renderable {
     private static final String TAG = AnimatedSprite.class.getSimpleName();
 
-    private SimpleRenderService mRenderService;
-    private TileSet mTileSet;
     private int mResourceId;
+    private TileSet mTileSet;
 
     private boolean mResourcesPrepared=false;
+
 
     private final long ANIMATION_FREQUENCY=(long)(0.75*1e9);  // in nanoseconds
     private long sysTimeLastNsec=-1;
@@ -31,13 +31,13 @@ public class AnimatedSprite extends Component {
     }
 
 
-    public AnimatedSprite(SimpleRenderService renderService, int resourceId) {
-        mRenderService = renderService;
+    public AnimatedSprite(int resourceId) {
+        super();
         mResourceId = resourceId;
         mTileSet = new TileSet(32, 32);
     }
 
-
+    // Automatically called in onSurfaceCreated() in GameSurfaceRenderer
     public void prepareResources(Context context) {
         mTileSet.loadTexture(context, mResourceId);
         mResourcesPrepared = true;
@@ -69,12 +69,10 @@ public class AnimatedSprite extends Component {
     }
 
 
-    public void draw() {
+    public void draw(QuadDrawer quadDrawer) {
         if (!mResourcesPrepared) {
-            throw new RuntimeException("GameLevel: resources not prepared");
+            throw new RuntimeException("AnimatedSprite: resources not prepared");
         }
-        QuadDrawer quadDrawer = mRenderService.getQuadDrawer();
-        quadDrawer.beginDraw();
         mTileSet.drawTile(quadDrawer,
                 animSequence[currentFrameIdx],
                 mGridX*mTileSet.getTileWidth(),
@@ -83,7 +81,6 @@ public class AnimatedSprite extends Component {
                 1.0f,
                 1.0f
         );
-        quadDrawer.endDraw();
     }
 
 }

@@ -5,20 +5,32 @@ import android.content.Context;
 /**
  * Created by wcauchois on 1/4/15.
  */
-public class GameLevel extends Component {
-    private SimpleRenderService mRenderService;
+public class GameLevel extends Component implements Renderable {
+    private SceneInfo mSceneInfo;
+    private RenderLayer mMainRenderLayer;
+
     private JsonMap mMap;
     private TileSet mTileSet;
+
+    private AnimatedSprite mTestSprite;
 
     private boolean mResourcesPrepared=false;
 
     // TODO: Not sure if this is necessary since map is now automatically scaled.
     private static final float OVERALL_SCALE = 1.0f;
 
-    public GameLevel(SimpleRenderService renderService) {
-        mRenderService = renderService;
+
+    public GameLevel(SceneInfo sceneInfo) {
         mMap = new JsonMap();
         mTileSet = new TileSet(32, 32);
+
+        mSceneInfo = sceneInfo;
+        mMainRenderLayer = new RenderLayer(new SimpleRenderService(sceneInfo));
+
+        mTestSprite = new AnimatedSprite(R.drawable.tower_animation_test);
+
+        mMainRenderLayer.addMember(this);
+        mMainRenderLayer.addMember(mTestSprite);
     }
 
 
@@ -36,16 +48,22 @@ public class GameLevel extends Component {
     public void prepareResources(Context context) {
         mMap.loadFromResource(context, R.raw.simple_map);
         mTileSet.loadTexture(context, R.drawable.simple_tileset);
+
+        mTestSprite.setGridPos(3, 6);
+
         mResourcesPrepared = true;
     }
 
 
-    public void draw() {
+    public void update() {
+        mTestSprite.update();
+    }
+
+
+    public void draw(QuadDrawer quadDrawer) {
         if (!mResourcesPrepared) {
             throw new RuntimeException("GameLevel: resources not prepared");
         }
-        QuadDrawer quadDrawer = mRenderService.getQuadDrawer();
-        quadDrawer.beginDraw();
         for (int row = 0; row < mMap.getHeight(); row++) {
             for (int col = 0; col < mMap.getWidth(); col++) {
                 mTileSet.drawTile(quadDrawer, mMap.getTile(col, row),
@@ -56,6 +74,5 @@ public class GameLevel extends Component {
                         OVERALL_SCALE);
             }
         }
-        quadDrawer.endDraw();
     }
 }

@@ -23,47 +23,33 @@ public class GameSurfaceRenderer implements GLSurfaceView.Renderer {
     private GameSurfaceView mSurfaceView;
     private Context mContext;
 
+    private SceneInfo mSceneInfo;
     private int mViewportWidth;
     private int mViewportHeight;
     private final float[] mProjectionMatrix = new float[16];
 
-    private SimpleRenderService mRenderService;
     private GameLevel mLevel;
-    private List<Component> mComponents = new ArrayList<Component>();
 
-    private AnimatedSprite mTestSprite;
+    /* TODO: Not sure if this is the best way to do this, but I made it so when you construct
+     *       a component or render layer it will add itself to a static arraylist.
+     */
+    // mComponents -> Component.sComponents
+    // mRenderLayers -> RenderLayer.sRenderLayers
 
-
-    protected <T extends Component> T addComponent(T comp) {
-        mComponents.add(comp);
-        return comp;
-    }
 
     public GameSurfaceRenderer(GameSurfaceView surfaceView, Context context, GameState gameState) {
         mSurfaceView = surfaceView;
         mGameState = gameState;
         mContext = context;
 
-        mRenderService = addComponent(new SimpleRenderService(
-                new SceneInfo() {
-                    public float[] getProjection() {
-                        return mProjectionMatrix;
-                    }
+        // Use this instance of SceneInfo for all render layers.
+        mSceneInfo = new SceneInfo() {
+            public float[] getProjection() { return mProjectionMatrix; }
+            public int getViewportWidth()  { return mViewportWidth; }
+            public int getViewportHeight() { return mViewportHeight; }
+        };
 
-                    public int getViewportWidth() {
-                        return mViewportWidth;
-                    }
-
-                    public int getViewportHeight() {
-                        return mViewportHeight;
-                    }
-                }
-        ));
-
-        mLevel = addComponent(new GameLevel(mRenderService));
-
-        mTestSprite = addComponent(new AnimatedSprite(mRenderService,
-                                                      R.drawable.tower_animation_test));
+        mLevel = new GameLevel(mSceneInfo);
     }
 
 
@@ -75,7 +61,7 @@ public class GameSurfaceRenderer implements GLSurfaceView.Renderer {
         GLES20.glDisable(GLES20.GL_DEPTH_TEST);
         GLES20.glDisable(GLES20.GL_CULL_FACE);
 
-        for (Component comp : mComponents) {
+        for (Component comp : Component.sComponents) {
             comp.prepareResources(mContext);
         }
 
@@ -87,7 +73,7 @@ public class GameSurfaceRenderer implements GLSurfaceView.Renderer {
         // sure that we have some sort of a camera that can handle any aspect ratio.
         mGameState.setArenaSize(mLevel.getLevelSize());
 
-        mTestSprite.setGridPos(3, 6);
+
     }
 
 
@@ -115,6 +101,8 @@ public class GameSurfaceRenderer implements GLSurfaceView.Renderer {
         Log.d(TAG, " --> x=" + x + " y=" + y + " gw=" + viewWidth + " gh=" + viewHeight);
 
         GLES20.glViewport(x, y, viewWidth, viewHeight);
+        mViewportWidth = viewWidth;
+        mViewportHeight = viewWidth;
 
         Matrix.orthoM(mProjectionMatrix, 0, 0, mGameState.getArenaWidth(),
                 mGameState.getArenaHeight(), 0, -1, 1);
@@ -125,17 +113,16 @@ public class GameSurfaceRenderer implements GLSurfaceView.Renderer {
     public void onDrawFrame(GL10 unused) {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
-        // TODO: Make a drawing group or something so that for all the components that use the SimpleRenderService we only have to call beginDraw once.
-        mLevel.draw();
-
-        // TODO: Should probably start moving this stuff to GameState.
-        mTestSprite.update();  // update sprite
-
         GLES20.glEnable(GLES20.GL_BLEND);
         GLES20.glBlendFunc(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
-        mTestSprite.draw();
-        GLES20.glDisable(GLES20.GL_BLEND);
 
+        mLevel.update();
+
+        for (RenderLayer r : RenderLayer.sRenderLayers) {
+            r.draw();
+        }
+
+        GLES20.glDisable(GLES20.GL_BLEND);
     }
 
 
