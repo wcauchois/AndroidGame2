@@ -17,7 +17,6 @@ public class SimpleRenderService extends Component {
     public SimpleRenderService(SceneInfo sceneInfo) {
         mSceneInfo = sceneInfo;
         mQuadDrawer = new QuadDrawerImpl();
-
     }
 
     public void prepareResources(Context context) {
@@ -28,6 +27,8 @@ public class SimpleRenderService extends Component {
         return mQuadDrawer;
     }
 
+
+    // temp storage
     static float[] sTempMVP = new float[16];
 
     private class QuadDrawerImpl implements QuadDrawer {
@@ -38,7 +39,6 @@ public class SimpleRenderService extends Component {
 
         // Resource handles
         int mProgramHandle = -1;
-        int mColorHandle = -1;
         int mPositionHandle = -1;
         int mMVPMatrixHandle = -1;
         int mTextureUniformHandle = -1;
@@ -61,7 +61,6 @@ public class SimpleRenderService extends Component {
             mProgramHandle = Util.createProgram(context, R.raw.quad_vert, R.raw.quad_frag);
 
             mPositionHandle = GLES20.glGetAttribLocation(mProgramHandle, "a_position");
-            mColorHandle = GLES20.glGetUniformLocation(mProgramHandle, "u_color");
             mMVPMatrixHandle = GLES20.glGetUniformLocation(mProgramHandle, "u_mvpMatrix");
             mTextureUniformHandle = GLES20.glGetUniformLocation(mProgramHandle, "u_texture");
             mTexCoordHandle = GLES20.glGetAttribLocation(mProgramHandle, "a_texCoordinate");
@@ -79,35 +78,37 @@ public class SimpleRenderService extends Component {
         }
 
         public void draw(int textureID, float x, float y, float w, float h, float tx, float ty, float tw, float th) {
-            // FIXME(wcauchois): The texture coordinates don't work! Either that or TileSet is broken.
+
+            // setup texture coordinates buffer
             FloatBuffer texCoordBuffer = Util.makeFloatBuffer(new float[] {
                     tx,      ty,
                     tx,      ty + th,
                     tx + tw, ty + th,
                     tx + tw, ty
             });
-
             GLES20.glVertexAttribPointer(mTexCoordHandle, 2, GLES20.GL_FLOAT, false, 2 * 4, texCoordBuffer);
 
+            // setup MVP matrix
             float[] mvp = sTempMVP;
             Matrix.setIdentityM(mvp, 0);
-
             MatrixUtil.setTranslation(mvp, x, y);
             MatrixUtil.setScale(mvp, w, h);
-
             Matrix.multiplyMM(mvp, 0, mSceneInfo.getProjection(), 0, mvp, 0);
 
+            // setup shader uniforms
             GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mvp, 0);
-            float[] colorArray = new float[] { 1.0f, 1.0f, 1.0f, 1.0f };
-            GLES20.glUniform4fv(mColorHandle, 1, colorArray, 0);
 
+            // setup textures and uniforms
+            // TODO: Figure out best way to load multiple textures with openGL (and when in the code?).
             GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureID);
             GLES20.glUniform1i(mTextureUniformHandle, 0); // Bind to texture unit 0
 
+            // draw quad
             GLES20.glDrawElements(GLES20.GL_TRIANGLES, 6 /* number of indices */, GLES20.GL_UNSIGNED_SHORT, mIndexBuffer);
             Util.checkGlError("glDrawElements");
         }
+
 
         public void endDraw() {
             GLES20.glDisableVertexAttribArray(mPositionHandle);

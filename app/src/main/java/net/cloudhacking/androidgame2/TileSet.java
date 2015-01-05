@@ -50,7 +50,6 @@ public class TileSet {
         float tx = (tileIndex % mSetWidth) * tw;
         float ty = (float) Math.floor((float) tileIndex /
                 (float) mSetWidth) * th;
-        // FIXME(wcauchois): I was seeing some weird float issues here, like numbers like 0.900004
 
         /*Log.d(TAG, "quadDrawer input: x="+x+", y="+y
                 +", w="+((float) mTileWidth * sx)+", h="+((float) mTileHeight * sy)
