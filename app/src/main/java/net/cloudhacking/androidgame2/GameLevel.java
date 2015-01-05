@@ -21,7 +21,8 @@ public class GameLevel extends Component {
         mTileSet.loadTexture(context, R.drawable.simple_tileset);
     }
 
-    private static final float OVERALL_SCALE = 2.0f;
+    //private static final float OVERALL_SCALE = 2.0f;
+    private static final float OVERALL_SCALE = 1.0f;
 
     public void draw() {
         QuadDrawer quadDrawer = mRenderService.getQuadDrawer();

@@ -49,7 +49,8 @@ public class Util {
 
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inScaled = false; // No pre-scaling
-        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), resourceId);
+        //Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), resourceId);
+        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), resourceId, options);
 
         if (infoOut != null) {
             infoOut.setWidth(bitmap.getWidth());

@@ -36,6 +36,10 @@ public class TileSet {
         mSetWidth = info.getWidth() / mTileWidth;
         mSetHeight = info.getHeight() / mTileHeight;
 
+        // this prints 960x960
+        Log.d(TAG, "Tileset bitmap: width="+info.getWidth()+"px, height="+info.getHeight()+"px");
+        Log.d(TAG, "Tileset tilesize: width="+mTileWidth+"px, height="+mTileHeight+"px");
+
         Log.i(TAG, "Loaded tileset of width " + mSetWidth + " and height " + mSetHeight);
     }
 
