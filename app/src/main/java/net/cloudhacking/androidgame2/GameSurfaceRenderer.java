@@ -73,7 +73,8 @@ public class GameSurfaceRenderer implements GLSurfaceView.Renderer {
         // sure that we have some sort of a camera that can handle any aspect ratio.
         mGameState.setArenaSize(mLevel.getLevelSize());
 
-
+        Log.d(TAG, "Components: "+Component.sComponents);
+        Log.d(TAG, "Render Layers: "+RenderLayer.sRenderLayers);
     }
 
 
@@ -97,8 +98,9 @@ public class GameSurfaceRenderer implements GLSurfaceView.Renderer {
         x = (width - viewWidth) / 2;
         y = (height - viewHeight) / 2;
 
-        Log.d(TAG, "onSurfaceChanged w=" + width + " h=" + height);
-        Log.d(TAG, " --> x=" + x + " y=" + y + " gw=" + viewWidth + " gh=" + viewHeight);
+        Log.d(TAG, "onSurfaceChanged (width=" + width + ", height=" + height+")");
+        Log.d(TAG, " --> xOffset=" + x + ", yOffset=" + y);
+        Log.d(TAG, " --> viewPortWidth=" + viewWidth + ", viewPortHeight=" + viewHeight);
 
         GLES20.glViewport(x, y, viewWidth, viewHeight);
         mViewportWidth = viewWidth;

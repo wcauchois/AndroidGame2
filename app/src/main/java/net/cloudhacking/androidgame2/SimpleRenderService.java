@@ -11,17 +11,20 @@ import java.nio.ShortBuffer;
  * Created by wcauchois on 1/4/15.
  */
 public class SimpleRenderService extends Component {
+    private static final String TAG = SimpleRenderService.class.getSimpleName();
+
     private SceneInfo mSceneInfo;
     private QuadDrawerImpl mQuadDrawer;
 
     public SimpleRenderService(SceneInfo sceneInfo) {
-        super();
+        //super();
         mSceneInfo = sceneInfo;
         mQuadDrawer = new QuadDrawerImpl();
     }
 
     public void prepareResources(Context context) {
         mQuadDrawer.prepareResources(context);
+        mResourcesPrepared = true;
     }
 
     public QuadDrawer getQuadDrawer() {
@@ -69,6 +72,8 @@ public class SimpleRenderService extends Component {
         }
 
         public void beginDraw() {
+            checkResourcesPrepared(TAG);
+
             GLES20.glUseProgram(mProgramHandle);
             Util.checkGlError("glUseProgram");
 

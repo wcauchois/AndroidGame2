@@ -9,8 +9,9 @@ import java.util.List;
 public class RenderLayer {
 
     // Layers will be rendered from back to front in order or the list.
-    //  perhaps this should be like a sorted thing where the render layers are comparable and
-    //  have a priority attribute.
+    //  ***Perhaps this should be like a sorted thing where the render layers are comparable and
+    //     have a priority attribute.
+    //  TODO: Implement render layer comparability
     public static List<RenderLayer> sRenderLayers = new ArrayList<RenderLayer>();
 
     private SimpleRenderService mRenderService;  // should be generalized render service

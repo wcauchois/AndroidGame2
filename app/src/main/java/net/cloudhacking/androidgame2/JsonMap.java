@@ -74,7 +74,7 @@ public class JsonMap implements GameMap {
                 }
             }
 
-            Log.i(TAG, "Loaded JSON map of dimensions " + this.width + "x" + this.height);
+            Log.i(TAG, "Loaded JSON map (width=" + this.width + ", height=" + this.height+")");
         } catch (JSONException e) {
             Log.e(TAG, "Failed to load JSON map", e);
             throw new RuntimeException(e);

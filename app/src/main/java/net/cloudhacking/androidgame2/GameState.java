@@ -14,7 +14,7 @@ public class GameState {
     public static void setArenaSize(int[] arenaSize) {
         arenaWidth = arenaSize[0];
         arenaHeight = arenaSize[1];
-        Log.d(TAG, "Arena size set to "+arenaWidth+"x"+arenaHeight);
+        Log.d(TAG, "Arena size set (width="+arenaWidth+"px, height="+arenaHeight+"px)");
     }
 
     public static int getArenaWidth() { return arenaWidth; }

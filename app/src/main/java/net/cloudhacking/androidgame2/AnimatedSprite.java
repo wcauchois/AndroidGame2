@@ -12,9 +12,7 @@ public class AnimatedSprite extends Component implements Renderable {
     private int mResourceId;
     private TileSet mTileSet;
 
-    private boolean mResourcesPrepared=false;
-
-
+    // animation vars...
     private final long ANIMATION_FREQUENCY=(long)(0.75*1e9);  // in nanoseconds
     private long sysTimeLastNsec=-1;
     private long threshold=0;
@@ -32,7 +30,7 @@ public class AnimatedSprite extends Component implements Renderable {
 
 
     public AnimatedSprite(int resourceId) {
-        super();
+        //super();
         mResourceId = resourceId;
         mTileSet = new TileSet(32, 32);
     }
@@ -40,11 +38,14 @@ public class AnimatedSprite extends Component implements Renderable {
     // Automatically called in onSurfaceCreated() in GameSurfaceRenderer
     public void prepareResources(Context context) {
         mTileSet.loadTexture(context, mResourceId);
+
         mResourcesPrepared = true;
     }
 
 
     public void update() {
+        checkResourcesPrepared(TAG);
+
         // on first frame...
         if (sysTimeLastNsec == -1) {
             sysTimeLastNsec = System.nanoTime();
@@ -70,9 +71,8 @@ public class AnimatedSprite extends Component implements Renderable {
 
 
     public void draw(QuadDrawer quadDrawer) {
-        if (!mResourcesPrepared) {
-            throw new RuntimeException("AnimatedSprite: resources not prepared");
-        }
+        checkResourcesPrepared(TAG);
+
         mTileSet.drawTile(quadDrawer,
                 animSequence[currentFrameIdx],
                 mGridX*mTileSet.getTileWidth(),
