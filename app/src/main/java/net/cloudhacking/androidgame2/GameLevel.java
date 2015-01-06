@@ -70,6 +70,7 @@ public class GameLevel extends Component implements Renderable {
 
     /*
      * Draw the tiled background here.
+     * TODO: Put this into its own class or something.
      */
     public void draw(QuadDrawer quadDrawer) {
         checkResourcesPrepared(TAG);

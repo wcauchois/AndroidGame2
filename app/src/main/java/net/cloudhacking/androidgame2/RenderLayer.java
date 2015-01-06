@@ -9,8 +9,11 @@ import java.util.TreeSet;
  */
 public class RenderLayer implements Comparable<RenderLayer> {
 
-    // Layers will be rendered in increasing order of layer priority
+    /* This is a static set which contains all the render layers.  Layers will be rendered in
+     * increasing order of layer priority.
+     */
     public static TreeSet<RenderLayer> sRenderLayers = new TreeSet<RenderLayer>();
+
 
     private SimpleRenderService mRenderService;  // should be generalized render service
     private List<Renderable> mLayerMembers;
