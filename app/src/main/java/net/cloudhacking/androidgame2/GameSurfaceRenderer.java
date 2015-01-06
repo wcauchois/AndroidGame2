@@ -30,11 +30,14 @@ public class GameSurfaceRenderer implements GLSurfaceView.Renderer {
 
     private GameLevel mLevel;
 
+
     /* TODO: Not sure if this is the best way to do this, but I made it so when you construct
-     *       a component or render layer it will add itself to a static arraylist.
+     *       a component or render layer it will add itself to a static array list that is part of
+     *       its respective class.  This way we dont have to worry about always adding components
+     *       to a list in THIS class.
      */
-    // mComponents -> Component.sComponents
-    // mRenderLayers -> RenderLayer.sRenderLayers
+    private List<Component> mComponents; // points to -> Component.sComponents;
+    private List<RenderLayer> mRenderLayers; // points to -> RenderLayer.sRenderLayers;
 
 
     public GameSurfaceRenderer(GameSurfaceView surfaceView, Context context, GameState gameState) {
@@ -50,6 +53,9 @@ public class GameSurfaceRenderer implements GLSurfaceView.Renderer {
         };
 
         mLevel = new GameLevel(mSceneInfo);
+
+        mComponents = Component.sComponents;
+        mRenderLayers = RenderLayer.sRenderLayers;
     }
 
 
@@ -61,7 +67,8 @@ public class GameSurfaceRenderer implements GLSurfaceView.Renderer {
         GLES20.glDisable(GLES20.GL_DEPTH_TEST);
         GLES20.glDisable(GLES20.GL_CULL_FACE);
 
-        for (Component comp : Component.sComponents) {
+        // mComponents points to static array list of components in Component
+        for (Component comp : mComponents) {
             comp.prepareResources(mContext);
         }
 
@@ -73,8 +80,9 @@ public class GameSurfaceRenderer implements GLSurfaceView.Renderer {
         // sure that we have some sort of a camera that can handle any aspect ratio.
         mGameState.setArenaSize(mLevel.getLevelSize());
 
-        Log.d(TAG, "Components: "+Component.sComponents);
-        Log.d(TAG, "Render Layers: "+RenderLayer.sRenderLayers);
+        // print components and render layers for debug purposes
+        Log.d(TAG, "Components: "+mComponents);
+        Log.d(TAG, "Render Layers: "+mRenderLayers);
     }
 
 
@@ -120,7 +128,8 @@ public class GameSurfaceRenderer implements GLSurfaceView.Renderer {
 
         mLevel.update();
 
-        for (RenderLayer r : RenderLayer.sRenderLayers) {
+        // mRenderLayers points to static array list of render layers in RenderLayer
+        for (RenderLayer r : mRenderLayers) {
             r.draw();
         }
 
