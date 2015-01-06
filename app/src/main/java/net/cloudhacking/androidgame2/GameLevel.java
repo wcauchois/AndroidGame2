@@ -56,6 +56,9 @@ public class GameLevel extends Component implements Renderable {
     }
 
 
+    /*
+     * Update level here; creeps, towers, projectiles, etc.
+     */
     public void update() {
         checkResourcesPrepared(TAG);
 
@@ -63,6 +66,9 @@ public class GameLevel extends Component implements Renderable {
     }
 
 
+    /*
+     * Draw the tiled background here.
+     */
     public void draw(QuadDrawer quadDrawer) {
         checkResourcesPrepared(TAG);
 

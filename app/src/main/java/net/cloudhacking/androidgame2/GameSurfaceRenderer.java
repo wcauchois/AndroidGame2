@@ -34,8 +34,8 @@ public class GameSurfaceRenderer implements GLSurfaceView.Renderer {
      *       its respective class.  This way we dont have to worry about always adding components
      *       to a list in THIS class.
      */
-    private List<Component> mComponents; // points to -> Component.sComponents;
-    private List<RenderLayer> mRenderLayers; // points to -> RenderLayer.sRenderLayers;
+    private List<Component> mComponents = Component.sComponents;
+    private List<RenderLayer> mRenderLayers = RenderLayer.sRenderLayers;
 
 
     public GameSurfaceRenderer(GameSurfaceView surfaceView, Context context, GameState gameState) {
@@ -43,15 +43,14 @@ public class GameSurfaceRenderer implements GLSurfaceView.Renderer {
         mGameState = gameState;
         mContext = context;
 
-        // Use this instance of SceneInfo for all render layers.
+        // Use this instance of SceneInfo for all render layers, since it contains all the info
+        // about our viewport and provides access to the projection matrix.
         mSceneInfo = new SceneInfo() {
             public float[] getProjection() { return mProjectionMatrix; }
             public int getViewportWidth()  { return mViewportWidth; }
             public int getViewportHeight() { return mViewportHeight; }
         };
 
-        mComponents = Component.sComponents;
-        mRenderLayers = RenderLayer.sRenderLayers;
     }
 
 
@@ -65,7 +64,7 @@ public class GameSurfaceRenderer implements GLSurfaceView.Renderer {
         GLES20.glEnable(GLES20.GL_BLEND);  // enable alpha blending
         GLES20.glBlendFunc(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
 
-        // allocate all components and render layers here
+        // allocate all components and render layers here, before component resources are loaded
         mGameState.setUpGameLevel(mSceneInfo);
 
         // prepare resources for all components here
@@ -84,6 +83,8 @@ public class GameSurfaceRenderer implements GLSurfaceView.Renderer {
     public void onSurfaceChanged(GL10 unused, int width, int height) {
         // Sets up viewport so that it is centered on the screen and the aspect ratio of
         // the game arena is maintained.
+
+        mGameState.updateArenaSize();  // do this before getting arena width/height
 
         float arenaRatio = ((float)mGameState.getArenaHeight()) / mGameState.getArenaWidth();
         int x, y, viewWidth, viewHeight;
@@ -120,6 +121,7 @@ public class GameSurfaceRenderer implements GLSurfaceView.Renderer {
 
         // do all updating in game state
         mGameState.update();
+
 
         // mRenderLayers points to static array list of render layers in RenderLayer
         for (RenderLayer r : mRenderLayers) {
