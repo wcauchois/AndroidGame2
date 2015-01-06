@@ -8,17 +8,16 @@ import android.util.Log;
 public class GameState {
     private static final String TAG = GameSurfaceView.class.getSimpleName();
 
-    static int arenaWidth;
-    static int arenaHeight;
+    private int arenaWidth, arenaHeight;
 
-    public static void setArenaSize(int[] arenaSize) {
+    public void setArenaSize(int[] arenaSize) {
         arenaWidth = arenaSize[0];
         arenaHeight = arenaSize[1];
         Log.d(TAG, "Arena size set (width="+arenaWidth+"px, height="+arenaHeight+"px)");
     }
 
-    public static int getArenaWidth() { return arenaWidth; }
+    public int getArenaWidth() { return arenaWidth; }
 
-    public static int getArenaHeight() { return arenaHeight; }
+    public int getArenaHeight() { return arenaHeight; }
 
 }
