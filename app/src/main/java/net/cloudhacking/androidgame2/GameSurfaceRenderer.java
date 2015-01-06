@@ -9,6 +9,7 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeSet;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -35,7 +36,7 @@ public class GameSurfaceRenderer implements GLSurfaceView.Renderer {
      *       to a list in THIS class.
      */
     private List<Component> mComponents = Component.sComponents;
-    private List<RenderLayer> mRenderLayers = RenderLayer.sRenderLayers;
+    private TreeSet<RenderLayer> mRenderLayers = RenderLayer.sRenderLayers;
 
 
     public GameSurfaceRenderer(GameSurfaceView surfaceView, Context context, GameState gameState) {

@@ -2,28 +2,36 @@ package net.cloudhacking.androidgame2;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeSet;
 
 /**
  * Created by Andrew on 1/5/2015.
  */
-public class RenderLayer {
+public class RenderLayer implements Comparable<RenderLayer> {
 
-    // Layers will be rendered from back to front in order or the list.
-    //  ***Perhaps this should be like a sorted thing where the render layers are comparable and
-    //     have a priority attribute.
-    //  TODO: Implement render layer comparability
-    public static List<RenderLayer> sRenderLayers = new ArrayList<RenderLayer>();
+    // Layers will be rendered in increasing order of layer priority
+    public static TreeSet<RenderLayer> sRenderLayers = new TreeSet<RenderLayer>();
 
     private SimpleRenderService mRenderService;  // should be generalized render service
     private List<Renderable> mLayerMembers;
-    //private int mLayerPriority;
+    private int mLayerPriority;
 
 
-    public RenderLayer(SimpleRenderService renderService) {
+    public RenderLayer(SimpleRenderService renderService, int layerPriority) {
         mRenderService = renderService;
+        mLayerPriority = layerPriority;
         mLayerMembers = new ArrayList<Renderable>();
 
         sRenderLayers.add(this);
+    }
+
+    // implement Comparable interface...
+    public int getLayerPriority() {return mLayerPriority;}
+
+    @Override
+    public int compareTo(RenderLayer other) {
+        // lower render layer priority corresponds to lower z value in draw order
+        return (mLayerPriority - other.getLayerPriority());
     }
 
 

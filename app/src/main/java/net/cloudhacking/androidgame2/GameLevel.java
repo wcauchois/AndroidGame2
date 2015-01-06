@@ -10,6 +10,7 @@ public class GameLevel extends Component implements Renderable {
 
     private SceneInfo mSceneInfo;
     private RenderLayer mMainRenderLayer;
+    private final int MAIN_RENDER_LAYER_PRIORITY=1;
 
     private JsonMap mMap;
     private TileSet mTileSet;
@@ -27,7 +28,8 @@ public class GameLevel extends Component implements Renderable {
         mTileSet = new TileSet(32, 32);
 
         mSceneInfo = sceneInfo;
-        mMainRenderLayer = new RenderLayer(new SimpleRenderService(mSceneInfo));
+        mMainRenderLayer = new RenderLayer(new SimpleRenderService(mSceneInfo),
+                                           MAIN_RENDER_LAYER_PRIORITY);
 
         mTestSprite = new AnimatedSprite(R.drawable.tower_animation_test);
 
