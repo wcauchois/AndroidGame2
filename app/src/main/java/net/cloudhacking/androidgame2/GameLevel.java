@@ -1,6 +1,5 @@
 package net.cloudhacking.androidgame2;
 
-import android.content.Context;
 
 /**
  * Created by wcauchois on 1/4/15.
@@ -40,6 +39,7 @@ public class GameLevel {
 
         mTowerRenderLayer.addMember(mTestSprite);
     }
+
 
     public int[] getLevelSize() {
         return mTiledBackground.getSize();

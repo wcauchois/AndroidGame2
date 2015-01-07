@@ -1,10 +1,7 @@
 package net.cloudhacking.androidgame2;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.opengl.GLES20;
-import android.opengl.GLUtils;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -20,66 +17,8 @@ import java.nio.ShortBuffer;
 /**
  * Created by wcauchois on 1/3/15.
  */
-public class Util {
-    private static final String TAG = Util.class.getSimpleName();
-
-    public static class BitmapInfo {
-        private int mWidth, mHeight;
-
-        public void setWidth(int width) {
-            mWidth = width;
-        }
-
-        public void setHeight(int height) {
-            mHeight = height;
-        }
-
-        public int getWidth() {
-            return mWidth;
-        }
-
-        public int getHeight() {
-            return mHeight;
-        }
-    }
-
-    public static int loadTexture(Context context, int resourceId, BitmapInfo infoOut) {
-        int[] textureHandles = new int[1];
-        int textureHandle;
-
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inScaled = false; // No pre-scaling
-        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), resourceId, options);
-
-        if (infoOut != null) {
-            infoOut.setWidth(bitmap.getWidth());
-            infoOut.setHeight(bitmap.getHeight());
-        }
-
-        GLES20.glGenTextures(1, textureHandles, 0);
-        textureHandle = textureHandles[0];
-        Util.checkGlError("glGenTextures");
-
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle);
-
-        // Changed texture bitmap interpolation (GL_LINEAR -> GL_NEAREST)
-        //  *ref: http://stackoverflow.com/questions/19611745/opengl-black-lines-in-between-tiles
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER,
-                GLES20.GL_NEAREST);
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER,
-                GLES20.GL_NEAREST);
-        Util.checkGlError("loadTexture");
-
-        GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
-
-        bitmap.recycle();
-
-        return textureHandle;
-    }
-
-    public static int loadTexture(Context context, int resourceId) {
-        return loadTexture(context, resourceId, null);
-    }
+public class RenderUtils {
+    private static final String TAG = RenderUtils.class.getSimpleName();
 
     public static String readTextFileFromRawResource(final Context context,
                                                      final int resourceId) {
@@ -149,17 +88,17 @@ public class Util {
     public static int createProgram(Context context,
                                     int vertexShaderResourceId,
                                     int fragmentShaderResourceId) {
-        return Util.createProgram(
-                Util.readTextFileFromRawResource(context, vertexShaderResourceId),
-                Util.readTextFileFromRawResource(context, fragmentShaderResourceId)
+        return RenderUtils.createProgram(
+                RenderUtils.readTextFileFromRawResource(context, vertexShaderResourceId),
+                RenderUtils.readTextFileFromRawResource(context, fragmentShaderResourceId)
         );
     }
 
     public static int createProgram(String vertexShaderCode, String fragmentShaderCode) {
         int vertexShader =
-                Util.loadShader(GLES20.GL_VERTEX_SHADER, vertexShaderCode);
+                RenderUtils.loadShader(GLES20.GL_VERTEX_SHADER, vertexShaderCode);
         int fragmentShader =
-                Util.loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderCode);
+                RenderUtils.loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderCode);
 
         int programHandle = GLES20.glCreateProgram();
         GLES20.glAttachShader(programHandle, vertexShader);

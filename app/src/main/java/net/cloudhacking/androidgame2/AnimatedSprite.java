@@ -57,7 +57,6 @@ public class AnimatedSprite implements Renderable {
 
 
     public void draw(QuadDrawer quadDrawer) {
-
         mTileSet.prepareTexture(quadDrawer);
         mTileSet.drawTile(quadDrawer,
                 animSequence[currentFrameIdx],

@@ -48,7 +48,7 @@ public class SimpleRenderService extends Component {
         int mTexCoordHandle = -1;
 
         void prepareResources(Context context) {
-            mVertBuffer = Util.makeFloatBuffer(new float[] {
+            mVertBuffer = RenderUtils.makeFloatBuffer(new float[]{
                     -0.5f, -0.5f, 0.0f, // Bottom left
                     -0.5f, +0.5f, 0.0f, // Top left
                     +0.5f, +0.5f, 0.0f, // Top right
@@ -56,25 +56,25 @@ public class SimpleRenderService extends Component {
             });
 
             // Note for whatever weird reason index buffers appear to only work as shorts, not ints.
-            mIndexBuffer = Util.makeShortBuffer(new short[]{
+            mIndexBuffer = RenderUtils.makeShortBuffer(new short[]{
                     0, 1, 2,
                     0, 2, 3
             });
 
-            mProgramHandle = Util.createProgram(context, R.raw.quad_vert, R.raw.quad_frag);
+            mProgramHandle = RenderUtils.createProgram(context, R.raw.quad_vert, R.raw.quad_frag);
 
             mPositionHandle = GLES20.glGetAttribLocation(mProgramHandle, "a_position");
             mMVPMatrixHandle = GLES20.glGetUniformLocation(mProgramHandle, "u_mvpMatrix");
             mTextureUniformHandle = GLES20.glGetUniformLocation(mProgramHandle, "u_texture");
             mTexCoordHandle = GLES20.glGetAttribLocation(mProgramHandle, "a_texCoordinate");
-            Util.checkGlError("get uniform/attribute locations");
+            RenderUtils.checkGlError("get uniform/attribute locations");
         }
 
         public void beginDraw() {
             checkResourcesPrepared(TAG);
 
             GLES20.glUseProgram(mProgramHandle);
-            Util.checkGlError("glUseProgram");
+            RenderUtils.checkGlError("glUseProgram");
 
             GLES20.glEnableVertexAttribArray(mPositionHandle);
             GLES20.glEnableVertexAttribArray(mTexCoordHandle);
@@ -82,22 +82,17 @@ public class SimpleRenderService extends Component {
             GLES20.glVertexAttribPointer(mPositionHandle, 3, GLES20.GL_FLOAT, false, 3 * 4, mVertBuffer);
         }
 
-        public void prepareTexture(int textureID) {
+        public void prepareTexture(int glTextureUnit) {
             // activate texture by textureID and pass to shader program
-            // TODO: This can probably be done earlier?  Not sure how resource intensive binding textures is.
-            //       I'm pretty sure we can bind all the textures we need to GL_TEXTURE1, GL_TEXTURE2, etc.
-            //       when we prepare resources, then we just keep track of which texture unit number we need.
-            GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureID);
-            GLES20.glUniform1i(mTextureUniformHandle, 0); // Bind to texture unit 0
+            GLES20.glUniform1i(mTextureUniformHandle, glTextureUnit);
         }
 
         public void draw(float x, float y, float rot, float w, float h, float tx, float ty, float tw, float th) {
 
             // setup texture coordinates buffer
-            FloatBuffer texCoordBuffer = Util.makeFloatBuffer(new float[] {
-                    tx,      ty,
-                    tx,      ty + th,
+            FloatBuffer texCoordBuffer = RenderUtils.makeFloatBuffer(new float[]{
+                    tx, ty,
+                    tx, ty + th,
                     tx + tw, ty + th,
                     tx + tw, ty
             });
@@ -116,14 +111,14 @@ public class SimpleRenderService extends Component {
 
             // draw quad
             GLES20.glDrawElements(GLES20.GL_TRIANGLES, 6 /* number of indices */, GLES20.GL_UNSIGNED_SHORT, mIndexBuffer);
-            Util.checkGlError("glDrawElements");
+            RenderUtils.checkGlError("glDrawElements");
         }
 
 
         public void endDraw() {
             GLES20.glDisableVertexAttribArray(mPositionHandle);
             GLES20.glDisableVertexAttribArray(mTexCoordHandle);
-            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
+            //GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
             GLES20.glUseProgram(0);
         }
     }

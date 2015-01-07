@@ -46,7 +46,7 @@ public class JsonMap extends Component implements GameMap {
     }
 
     public void loadFromResource(Context context, int resourceId) {
-        String resourceString = Util.readTextFileFromRawResource(context, resourceId);
+        String resourceString = RenderUtils.readTextFileFromRawResource(context, resourceId);
         try {
             JSONObject object = new JSONObject(resourceString);
             JSONArray tilesArray = object.getJSONArray("tiles");

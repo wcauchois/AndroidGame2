@@ -5,6 +5,6 @@ varying vec2 v_texCoordinate;
 
 void main() {
     gl_Position = u_mvpMatrix * a_position;
-    // Pass texture coordinate through to fragment shader
+    // Pass textureInfo coordinate through to fragment shader
     v_texCoordinate = a_texCoordinate;
 }

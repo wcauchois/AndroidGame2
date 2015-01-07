@@ -15,7 +15,7 @@ public class TileSet extends Component {
     private int mSetWidth;
     private int mSetHeight;
     public int mResourceId;
-    public int mTextureId; // XXX donot commit
+    public TextureUtils.TextureInfo mTextureInfo;
 
     public TileSet(int resourceId, int tileWidth, int tileHeight) {
         mResourceId = resourceId;
@@ -39,21 +39,18 @@ public class TileSet extends Component {
     }
 
     public void loadTexture(Context context, int resourceId) {
-        Util.BitmapInfo info = new Util.BitmapInfo();
-        mTextureId = Util.loadTexture(context, resourceId, info);
+        mTextureInfo = TextureUtils.loadTexture(context, resourceId);
 
-        mSetWidth = info.getWidth() / mTileWidth;
-        mSetHeight = info.getHeight() / mTileHeight;
+        mSetWidth = mTextureInfo.getBitmapWidth() / mTileWidth;
+        mSetHeight = mTextureInfo.getBitmapHeight() / mTileHeight;
 
-        /*Log.d(TAG, "Tileset bitmap: width="+info.getWidth()+"px, height="+info.getHeight()+"px");
-        Log.d(TAG, "Tileset tilesize: width="+mTileWidth+"px, height="+mTileHeight+"px");*/
-
-        Log.i(TAG, "Loaded tileset "+mTextureId+" (width=" + mSetWidth + ", height=" + mSetHeight+")");
+        Log.i(TAG, "Loaded tileset (textureUnit="+ mTextureInfo.getGLTextureUnit()+", textureHandle="+ mTextureInfo.getGLTextureHandle()+
+                ", width=" + mSetWidth + ", height=" + mSetHeight+")");
     }
 
 
     public void prepareTexture(QuadDrawer quadDrawer) {
-        quadDrawer.prepareTexture(mTextureId);
+        quadDrawer.prepareTexture(mTextureInfo.getGLTextureUnit());
     }
 
     public void drawTile(QuadDrawer quadDrawer, int tileIndex, float x, float y, float rot, float sx, float sy) {
@@ -63,11 +60,6 @@ public class TileSet extends Component {
         float tx = (tileIndex % mSetWidth) * tw;
         float ty = (float) Math.floor((float) tileIndex /
                 (float) mSetWidth) * th;
-
-        /*Log.d(TAG, "quadDrawer input: x="+x+", y="+y
-                +", w="+((float) mTileWidth * sx)+", h="+((float) mTileHeight * sy)
-                +", tx="+tx+", ty="+ty+", tw="+tw+", th="+th
-        );*/
 
         quadDrawer.draw(x, y, rot, (float) mTileWidth * sx, (float) mTileHeight * sy,
                 tx, ty, tw, th);
