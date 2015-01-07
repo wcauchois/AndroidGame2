@@ -14,6 +14,10 @@ public class RenderLayer implements Comparable<RenderLayer> {
      */
     public static TreeSet<RenderLayer> sRenderLayers = new TreeSet<RenderLayer>();
 
+    public static void clearRenderLayers() {
+        sRenderLayers.clear();
+    }
+
 
     private SimpleRenderService mRenderService;  // should be generalized render service
     private List<Renderable> mLayerMembers;

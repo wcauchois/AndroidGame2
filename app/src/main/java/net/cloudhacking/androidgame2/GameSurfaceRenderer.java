@@ -31,9 +31,9 @@ public class GameSurfaceRenderer implements GLSurfaceView.Renderer {
 
 
     /* TODO: Not sure if this is the best way to do this, but I made it so when you construct
-     *       a component or render layer it will add itself to a static array list that is part of
-     *       its respective class.  This way we dont have to worry about always adding components
-     *       to a list in THIS class.
+     *       a component or render layer it will add itself to a static collection that is part of
+     *       its respective class.  This way we don't have to worry about always adding components
+     *       to a collection in THIS class.
      */
     private List<Component> mComponents = Component.sComponents;
     private TreeSet<RenderLayer> mRenderLayers = RenderLayer.sRenderLayers;
@@ -65,8 +65,15 @@ public class GameSurfaceRenderer implements GLSurfaceView.Renderer {
         GLES20.glEnable(GLES20.GL_BLEND);  // enable alpha blending
         GLES20.glBlendFunc(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
 
-        // allocate all components and render layers here, before component resources are loaded
+        // clear static collections of components, render layers
+        Component.clearComponents();
+        RenderLayer.clearRenderLayers();
+
+        /*
+         * Allocate all components and render layers here before component resources are loaded.
+         */
         mGameState.setUpGameLevel(mSceneInfo);
+
 
         // prepare resources for all components here
         // (mComponents points to static array list of components in Component)

@@ -48,12 +48,6 @@ public class SimpleRenderService extends Component {
         int mTexCoordHandle = -1;
 
         void prepareResources(Context context) {
-            /*mVertBuffer = Util.makeFloatBuffer(new float[] {
-                    0.0f, 0.0f, 0.0f, // Bottom left
-                    0.0f, 1.0f, 0.0f, // Top left
-                    1.0f, 1.0f, 0.0f, // Top right
-                    1.0f, 0.0f, 0.0f // Bottom right
-            });*/
             mVertBuffer = Util.makeFloatBuffer(new float[] {
                     -0.5f, -0.5f, 0.0f, // Bottom left
                     -0.5f, +0.5f, 0.0f, // Top left
@@ -99,21 +93,21 @@ public class SimpleRenderService extends Component {
             });
             GLES20.glVertexAttribPointer(mTexCoordHandle, 2, GLES20.GL_FLOAT, false, 2 * 4, texCoordBuffer);
 
-            // init MVP matrix here...
+            // setup MVP matrix
             float[] mvp = sTempMVP;
             Matrix.setIdentityM(mvp, 0);
-
             Matrix.translateM(mvp, 0, x+(w/2), y+(h/2), 0.0f);
             Matrix.scaleM(mvp, 0, w, h, 0.0f);
             Matrix.rotateM(mvp, 0, rot, 0.0f, 0.0f, 1.0f);
-
             Matrix.multiplyMM(mvp, 0, mSceneInfo.getProjection(), 0, mvp, 0);
 
-            // setup shader uniforms
+            // pass MVP matrix to shader program
             GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mvp, 0);
 
-            // setup textures
-            // TODO: Figure out best way to load multiple textures with openGL (and when in the code?).
+            // activate texture and pass to shader program
+            // TODO: This can probably be done earlier?  Not sure how resource intensive binding textures is.
+            //       I'm pretty sure we can bind all the textures we need to GL_TEXTURE1, GL_TEXTURE2, etc.
+            //       when we prepare resources, then we just keep track of which texture unit number we need.
             GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureID);
             GLES20.glUniform1i(mTextureUniformHandle, 0); // Bind to texture unit 0

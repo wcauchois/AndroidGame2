@@ -12,7 +12,7 @@ public class AnimatedSprite extends Component implements Renderable {
     private int mResourceId;
     private TileSet mTileSet;
 
-    // animation vars...
+    // animation vars
     private final long ANIMATION_FREQUENCY=(long)(0.75*1e9);  // in nanoseconds
     private long sysTimeLastNsec=-1;
     private long threshold=0;
@@ -60,8 +60,6 @@ public class AnimatedSprite extends Component implements Renderable {
         if (threshold>=ANIMATION_FREQUENCY) {
             currentFrameIdx = (currentFrameIdx+1) % animSequence.length;
             threshold -= ANIMATION_FREQUENCY;
-            Log.d(TAG, "frame switched to index: "+currentFrameIdx);
-            Log.d(TAG, "current rotation: "+mRotation);
         }
 
         // increment rotation for debug

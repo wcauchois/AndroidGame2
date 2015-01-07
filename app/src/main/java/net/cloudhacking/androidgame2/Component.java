@@ -14,15 +14,20 @@ import java.util.List;
  */
 public abstract class Component {
 
-    // All components
+    /*
+     * This is a static collection which contains all the components.
+     */
     public static List<Component> sComponents = new ArrayList<Component>();
+
+    public static void clearComponents() {
+        sComponents.clear();
+    }
 
 
     protected boolean mResourcesPrepared=false;
 
-    // ANYTHING that extends Component should call super() or else prepareResources will never be called.
-    // Or not?  Just learned that if the super constructer has no-args it will automatically be called,
-    // cool.
+    // Make sure this constructor is always called so that the component is added to sComponents,
+    // although im pretty that constructors with no args are always called in Java?
     public Component() {
         sComponents.add(this);
     }
