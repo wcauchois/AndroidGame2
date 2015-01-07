@@ -82,7 +82,17 @@ public class SimpleRenderService extends Component {
             GLES20.glVertexAttribPointer(mPositionHandle, 3, GLES20.GL_FLOAT, false, 3 * 4, mVertBuffer);
         }
 
-        public void draw(int textureID, float x, float y, float rot, float w, float h, float tx, float ty, float tw, float th) {
+        public void prepareTexture(int textureID) {
+            // activate texture by textureID and pass to shader program
+            // TODO: This can probably be done earlier?  Not sure how resource intensive binding textures is.
+            //       I'm pretty sure we can bind all the textures we need to GL_TEXTURE1, GL_TEXTURE2, etc.
+            //       when we prepare resources, then we just keep track of which texture unit number we need.
+            GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureID);
+            GLES20.glUniform1i(mTextureUniformHandle, 0); // Bind to texture unit 0
+        }
+
+        public void draw(float x, float y, float rot, float w, float h, float tx, float ty, float tw, float th) {
 
             // setup texture coordinates buffer
             FloatBuffer texCoordBuffer = Util.makeFloatBuffer(new float[] {
@@ -103,14 +113,6 @@ public class SimpleRenderService extends Component {
 
             // pass MVP matrix to shader program
             GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mvp, 0);
-
-            // activate texture and pass to shader program
-            // TODO: This can probably be done earlier?  Not sure how resource intensive binding textures is.
-            //       I'm pretty sure we can bind all the textures we need to GL_TEXTURE1, GL_TEXTURE2, etc.
-            //       when we prepare resources, then we just keep track of which texture unit number we need.
-            GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureID);
-            GLES20.glUniform1i(mTextureUniformHandle, 0); // Bind to texture unit 0
 
             // draw quad
             GLES20.glDrawElements(GLES20.GL_TRIANGLES, 6 /* number of indices */, GLES20.GL_UNSIGNED_SHORT, mIndexBuffer);

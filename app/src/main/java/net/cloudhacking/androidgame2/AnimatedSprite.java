@@ -1,7 +1,6 @@
 package net.cloudhacking.androidgame2;
 
 import android.content.Context;
-import android.util.Log;
 
 /**
  * Created by Andrew on 1/5/2015.
@@ -14,7 +13,7 @@ public class AnimatedSprite extends Component implements Renderable {
 
     // animation vars
     private final long ANIMATION_FREQUENCY=(long)(0.75*1e9);  // in nanoseconds
-    private long sysTimeLastNsec=-1;
+    private long sysTimeLastNsec=-1, sysTimeNowNsec;
     private long threshold=0;
 
     private int[] animSequence = new int[] {0, 1};  // alternate between first and second tile
@@ -52,9 +51,9 @@ public class AnimatedSprite extends Component implements Renderable {
         }
 
         // increment total time passed
-        long nowNsec = System.nanoTime();
-        threshold += (nowNsec - sysTimeLastNsec);
-        sysTimeLastNsec = nowNsec;
+        sysTimeNowNsec = System.nanoTime();
+        threshold += (sysTimeNowNsec - sysTimeLastNsec);
+        sysTimeLastNsec = sysTimeNowNsec;
 
         // if total time passed is greater than threshold, increment frame index.
         if (threshold>=ANIMATION_FREQUENCY) {
@@ -70,6 +69,7 @@ public class AnimatedSprite extends Component implements Renderable {
     public void draw(QuadDrawer quadDrawer) {
         checkResourcesPrepared(TAG);
 
+        mTileSet.prepareTexture(quadDrawer);
         mTileSet.drawTile(quadDrawer,
                 animSequence[currentFrameIdx],
                 mGridX*mTileSet.getTileWidth(),

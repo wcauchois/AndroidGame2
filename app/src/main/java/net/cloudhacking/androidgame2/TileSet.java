@@ -42,6 +42,10 @@ public class TileSet {
         Log.i(TAG, "Loaded tileset "+mTextureID+" (width=" + mSetWidth + ", height=" + mSetHeight+")");
     }
 
+    public void prepareTexture(QuadDrawer quadDrawer) {
+        quadDrawer.prepareTexture(mTextureID);
+    }
+
     // Caller is responsible for calling beginDraw and endDraw!
     public void drawTile(QuadDrawer quadDrawer, int tileIndex, float x, float y, float rot, float sx, float sy) {
         // TODO(wcauchois): Some of these should probably be precomputed.
@@ -56,7 +60,7 @@ public class TileSet {
                 +", tx="+tx+", ty="+ty+", tw="+tw+", th="+th
         );*/
 
-        quadDrawer.draw(mTextureID, x, y, rot, (float) mTileWidth * sx, (float) mTileHeight * sy,
+        quadDrawer.draw(x, y, rot, (float) mTileWidth * sx, (float) mTileHeight * sy,
                 tx, ty, tw, th);
     }
 }

@@ -6,6 +6,10 @@ import android.util.Log;
  * Created by wcauchois on 1/3/15.
  */
 public class GameState {
+    /*
+     * This should be where most of the game logic is managed.  The game level should interact
+     * with the game UI.
+     */
     private static final String TAG = GameSurfaceView.class.getSimpleName();
 
     private int arenaWidth, arenaHeight;

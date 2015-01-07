@@ -6,10 +6,11 @@ package net.cloudhacking.androidgame2;
 public interface QuadDrawer {
     public void beginDraw();
 
+    public void prepareTexture(int textureID);
+
     /**
      * Draw a quadrilateral with a specified texture, position, dimensions, and texture coordinates.
      *
-     * @param textureID OpenGL ID of the texture to use.
      * @param x X position of the quadrilateral.
      * @param y Y position of the quadrilateral.
      * @param w Width of the quadrilateral.
@@ -19,7 +20,6 @@ public interface QuadDrawer {
      * @param tw Horizontal amount of the texture to use (1.0 for the whole texture).
      * @param th Vertical amount of the texture to use (1.0 for the whole texture).
      */
-    public void draw(int textureID, float x, float y, float rot, float w, float h, float tx, float ty, float tw, float th);
-
+    public void draw(float x, float y, float rot, float w, float h, float tx, float ty, float tw, float th);
     public void endDraw();
 }

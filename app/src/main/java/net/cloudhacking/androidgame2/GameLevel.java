@@ -32,6 +32,7 @@ public class GameLevel extends Component implements Renderable {
 
         mBackgroundRenderLayer = new RenderLayer(new SimpleRenderService(mSceneInfo),
                                                  BACKGROUND_RENDER_LAYER_PRIORITY);
+
         mTowerRenderLayer = new RenderLayer(new SimpleRenderService(mSceneInfo),
                                             TOWER_RENDER_LAYER_PRIORITY);
 
@@ -41,7 +42,7 @@ public class GameLevel extends Component implements Renderable {
         mTowerRenderLayer.addMember(mTestSprite);
     }
 
-
+    @Override
     public void prepareResources(Context context) {
         mMap.loadFromResource(context, R.raw.simple_map);
         mTileSet.loadTexture(context, R.drawable.simple_tileset);
@@ -79,6 +80,7 @@ public class GameLevel extends Component implements Renderable {
     public void draw(QuadDrawer quadDrawer) {
         checkResourcesPrepared(TAG);
 
+        mTileSet.prepareTexture(quadDrawer);
         for (int row = 0; row < mMap.getHeight(); row++) {
             for (int col = 0; col < mMap.getWidth(); col++) {
                 mTileSet.drawTile(quadDrawer, mMap.getTile(col, row),
