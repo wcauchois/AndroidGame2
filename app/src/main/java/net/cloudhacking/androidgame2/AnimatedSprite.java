@@ -30,7 +30,6 @@ public class AnimatedSprite extends Component implements Renderable {
 
 
     public AnimatedSprite(int resourceId) {
-        //super();
         mResourceId = resourceId;
         mTileSet = new TileSet(32, 32);
     }

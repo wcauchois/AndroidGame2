@@ -33,7 +33,7 @@ public class RenderLayer implements Comparable<RenderLayer> {
 
     @Override
     public int compareTo(RenderLayer other) {
-        // lower render layer priority corresponds to lower z value in draw order
+        // A lower render layer priority corresponds to being drawn further in the background.
         return (mLayerPriority - other.getLayerPriority());
     }
 

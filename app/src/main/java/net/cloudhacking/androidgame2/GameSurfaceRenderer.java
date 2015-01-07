@@ -119,16 +119,13 @@ public class GameSurfaceRenderer implements GLSurfaceView.Renderer {
     public void onDrawFrame(GL10 unused) {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
-
         // do all updating in game state
         mGameState.update();
-
 
         // mRenderLayers points to static array list of render layers in RenderLayer
         for (RenderLayer r : mRenderLayers) {
             r.draw();
         }
-
     }
 
 

@@ -9,8 +9,10 @@ public class GameLevel extends Component implements Renderable {
     private static final String TAG = GameLevel.class.getSimpleName();
 
     private SceneInfo mSceneInfo;
-    private RenderLayer mMainRenderLayer;
-    private final int MAIN_RENDER_LAYER_PRIORITY=1;
+    private RenderLayer mBackgroundRenderLayer;
+    private RenderLayer mTowerRenderLayer;
+    private final int BACKGROUND_RENDER_LAYER_PRIORITY=1;
+    private final int TOWER_RENDER_LAYER_PRIORITY=2;
 
     private JsonMap mMap;
     private TileSet mTileSet;
@@ -23,18 +25,20 @@ public class GameLevel extends Component implements Renderable {
 
 
     public GameLevel(SceneInfo sceneInfo) {
-        //super();
         mMap = new JsonMap();
         mTileSet = new TileSet(32, 32);
 
         mSceneInfo = sceneInfo;
-        mMainRenderLayer = new RenderLayer(new SimpleRenderService(mSceneInfo),
-                                           MAIN_RENDER_LAYER_PRIORITY);
+
+        mBackgroundRenderLayer = new RenderLayer(new SimpleRenderService(mSceneInfo),
+                                                 BACKGROUND_RENDER_LAYER_PRIORITY);
+        mTowerRenderLayer = new RenderLayer(new SimpleRenderService(mSceneInfo),
+                                            TOWER_RENDER_LAYER_PRIORITY);
 
         mTestSprite = new AnimatedSprite(R.drawable.tower_animation_test);
 
-        mMainRenderLayer.addMember(this);
-        mMainRenderLayer.addMember(mTestSprite);
+        mBackgroundRenderLayer.addMember(this);
+        mTowerRenderLayer.addMember(mTestSprite);
     }
 
 

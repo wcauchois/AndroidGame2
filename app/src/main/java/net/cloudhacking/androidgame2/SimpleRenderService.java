@@ -17,7 +17,6 @@ public class SimpleRenderService extends Component {
     private QuadDrawerImpl mQuadDrawer;
 
     public SimpleRenderService(SceneInfo sceneInfo) {
-        //super();
         mSceneInfo = sceneInfo;
         mQuadDrawer = new QuadDrawerImpl();
     }
@@ -49,11 +48,17 @@ public class SimpleRenderService extends Component {
         int mTexCoordHandle = -1;
 
         void prepareResources(Context context) {
-            mVertBuffer = Util.makeFloatBuffer(new float[] {
+            /*mVertBuffer = Util.makeFloatBuffer(new float[] {
                     0.0f, 0.0f, 0.0f, // Bottom left
                     0.0f, 1.0f, 0.0f, // Top left
                     1.0f, 1.0f, 0.0f, // Top right
                     1.0f, 0.0f, 0.0f // Bottom right
+            });*/
+            mVertBuffer = Util.makeFloatBuffer(new float[] {
+                    -0.5f, -0.5f, 0.0f, // Bottom left
+                    -0.5f, +0.5f, 0.0f, // Top left
+                    +0.5f, +0.5f, 0.0f, // Top right
+                    +0.5f, -0.5f, 0.0f // Bottom right
             });
 
             // Note for whatever weird reason index buffers appear to only work as shorts, not ints.
@@ -94,20 +99,20 @@ public class SimpleRenderService extends Component {
             });
             GLES20.glVertexAttribPointer(mTexCoordHandle, 2, GLES20.GL_FLOAT, false, 2 * 4, texCoordBuffer);
 
-            // setup MVP matrix
+            // init MVP matrix here...
             float[] mvp = sTempMVP;
             Matrix.setIdentityM(mvp, 0);
 
-            // TODO: how da fuk does rotation work in openGL?  I think it has to do with the projection matrix...
-            Matrix.rotateM(mvp, 0, rot, 0, 0, 1);  // move this to MatrixUtil
-            MatrixUtil.setTranslation(mvp, x, y);
-            MatrixUtil.setScale(mvp, w, h);
+            Matrix.translateM(mvp, 0, x+(w/2), y+(h/2), 0.0f);
+            Matrix.scaleM(mvp, 0, w, h, 0.0f);
+            Matrix.rotateM(mvp, 0, rot, 0.0f, 0.0f, 1.0f);
+
             Matrix.multiplyMM(mvp, 0, mSceneInfo.getProjection(), 0, mvp, 0);
 
             // setup shader uniforms
             GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mvp, 0);
 
-            // setup textures and uniforms
+            // setup textures
             // TODO: Figure out best way to load multiple textures with openGL (and when in the code?).
             GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureID);
