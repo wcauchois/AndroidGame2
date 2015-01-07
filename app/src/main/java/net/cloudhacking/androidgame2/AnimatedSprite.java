@@ -5,10 +5,9 @@ import android.content.Context;
 /**
  * Created by Andrew on 1/5/2015.
  */
-public class AnimatedSprite extends Component implements Renderable {
+public class AnimatedSprite implements Renderable {
     private static final String TAG = AnimatedSprite.class.getSimpleName();
 
-    private int mResourceId;
     private TileSet mTileSet;
 
     // animation vars
@@ -28,21 +27,12 @@ public class AnimatedSprite extends Component implements Renderable {
     }
 
 
-    public AnimatedSprite(int resourceId) {
-        mResourceId = resourceId;
-        mTileSet = new TileSet(32, 32);
-    }
-
-    // Automatically called in onSurfaceCreated() in GameSurfaceRenderer
-    public void prepareResources(Context context) {
-        mTileSet.loadTexture(context, mResourceId);
-
-        mResourcesPrepared = true;
+    public AnimatedSprite(TileSet tileSet) {
+        mTileSet = tileSet;
     }
 
 
     public void update() {
-        checkResourcesPrepared(TAG);
 
         // on first frame...
         if (sysTimeLastNsec == -1) {
@@ -67,7 +57,6 @@ public class AnimatedSprite extends Component implements Renderable {
 
 
     public void draw(QuadDrawer quadDrawer) {
-        checkResourcesPrepared(TAG);
 
         mTileSet.prepareTexture(quadDrawer);
         mTileSet.drawTile(quadDrawer,

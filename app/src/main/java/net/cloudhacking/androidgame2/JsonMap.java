@@ -15,12 +15,23 @@ import java.util.List;
  *
  * Created by wcauchois on 1/4/15.
  */
-public class JsonMap implements GameMap {
+public class JsonMap extends Component implements GameMap {
     private static final String TAG = JsonMap.class.getSimpleName();
 
     private int[] tiles;
     private int width;
     private int height;
+    private int mResourceId;
+
+    public JsonMap(int resourceId) {
+        mResourceId = resourceId;
+    }
+
+    @Override
+    public void prepareResources(Context context) {
+        loadFromResource(context, mResourceId);
+        mResourcesPrepared = true;
+    }
 
     public int getTile(int x, int y) {
         return tiles[x + y * width];
