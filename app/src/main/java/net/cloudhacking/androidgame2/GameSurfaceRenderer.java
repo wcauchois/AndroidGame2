@@ -22,7 +22,6 @@ public class GameSurfaceRenderer implements GLSurfaceView.Renderer {
 
     private GameState mGameState;
     private GameSurfaceView mSurfaceView;
-    private Context mContext;
 
     private SceneInfo mSceneInfo;
     private int mViewportWidth;
@@ -34,15 +33,16 @@ public class GameSurfaceRenderer implements GLSurfaceView.Renderer {
      *       a component or render layer it will add itself to a static collection that is part of
      *       its respective class.  This way we don't have to worry about always adding components
      *       to a collection in THIS class.
+     *
+     *       These collections get emptied when onSurfaceCreated() is called.
      */
-    private List<Component> mComponents = Component.sComponents;
-    private TreeSet<RenderLayer> mRenderLayers = RenderLayer.sRenderLayers;
+    private List<Component> mComponents = Component.getComponents();
+    private TreeSet<RenderLayer> mRenderLayers = RenderLayer.getsRenderLayers();
 
 
-    public GameSurfaceRenderer(GameSurfaceView surfaceView, Context context, GameState gameState) {
+    public GameSurfaceRenderer(GameSurfaceView surfaceView, GameState gameState) {
         mSurfaceView = surfaceView;
         mGameState = gameState;
-        mContext = context;
 
         // Use this instance of SceneInfo for all render layers, since it contains all the info
         // about our viewport and provides access to the projection matrix.
@@ -74,11 +74,11 @@ public class GameSurfaceRenderer implements GLSurfaceView.Renderer {
          */
         mGameState.setUpGameLevel(mSceneInfo);
 
-
         // prepare resources for all components here
         // (mComponents points to static array list of components in Component)
-        for (Component comp : mComponents) {
-            comp.prepareResources(mContext);
+        Context context = mSurfaceView.getContext();
+        for (Component c : mComponents) {
+            c.prepareResources(context);
         }
 
         // print components and render layers for debug purposes

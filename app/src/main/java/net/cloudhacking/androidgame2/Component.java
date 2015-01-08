@@ -19,6 +19,10 @@ public abstract class Component {
      */
     public static List<Component> sComponents = new ArrayList<Component>();
 
+    public static List<Component> getComponents() {
+        return sComponents;
+    }
+
     public static void clearComponents() {
         sComponents.clear();
     }

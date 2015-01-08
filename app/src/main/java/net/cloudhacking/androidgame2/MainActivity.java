@@ -22,7 +22,6 @@ public class MainActivity extends Activity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         // Should initialize data that depends on android resources here.
-
         mGameState = new GameState();
         mSurfaceView = new GameSurfaceView(this, mGameState);
         setContentView(mSurfaceView);

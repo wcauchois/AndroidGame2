@@ -19,8 +19,8 @@ public interface QuadDrawer {
      * @param y Y position of the quadrilateral.
      * @param w Width of the quadrilateral.
      * @param h Height of the quadrilateral.
-     * @param tx TextureInfo X offset (0.0 for the whole texture).
-     * @param ty TextureInfo Y offset (0.0 for the whole texture).
+     * @param tx Texture X offset (0.0 for the whole texture).
+     * @param ty Texture Y offset (0.0 for the whole texture).
      * @param tw Horizontal amount of the texture to use (1.0 for the whole texture).
      * @param th Vertical amount of the texture to use (1.0 for the whole texture).
      */

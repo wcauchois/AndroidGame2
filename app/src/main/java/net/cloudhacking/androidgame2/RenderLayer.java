@@ -1,5 +1,7 @@
 package net.cloudhacking.androidgame2;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
@@ -8,11 +10,16 @@ import java.util.TreeSet;
  * Created by Andrew on 1/5/2015.
  */
 public class RenderLayer implements Comparable<RenderLayer> {
+    private static final String TAG = RenderLayer.class.getSimpleName();
 
     /* This is a static set which contains all the render layers.  Layers will be rendered in
      * increasing order of layer priority.
      */
     public static TreeSet<RenderLayer> sRenderLayers = new TreeSet<RenderLayer>();
+
+    public static TreeSet<RenderLayer> getsRenderLayers() {
+        return sRenderLayers;
+    }
 
     public static void clearRenderLayers() {
         sRenderLayers.clear();
@@ -45,6 +52,10 @@ public class RenderLayer implements Comparable<RenderLayer> {
     public <T extends Renderable> T addMember(T member) {
         mLayerMembers.add(member);
         return member;
+    }
+
+    public List<Renderable> getLayerMembers() {
+        return mLayerMembers;
     }
 
 

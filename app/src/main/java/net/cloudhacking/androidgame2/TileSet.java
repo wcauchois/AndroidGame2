@@ -10,12 +10,15 @@ import android.util.Log;
  */
 public class TileSet extends Component {
     private static final String TAG = TileSet.class.getSimpleName();
+
     private int mTileWidth;
     private int mTileHeight;
     private int mSetWidth;
     private int mSetHeight;
+
     public int mResourceId;
     public TextureUtils.TextureInfo mTextureInfo;
+
 
     public TileSet(int resourceId, int tileWidth, int tileHeight) {
         mResourceId = resourceId;

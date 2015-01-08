@@ -101,7 +101,7 @@ public class SimpleRenderService extends Component {
             // setup MVP matrix
             float[] mvp = sTempMVP;
             Matrix.setIdentityM(mvp, 0);
-            Matrix.translateM(mvp, 0, x+(w/2), y+(h/2), 0.0f);
+            Matrix.translateM(mvp, 0, x, y, 0.0f);
             Matrix.scaleM(mvp, 0, w, h, 0.0f);
             Matrix.rotateM(mvp, 0, rot, 0.0f, 0.0f, 1.0f);
             Matrix.multiplyMM(mvp, 0, mSceneInfo.getProjection(), 0, mvp, 0);
