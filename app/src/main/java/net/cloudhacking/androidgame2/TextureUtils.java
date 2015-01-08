@@ -1,6 +1,5 @@
 package net.cloudhacking.androidgame2;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -63,7 +62,7 @@ public class TextureUtils {
     public static TextureInfo loadTexture(Context context, int resourceId) {
         int[] textureHandles = new int[1];
         int textureHandle;
-        
+
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inScaled = false; // No pre-scaling
         Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), resourceId, options);

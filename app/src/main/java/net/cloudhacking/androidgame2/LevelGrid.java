@@ -6,9 +6,17 @@ import java.util.ArrayList;
 
 /**
  * Created by Andrew on 1/7/2015.
+ *
+ * This class can handle anything having to do with grid coordinates, including converting to
+ * pixel coordinates, and TODO: creep pathing.
+ *
+ * The GridItem class provides functionality for things that reside on and interact with the
+ * level grid.
  */
 public class LevelGrid {
-
+    /*
+     * Can access this collection of all grid items in GameLevel instance in update() method.
+     */
     private static ArrayList<GridItem> sGridItems = new ArrayList<GridItem>();
 
     public static ArrayList<GridItem> getGridItems() {
@@ -23,13 +31,19 @@ public class LevelGrid {
     public static abstract class GridItem {
         private static final String TAG = GridItem.class.getSimpleName();
 
-        protected int mPosX, mPosY;
-        protected float mRotation;
-        protected float mScaleX, mScaleY;
-        protected int mTileIndex;
+        private int mPosX, mPosY;
+        private float mRotation;
+        private float mScaleX, mScaleY;
+        private int mTileIndex;
 
         public GridItem() {
             sGridItems.add(this);
+            mPosX = 0;
+            mPosY = 0;
+            mRotation = 0.0f;
+            mScaleX = 1.0f;
+            mScaleY = 1.0f;
+            mTileIndex = 0;
         }
 
         public int[] getPos() {
@@ -79,6 +93,7 @@ public class LevelGrid {
 
         public void setToGridNode(LevelGrid levelGrid, int gx, int gy) {
             setPos(levelGrid.toPixelCoord(gx, gy));
+            //levelGrid.setOccupation(true, gx, gy);
         }
 
         public void setRotation(float rotation) {
@@ -98,11 +113,10 @@ public class LevelGrid {
         }
 
         // override this; called in GameLevel.update()
-        protected void update() {};
+        public void update() {};
 
-        // called in SpriteGroup.draw()
+        // called in: GameSurfaceRenderer.onDrawFrame() -> RenderLayer.draw() -> SpriteGroup.draw()
         public void draw(QuadDrawer quadDrawer, TileSet tileSet) {
-            //Log.d(TAG, "drawing grid item: mTileIndex="+mTileIndex+", x="+mPosX+", y="+mPosY+", r="+mRotation+", sx="+mScaleX+", sy="+mScaleY);
             tileSet.drawTile(quadDrawer, mTileIndex,
                     mPosX, mPosY, mRotation, mScaleX, mScaleY);
         }
@@ -112,12 +126,14 @@ public class LevelGrid {
 
     private int mGridWidth, mGridHeight;
     private int mNodePixelWidth, mNodePixelHeight;
+    private boolean[][] mGridOccupation;
 
     public LevelGrid(int gridWidth, int gridHeight, int nodePixelWidth, int nodePixelHeight) {
         mGridWidth = gridWidth;
         mGridHeight = gridHeight;
         mNodePixelWidth = nodePixelWidth;
         mNodePixelHeight = nodePixelHeight;
+        mGridOccupation = new boolean[mGridWidth][mGridHeight];
     }
 
     public int[] getSize() {
@@ -136,5 +152,13 @@ public class LevelGrid {
         gridCoord[0] = px/mNodePixelWidth;
         gridCoord[1] = py/mNodePixelHeight;
         return gridCoord;
+    }
+
+    public boolean checkOccupation(int gx, int gy) {
+        return mGridOccupation[gx][gy];
+    }
+
+    public void setOccupation(boolean bool, int gx, int gy) {
+        mGridOccupation[gx][gy] = bool;
     }
 }

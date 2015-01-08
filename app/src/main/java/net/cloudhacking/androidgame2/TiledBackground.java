@@ -37,8 +37,8 @@ public class TiledBackground implements Renderable {
         for (int row = 0; row < mJsonMap.getHeight(); row++) {
             for (int col = 0; col < mJsonMap.getWidth(); col++) {
                 mTileSet.drawTile(quadDrawer, mJsonMap.getTile(col, row),
-                        (float) ((col+0.5) * mTileSet.getTileWidth()  * OVERALL_SCALE),
-                        (float) ((row+0.5) * mTileSet.getTileHeight() * OVERALL_SCALE),
+                        (col+0.5f) * mTileSet.getTileWidth()  * OVERALL_SCALE,
+                        (row+0.5f) * mTileSet.getTileHeight() * OVERALL_SCALE,
                         0,  // rotate by 0 degrees
                         OVERALL_SCALE,
                         OVERALL_SCALE);

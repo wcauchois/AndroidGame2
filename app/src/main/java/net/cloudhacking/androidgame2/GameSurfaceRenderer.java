@@ -65,9 +65,10 @@ public class GameSurfaceRenderer implements GLSurfaceView.Renderer {
         GLES20.glEnable(GLES20.GL_BLEND);  // enable alpha blending
         GLES20.glBlendFunc(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
 
-        // clear static collections of components, render layers
+        // clear static collections
         Component.clearComponents();
         RenderLayer.clearRenderLayers();
+        LevelGrid.clearGridItems();
 
         /*
          * Allocate all components and render layers here before component resources are loaded.
@@ -81,9 +82,6 @@ public class GameSurfaceRenderer implements GLSurfaceView.Renderer {
             c.prepareResources(context);
         }
 
-        // print components and render layers for debug purposes
-        Log.d(TAG, "Components: "+mComponents);
-        Log.d(TAG, "Render Layers: "+mRenderLayers);
     }
 
 

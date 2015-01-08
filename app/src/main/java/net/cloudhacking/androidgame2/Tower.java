@@ -2,55 +2,42 @@ package net.cloudhacking.androidgame2;
 
 import android.util.Log;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by Andrew on 1/7/2015.
+ *
+ * TODO: Eventually this class should probably be abstract
  */
-public class Tower extends LevelGrid.GridItem {
+public /*abstract*/ class Tower extends AnimatedGridItem {
     private static final String TAG = Tower.class.getSimpleName();
 
-    // animation vars
-    private final long ANIMATION_FREQUENCY=(long)(0.75*1e9);  // in nanoseconds
-    private long sysTimeLastNsec=-1, sysTimeNowNsec;
-    private long threshold=0;
+    // TODO: if this class becomes abstract, this hashmap needs to be moved (I think? Needs to be unique to subclass of tower)
+    /**
+     * This maps a string handle that describes an animation to an animation sequence itself.
+     * An animation sequence is a map from the current frame number of the animation sequence to
+     * the corresponding tile index, i.e. tileIndex = animationSeq[frameNumber].
+     */
+    private static HashMap<String, int[]> sAnimationCache = new HashMap<String, int[]>();
 
-    private int[] mAnimationSequence = new int[] {0, 1};  // alternate between first and second tile
-    private int mCurrentFrame = 0;
+    public static void addAnimationSeq(String handle, int[] animationSeq) {
+        sAnimationCache.put(handle, animationSeq);
+    }
 
-    public Tower() {
-        mPosX = 0;
-        mPosY = 0;
-        mRotation = 0.0f;
-        mScaleX = 1.0f;
-        mScaleY = 1.0f;
-        mTileIndex = mAnimationSequence[mCurrentFrame];
-    };
+
+    public Tower() {}
+
+    public void queueAnimation(String handle, long frameTime, boolean loop) {
+        queueAnimationSequence(sAnimationCache.get(handle), frameTime, loop);
+    }
 
 
     @Override
     public void update() {
-
-        // on first frame...
-        if (sysTimeLastNsec == -1) {
-            sysTimeLastNsec = System.nanoTime();
-            return;
-        }
-
-        // increment total time passed
-        sysTimeNowNsec = System.nanoTime();
-        threshold += (sysTimeNowNsec - sysTimeLastNsec);
-        sysTimeLastNsec = sysTimeNowNsec;
-
-        // if total time passed is greater than threshold, increment frame index.
-        if (threshold>=ANIMATION_FREQUENCY) {
-            mCurrentFrame = (mCurrentFrame+1) % mAnimationSequence.length;
-            mTileIndex = mAnimationSequence[mCurrentFrame];
-            threshold -= ANIMATION_FREQUENCY;
-        }
+        updateAnimation();
 
         // increment rotation for debug
-        mRotation = (mRotation+5) % 360;
+        setRotation((getRotation()+5) % 360);
     }
 
 }
