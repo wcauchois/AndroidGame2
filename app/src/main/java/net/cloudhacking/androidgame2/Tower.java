@@ -24,12 +24,12 @@ public /*abstract*/ class Tower extends AnimatedGridItem {
         sAnimationCache.put(handle, animationSeq);
     }
 
-
-    public Tower() {}
-
     public void queueAnimation(String handle, long frameTime, boolean loop) {
         queueAnimationSequence(sAnimationCache.get(handle), frameTime, loop);
     }
+
+
+    public Tower() {}
 
 
     @Override

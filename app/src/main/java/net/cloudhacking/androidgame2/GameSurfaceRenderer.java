@@ -70,6 +70,12 @@ public class GameSurfaceRenderer implements GLSurfaceView.Renderer {
         RenderLayer.clearRenderLayers();
         LevelGrid.clearGridItems();
 
+        // TODO: the way we load resources might need to be reworked?  There is a weird lag, but I'm
+        //       not sure if its because of logging or my phone or what.  Check dis tho;
+        //          http://www.curious-creature.com/2008/12/18/avoid-memory-leaks-on-android/comment-page-1/
+        //
+        //       Also look at the logs at all the "... D/dalvikvm﹕ GC_FOR_ALLOC freed ...", not sure about it.
+
         /*
          * Allocate all components and render layers here before component resources are loaded.
          */

@@ -21,9 +21,11 @@ public class GameLevel {
     private RenderLayer mBackgroundRenderLayer;
     private RenderLayer mTowerRenderLayer;
     private RenderLayer mCreepRenderLayer;
+    private RenderLayer mProjectileRenderLayer;
     private final int BACKGROUND_RENDER_LAYER_PRIORITY=1;
     private final int TOWER_RENDER_LAYER_PRIORITY=2;
     private final int CREEP_RENDER_LAYER_PRIORITY=3;
+    private final int PROJECTILE_RENDER_LAYER_PRIORITY=4;
 
     private TiledBackground mTiledBackground;
     private SpriteGroup mBasicTowerGroup;
@@ -66,18 +68,18 @@ public class GameLevel {
         // second tile indexes of the mBasicTowerGroup's tile set.
         Tower.addAnimationSeq("fire", new int[] {0, 1});
 
-        mTestTowers = new Tower[4];
-        for (int i=0; i<4; i++) {
+        mTestTowers = new Tower[5];
+        for (int i=0; i<5; i++) {
             mTestTowers[i] = new Tower();
-            mTestTowers[i].setToGridNode(mLevelGrid, 3+i, 6);
+            mTestTowers[i].setToGridNode(mLevelGrid, 4+i, 5);
             mTestTowers[i].queueAnimation("fire", 750, true); // switch frames every 750ms and loop for forever
-            mBasicTowerGroup.addGridItem(mTestTowers[i]);  // add to tower group
+            mBasicTowerGroup.addGridItem(mTestTowers[i]);  // add to tower sprite group
         }
 
 
         // add creep render layer
         mCreepRenderLayer = new RenderLayer(new SimpleRenderService(mSceneInfo),
-                CREEP_RENDER_LAYER_PRIORITY);
+                                            CREEP_RENDER_LAYER_PRIORITY);
 
         // TODO: create sprite group, creeps, and set waypoints
     }

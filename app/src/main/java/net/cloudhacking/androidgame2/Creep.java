@@ -9,12 +9,17 @@ import java.util.HashMap;
  * Created by Andrew on 1/7/2015.
  */
 public /*abstract*/ class Creep extends AnimatedGridItem {
+    private static final String TAG = Creep.class.getSimpleName();
 
     // TODO: see comment in Tower class about this hashmap.
     private static HashMap<String, int[]> sAnimationCache = new HashMap<String, int[]>();
 
     public static void addAnimationSeq(String handle, int[] animationSeq) {
         sAnimationCache.put(handle, animationSeq);
+    }
+
+    public void queueAnimation(String handle, long frameTime, boolean loop) {
+        queueAnimationSequence(sAnimationCache.get(handle), frameTime, loop);
     }
 
 
@@ -67,11 +72,6 @@ public /*abstract*/ class Creep extends AnimatedGridItem {
             return;
         }
         mCurrentWaypoint = getCurrentWaypoint();
-    }
-
-
-    public void queueAnimation(String handle, long frameTime, boolean loop) {
-        queueAnimationSequence(sAnimationCache.get(handle), frameTime, loop);
     }
 
 
