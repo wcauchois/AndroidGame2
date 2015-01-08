@@ -133,7 +133,13 @@ public class LevelGrid {
         mGridHeight = gridHeight;
         mNodePixelWidth = nodePixelWidth;
         mNodePixelHeight = nodePixelHeight;
+
         mGridOccupation = new boolean[mGridWidth][mGridHeight];
+        for (int i=0; i<mGridWidth; i++) {
+            for (int j=0; j<mGridHeight; j++) {
+                mGridOccupation[i][j] = false;
+            }
+        }
     }
 
     public int[] getSize() {
