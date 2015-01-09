@@ -6,8 +6,8 @@ import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.os.ConditionVariable;
 import android.util.Log;
+import android.view.MotionEvent;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
 
@@ -26,7 +26,12 @@ public class GameSurfaceRenderer implements GLSurfaceView.Renderer {
     private SceneInfo mSceneInfo;
     private int mViewportWidth;
     private int mViewportHeight;
+    private Camera mCamera;
     private final float[] mProjectionMatrix = new float[16];
+    // The projection matrix times the camera matrix.
+    private final float[] mProjectionCameraMatrix = new float[16];
+    private InputManager mInputManager;
+    private CameraController mCameraController;
 
 
     /* TODO: Not sure if this is the best way to do this, but I made it so when you construct
@@ -43,11 +48,14 @@ public class GameSurfaceRenderer implements GLSurfaceView.Renderer {
     public GameSurfaceRenderer(GameSurfaceView surfaceView, GameState gameState) {
         mSurfaceView = surfaceView;
         mGameState = gameState;
+        mInputManager = new InputManager();
+        mCamera = new Camera();
+        mCameraController = new CameraController(mCamera, mInputManager);
 
         // Use this instance of SceneInfo for all render layers, since it contains all the info
         // about our viewport and provides access to the projection matrix.
         mSceneInfo = new SceneInfo() {
-            public float[] getProjection() { return mProjectionMatrix; }
+            public float[] getProjectionCamera() { return mProjectionCameraMatrix; }
             public int getViewportWidth()  { return mViewportWidth; }
             public int getViewportHeight() { return mViewportHeight; }
         };
@@ -130,6 +138,8 @@ public class GameSurfaceRenderer implements GLSurfaceView.Renderer {
     public void onDrawFrame(GL10 unused) {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
+        Matrix.multiplyMM(mProjectionCameraMatrix, 0, mProjectionMatrix, 0, mCamera.getMatrix(), 0);
+
         // do all updating in game state
         mGameState.update();
 
@@ -143,5 +153,9 @@ public class GameSurfaceRenderer implements GLSurfaceView.Renderer {
     public void onViewPause(ConditionVariable syncObj) {
         // Save game state here, use condition var to signal when done.
         syncObj.open();
+    }
+
+    public void handleTouchEvent(MotionEvent event) {
+        mInputManager.handleTouchEvent(event);
     }
 }

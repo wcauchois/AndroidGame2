@@ -4,6 +4,7 @@ import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.os.ConditionVariable;
 import android.util.Log;
+import android.view.MotionEvent;
 
 /**
  * Created by wcauchois on 1/3/15.
@@ -38,5 +39,15 @@ public class GameSurfaceView extends GLSurfaceView {
         });
         mSyncObj.block();
         Log.d(TAG, "Renderer pause complete");
+    }
+
+    @Override
+    public boolean onTouchEvent(final MotionEvent event) {
+        queueEvent(new Runnable() {
+            @Override public void run() {
+                mRenderer.handleTouchEvent(event);
+            }
+        });
+        return true;
     }
 }

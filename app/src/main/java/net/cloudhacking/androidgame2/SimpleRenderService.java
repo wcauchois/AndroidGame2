@@ -104,7 +104,7 @@ public class SimpleRenderService extends Component {
             Matrix.translateM(mvp, 0, x, y, 0.0f);
             Matrix.scaleM(mvp, 0, w, h, 0.0f);
             Matrix.rotateM(mvp, 0, rot, 0.0f, 0.0f, 1.0f);
-            Matrix.multiplyMM(mvp, 0, mSceneInfo.getProjection(), 0, mvp, 0);
+            Matrix.multiplyMM(mvp, 0, mSceneInfo.getProjectionCamera(), 0, mvp, 0);
 
             // pass MVP matrix to shader program
             GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mvp, 0);
