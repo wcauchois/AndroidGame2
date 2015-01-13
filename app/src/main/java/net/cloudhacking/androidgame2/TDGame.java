@@ -1,13 +1,18 @@
 package net.cloudhacking.androidgame2;
 
+import android.app.Activity;
 import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
-import android.os.ConditionVariable;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
 
@@ -15,39 +20,40 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 /**
- * Created by wcauchois on 1/3/15.
+ * Created by Andrew on 1/13/2015.
  */
-public class GameSurfaceRenderer implements GLSurfaceView.Renderer {
-    private static final String TAG = GameSurfaceRenderer.class.getSimpleName();
+public class TDGame extends Activity implements GLSurfaceView.Renderer, View.OnTouchListener {
+    private static final String TAG = "TDGame";
 
-    private GameState mGameState;
-    private GameSurfaceView mSurfaceView;
+    private GLSurfaceView mView;
 
     private SceneInfo mSceneInfo;
-    private int mViewportWidth;
-    private int mViewportHeight;
-    private Camera mCamera;
+    private int mViewportWidth, mViewportHeight;
     private final float[] mProjectionMatrix = new float[16];
-    // The projection matrix times the camera matrix.
-    private final float[] mProjectionCameraMatrix = new float[16];
+    private final float[] mProjectionCameraMatrix = new float[16];  // The projection matrix times the camera matrix.
+
+    private GameState mGameState;
     private InputManager mInputManager;
+
+    private Camera mCamera;
     private CameraController mCameraController;
 
-
-    /* TODO: Not sure if this is the best way to do this, but I made it so when you construct
-     *       a component or render layer it will add itself to a static collection that is part of
-     *       its respective class.  This way we don't have to worry about always adding components
-     *       to a collection in THIS class.
-     *
-     *       These collections get emptied when onSurfaceCreated() is called.
-     */
     private List<Component> mComponents = Component.getComponents();
     private TreeSet<RenderLayer> mRenderLayers = RenderLayer.getsRenderLayers();
 
+    protected ArrayList<MotionEvent> mTouchEvents = new ArrayList<MotionEvent>(); // Accumulated touch events
 
-    public GameSurfaceRenderer(GameSurfaceView surfaceView, GameState gameState) {
-        mSurfaceView = surfaceView;
-        mGameState = gameState;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+
+        mGameState = new GameState();
         mInputManager = new InputManager();
         mCamera = new Camera();
         mCameraController = new CameraController(mCamera, mInputManager);
@@ -60,6 +66,41 @@ public class GameSurfaceRenderer implements GLSurfaceView.Renderer {
             public int getViewportHeight() { return mViewportHeight; }
         };
 
+
+        mGameState.setUpGameLevel(mSceneInfo);
+
+
+        mView = new GLSurfaceView( this );
+        mView.setEGLContextClientVersion( 2 );
+        mView.setEGLConfigChooser( false );
+        mView.setRenderer( this );
+        mView.setOnTouchListener( this );
+        setContentView( mView );
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        // pause game state here
+
+        mView.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        // resume game state here
+
+        mView.onResume();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        // destroy game state here
     }
 
 
@@ -78,12 +119,6 @@ public class GameSurfaceRenderer implements GLSurfaceView.Renderer {
         RenderLayer.clearRenderLayers();
         LevelGrid.clearGridItems();
 
-        // TODO: the way we load resources might need to be reworked?  There is a weird lag, but I'm
-        //       not sure if its because of logging or my phone or what.  Check dis tho;
-        //          http://www.curious-creature.com/2008/12/18/avoid-memory-leaks-on-android/comment-page-1/
-        //
-        //       Also look at the logs at all the "... D/dalvikvm﹕ GC_FOR_ALLOC freed ...", not sure about it.
-
         /*
          * Allocate all components and render layers here before component resources are loaded.
          */
@@ -91,7 +126,7 @@ public class GameSurfaceRenderer implements GLSurfaceView.Renderer {
 
         // prepare resources for all components here
         // (mComponents points to static array list of components in Component)
-        Context context = mSurfaceView.getContext();
+        Context context = mView.getContext();
         for (Component c : mComponents) {
             c.prepareResources(context);
         }
@@ -140,6 +175,10 @@ public class GameSurfaceRenderer implements GLSurfaceView.Renderer {
 
         Matrix.multiplyMM(mProjectionCameraMatrix, 0, mProjectionMatrix, 0, mCamera.getMatrix(), 0);
 
+        for (MotionEvent event : mTouchEvents) {
+            mInputManager.handleTouchEvent(event);
+        }
+
         // do all updating in game state
         mGameState.update();
 
@@ -150,12 +189,11 @@ public class GameSurfaceRenderer implements GLSurfaceView.Renderer {
     }
 
 
-    public void onViewPause(ConditionVariable syncObj) {
-        // Save game state here, use condition var to signal when done.
-        syncObj.open();
-    }
-
-    public void handleTouchEvent(MotionEvent event) {
-        mInputManager.handleTouchEvent(event);
+    @Override
+    public boolean onTouch(View unused, MotionEvent event) {
+        synchronized (mTouchEvents) {
+            mTouchEvents.add(event);
+        }
+        return true;
     }
 }

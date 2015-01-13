@@ -119,7 +119,7 @@ public class SimpleRenderService extends Component {
             GLES20.glDisableVertexAttribArray(mPositionHandle);
             GLES20.glDisableVertexAttribArray(mTexCoordHandle);
             //GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
-            GLES20.glUseProgram(0);
+            //GLES20.glUseProgram(0);
         }
     }
 }

@@ -17,7 +17,7 @@ public class InputManager {
     // not a drag.
     private static final int CLICK_DETECTION_MILLISECONDS = 200;
 
-    private Vector2 mDragStartPos = null;
+    private Vec2 mDragStartPos = null;
     private boolean mDragging = false;
     private boolean mPressing = false;
 
@@ -26,11 +26,11 @@ public class InputManager {
             Executors.newSingleThreadScheduledExecutor();
 
     public interface ClickListener {
-        void onClick(Vector2 pos);
+        void onClick(Vec2 pos);
     }
 
     public interface DragListener {
-        void onDrag(Vector2 currentPos, Vector2 posDelta);
+        void onDrag(Vec2 currentPos, Vec2 posDelta);
     }
 
     public interface StartDragListener {
@@ -71,9 +71,9 @@ public class InputManager {
     }
 
     private class DelayedPressRunnable implements Runnable {
-        private Vector2 mStartPos;
+        private Vec2 mStartPos;
 
-        public DelayedPressRunnable(Vector2 startPos) {
+        public DelayedPressRunnable(Vec2 startPos) {
             mStartPos = startPos;
         }
 
@@ -91,14 +91,14 @@ public class InputManager {
         }
     }
 
-    private void triggerClick(Vector2 pos) {
+    private void triggerClick(Vec2 pos) {
         for (ClickListener listener : mClickListeners) {
             listener.onClick(pos);
         }
     }
 
-    private void triggerDrag(Vector2 currentPos) {
-        Vector2 posDelta = currentPos.subtract(mDragStartPos);
+    private void triggerDrag(Vec2 currentPos) {
+        Vec2 posDelta = currentPos.subtract(mDragStartPos);
         for (DragListener listener : mDragListeners) {
             listener.onDrag(currentPos, posDelta);
         }
@@ -117,7 +117,7 @@ public class InputManager {
     }
 
     public synchronized void handleTouchEvent(MotionEvent event) {
-        Vector2 currentPos = new Vector2(event.getX(), event.getY());
+        Vec2 currentPos = new Vec2(event.getX(), event.getY());
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 mPressing = true;

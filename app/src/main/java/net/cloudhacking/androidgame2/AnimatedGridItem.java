@@ -54,7 +54,7 @@ public abstract class AnimatedGridItem extends LevelGrid.GridItem {
     }
 
     /**
-     * Queue an animation.
+     * Queue an animation. TODO: Force animation?
      *
      * @param animationSeq maps animation frame index number to tile indexes on tile set,
      *                     i.e. tileIndex = animationSeq[frameNumber]
@@ -63,6 +63,7 @@ public abstract class AnimatedGridItem extends LevelGrid.GridItem {
      */
     public void queueAnimationSequence(int[] animationSeq, long frameTime, Boolean loop) {
         mCurrentAnimationSeq = animationSeq;
+        setTileIndex(mCurrentAnimationSeq[0]);
         mFrameTime = frameTime;
         mLoopAnimation = loop;
         mCurrentlyAnimating = true;

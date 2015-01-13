@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  * Right now this just represents some subsystem that needs to initialize resources
- * when the GameSurfaceView is resumed.
+ * when the activity is resumed.
  *
  * Created by wcauchois on 1/4/15.
  */

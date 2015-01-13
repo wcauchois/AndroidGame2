@@ -95,6 +95,7 @@ public /*abstract*/ class Creep extends AnimatedGridItem {
         if (distToWaypoint < WAYPOINT_THRESHOLD) {
             popWaypoint();
             updateCurrentWaypoint();
+            return;
         }
 
         setPosX(pos[0] + (int) (dir[0]*(mVelocity/distToWaypoint)));

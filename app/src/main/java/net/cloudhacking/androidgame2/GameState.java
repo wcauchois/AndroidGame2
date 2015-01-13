@@ -10,9 +10,9 @@ public class GameState {
      * This should be where most of the game logic is managed.  The game level should interact
      * with the game UI.
      */
-    private static final String TAG = GameSurfaceView.class.getSimpleName();
+    private static final String TAG = "GameState";
 
-    private int arenaWidth, arenaHeight;
+    private int mArenaWidth, mArenaHeight;
 
     private GameLevel mLevel;
     //private GameUI mGameUI;
@@ -44,12 +44,12 @@ public class GameState {
         // However in the future, aspect ratio of the screen should not matter, so we need to make
         // sure that we have some sort of a camera that can handle any aspect ratio.
         int[] arenaSize = mLevel.getLevelSize();
-        arenaWidth = arenaSize[0];
-        arenaHeight = arenaSize[1];
-        Log.d(TAG, "Arena size set (width="+arenaWidth+"px, height="+arenaHeight+"px)");
+        mArenaWidth = arenaSize[0];
+        mArenaHeight = arenaSize[1];
+        Log.d(TAG, "Arena size set (width="+ mArenaWidth +"px, height="+ mArenaHeight +"px)");
     }
-    public int getArenaWidth()  { return arenaWidth; }
-    public int getArenaHeight() { return arenaHeight; }
+    public int getArenaWidth()  { return mArenaWidth; }
+    public int getArenaHeight() { return mArenaHeight; }
 
 
     /*

@@ -5,7 +5,7 @@ package net.cloudhacking.androidgame2;
  */
 public class CameraController {
     private Camera mCamera;
-    private Vector2 mStartDragCameraPos;
+    private Vec2 mStartDragCameraPos;
 
     private class InputListeners implements InputManager.StartDragListener,
             InputManager.EndDragListener,
@@ -17,9 +17,9 @@ public class CameraController {
         public void onEndDrag() {
         }
 
-        public void onDrag(Vector2 currentPos, Vector2 posDelta) {
+        public void onDrag(Vec2 currentPos, Vec2 posDelta) {
             // TODO(wcauchois): If we implement zooming this will have to take that into account.
-            Vector2 newCameraPos = mStartDragCameraPos.add(posDelta.negate());
+            Vec2 newCameraPos = mStartDragCameraPos.add(posDelta.negate());
             mCamera.setPosition(newCameraPos);
         }
     }
