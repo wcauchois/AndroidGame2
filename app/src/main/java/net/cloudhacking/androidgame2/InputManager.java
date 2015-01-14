@@ -69,7 +69,8 @@ public class InputManager {
 
         @Override
         public String toString() {
-            return "Pointer(id="+mId+", start="+mStartPos+", current="+mCurrentPos+", dragging="+mDragging+")";
+            return "Pointer(id="+mId+", start="+mStartPos+
+                    ", current="+mCurrentPos+", dragging="+mDragging+")";
         }
     }
 
@@ -247,14 +248,15 @@ public class InputManager {
                         }
 
                     } else if (count==2) {
-                        // for two fingers down automatically trigger multitouch and drag for both fingers
+                        // for two fingers down automatically trigger multitouch and
+                        // drag for both fingers
                         pointerMT0 = mPointers.get( e.getPointerId(0) );
                         pointerMT1 = mPointers.get( e.getPointerId(1) );
                         if (!pointerMT0.checkDragging() && pointerMT0.getDelta().dist()>0) {
                             pointerMT0.setDragging(true);
                             triggerStartDrag(pointerMT0);
                         }
-                        // if one or both pointers are not dragging, trigger multi touch
+
                         if (!pointerMT1.checkDragging() && pointerMT1.getDelta().dist()>0) {
                             pointerMT1.setDragging(true);
                             triggerStartDrag(pointerMT1);
