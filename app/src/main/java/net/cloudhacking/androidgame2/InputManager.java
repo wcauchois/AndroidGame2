@@ -21,6 +21,7 @@ public class InputManager {
     private HashMap<Integer, Pointer> mPointers = new HashMap<Integer, Pointer>();
     private MultiTouch mMultiTouch = null;
 
+
     public static class Pointer {
         /*
          * Represents a single finger on the touch screen
@@ -251,7 +252,7 @@ public class InputManager {
 
                     if (LOG_INPUT) Log.d(TAG, "ACTION_POINTER_UP: " + pointerTmp);
 
-                    if (!mMultiTouch.checkDown()) {
+                    if (mMultiTouch != null && !mMultiTouch.checkDown()) {
                         triggerEndMultiTouch(mMultiTouch);
                         mMultiTouch = null;
                     }
