@@ -20,6 +20,10 @@ public class TextureUtils {
     // where 0 <= currentOpenTextureUnit < GL_MAX_TEXTURE_UNITS
     public static int currentOpenTextureUnit=0;
 
+    public static void reset() {
+        currentOpenTextureUnit = 0;
+    }
+
 
     public static class TextureInfo {
         private int mBitmapWidth, mBitmapHeight;

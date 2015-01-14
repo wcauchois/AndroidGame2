@@ -5,31 +5,38 @@ package net.cloudhacking.androidgame2;
  */
 public class CameraController {
     private Camera mCamera;
-    private Vec2 mStartDragCameraPos;
+    private SceneInfo mSceneInfo;
+    private CameraScrollListener mListener;
 
-    private class InputListeners implements InputManager.StartDragListener,
-            InputManager.EndDragListener,
-            InputManager.DragListener {
-        public void onStartDrag() {
-            mStartDragCameraPos = mCamera.getPosition();
+    private class CameraScrollListener implements InputManager.DragListener {
+        private InputManager.Pointer mPointer;
+        private Vec2 mCameraOrigin;
+
+        public void onStartDrag(InputManager.Pointer pointer) {
+            mCameraOrigin = mCamera.getPosition();
+            mPointer = pointer;
         }
 
-        public void onEndDrag() {
+        public void onEndDrag(InputManager.Pointer pointer) {
+            mPointer = null;
         }
 
-        public void onDrag(Vec2 currentPos, Vec2 posDelta) {
+        public void update() {
             // TODO(wcauchois): If we implement zooming this will have to take that into account.
-            Vec2 newCameraPos = mStartDragCameraPos.add(posDelta.negate());
-            mCamera.setPosition(newCameraPos);
+            if (mPointer != null) {
+                mCamera.setPosition( mCameraOrigin.add( mPointer.getDelta().scale( mSceneInfo.getSceneScale() ) ) );
+            }
         }
     }
 
-    public CameraController(Camera camera, InputManager inputManager) {
+    public CameraController(Camera camera, InputManager inputManager, SceneInfo sceneInfo) {
         mCamera = camera;
+        mSceneInfo = sceneInfo;
+        mListener = new CameraScrollListener();
+        inputManager.addDragListener(mListener);
+    }
 
-        InputListeners listeners = new InputListeners();
-        inputManager.addStartDragListener(listeners);
-        inputManager.addEndDragListener(listeners);
-        inputManager.addDragListener(listeners);
+    public void update() {
+        mListener.update();
     }
 }

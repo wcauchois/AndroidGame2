@@ -142,8 +142,8 @@ public class LevelGrid {
         }
     }
 
-    public int[] getSize() {
-        return new int[] {mGridWidth*mNodePixelWidth, mGridHeight*mNodePixelHeight};
+    public Vec2 getSize() {
+        return new Vec2(mGridWidth*mNodePixelWidth, mGridHeight*mNodePixelHeight);
     }
 
     public int[] toPixelCoord(int gx, int gy) {

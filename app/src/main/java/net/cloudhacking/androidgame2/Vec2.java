@@ -37,6 +37,12 @@ public class Vec2 {
         this.y = y;
     }
 
+    public void set(float x, float y) {
+        this.x = x;
+        this.y = y;
+    }
+
+
     public Vec2 subtract(Vec2 other) {
         return new Vec2(x - other.x, y - other.y);
     }
@@ -47,6 +53,16 @@ public class Vec2 {
 
     public Vec2 negate() {
         return new Vec2(-x, -y);
+    }
+
+    public Vec2 scale(float s) {
+        this.x = s * this.x;
+        this.y = s * this.y;
+        return this;
+    }
+
+    public void normalize() {
+        scale( 1/dist() );
     }
 
     public float dist() {

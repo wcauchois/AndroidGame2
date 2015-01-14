@@ -13,12 +13,12 @@ public class Camera {
     }
 
     public void setPosition(Vec2 newPosition) {
-        mMatrix[12] = -newPosition.getX();
-        mMatrix[13] = -newPosition.getY();
+        mMatrix[12] = newPosition.getX();
+        mMatrix[13] = newPosition.getY();
     }
 
     public Vec2 getPosition() {
-        return new Vec2(-mMatrix[12], -mMatrix[13]);
+        return new Vec2(mMatrix[12], mMatrix[13]);
     }
 
     // Return a transformation matrix corresponding to this camera.

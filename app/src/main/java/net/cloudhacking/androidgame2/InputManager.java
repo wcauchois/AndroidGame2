@@ -1,76 +1,92 @@
 package net.cloudhacking.androidgame2;
 
+import android.util.Log;
 import android.view.MotionEvent;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.HashMap;
 
 /**
  * Created by wcauchois on 1/8/15.
+ *
+ * Actions needed to be
  */
 public class InputManager {
     private static final String TAG = InputManager.class.getSimpleName();
-    // How long you have to hold down for your action to be interpreted as a click and
-    // not a drag.
-    private static final int CLICK_DETECTION_MILLISECONDS = 200;
+    private static final boolean LOG_INPUT = false;
+    private static final boolean LOG_TRIGGERS = true;
 
-    private Vec2 mDragStartPos = null;
-    private boolean mDragging = false;
-    private boolean mPressing = false;
 
-    // Used to execute a callback after a delay
-    private static final ScheduledExecutorService sWorker =
-            Executors.newSingleThreadScheduledExecutor();
+    public static HashMap<Integer, Pointer> pointers = new HashMap<Integer, Pointer>();
+
+    public static class Pointer {
+        private int mId;
+        private Vec2 mStartPos;
+        private Vec2 mCurrentPos;
+        private boolean mDown;
+        private boolean mDragging=false;
+
+        public Pointer( MotionEvent e, int index ) {
+            mId = e.getPointerId(index);
+
+            float x = e.getX( index );
+            float y = e.getY( index );
+
+            mStartPos = new Vec2( x, y );
+            mCurrentPos = new Vec2( x, y );
+
+            mDown = true;
+        }
+
+        public int getId() { return mId; }
+        public boolean checkDown() { return mDown; }
+        public boolean checkDragging() { return mDragging; }
+        public void setDragging(boolean bool) { mDragging = bool; }
+
+        public Vec2 getStartPos() {
+            return mStartPos;
+        }
+        public Vec2 getCurrentPos() {
+            return mCurrentPos;
+        }
+        public Vec2 getDelta() {
+            return mCurrentPos.subtract(mStartPos);
+        }
+
+        public void update( MotionEvent e, int index ) {
+            mCurrentPos.set(e.getX(index), e.getY(index));
+        }
+
+        public Pointer up() {
+            mDragging = false;
+            mDown = false;
+            return this;
+        }
+
+        @Override
+        public String toString() {
+            return "Pointer(id="+mId+", start="+mStartPos+", current="+mCurrentPos+", dragging="+mDragging+")";
+        }
+    }
+
 
     public interface ClickListener {
-        void onClick(Vec2 pos);
+        void onClick(Pointer pointer);
     }
 
     public interface DragListener {
-        void onDrag(Vec2 currentPos, Vec2 posDelta);
+        void onStartDrag(Pointer pointer);
+        void onEndDrag(Pointer pointer);
     }
 
-    public interface StartDragListener {
-        void onStartDrag();
-    }
+    // keep this tho:
 
-    public interface EndDragListener {
-        void onEndDrag();
-    }
+    // Used to execute a callback after a delay
+    /*private static final ScheduledExecutorService sWorker =
+            Executors.newSingleThreadScheduledExecutor();*/
 
-    public boolean getDragging() {
-        return mDragging;
-    }
-
-    private List<ClickListener> mClickListeners = new ArrayList<ClickListener>();
-    private List<DragListener> mDragListeners = new ArrayList<DragListener>();
-    private List<StartDragListener> mStartDragListeners = new ArrayList<StartDragListener>();
-    private List<EndDragListener> mEndDragListeners = new ArrayList<EndDragListener>();
-
-    public void addClickListener(ClickListener listener) {
-        mClickListeners.add(listener);
-    }
-
-    public void removeClickListener(ClickListener listener) {
-        mClickListeners.remove(listener);
-    }
-
-    public void addDragListener(DragListener listener) {
-        mDragListeners.add(listener);
-    }
-
-    public void addStartDragListener(StartDragListener listener) {
-        mStartDragListeners.add(listener);
-    }
-
-    public void addEndDragListener(EndDragListener listener) {
-        mEndDragListeners.add(listener);
-    }
-
-    private class DelayedPressRunnable implements Runnable {
+    /*private class DelayedPressRunnable implements Runnable {
         private Vec2 mStartPos;
 
         public DelayedPressRunnable(Vec2 startPos) {
@@ -89,54 +105,121 @@ public class InputManager {
                 }
             }
         }
+    }*/
+
+
+    private List<ClickListener> mClickListeners = new ArrayList<ClickListener>();
+    private List<DragListener> mDragListeners = new ArrayList<DragListener>();
+
+    public void addClickListener(ClickListener listener) {
+        mClickListeners.add(listener);
     }
 
-    private void triggerClick(Vec2 pos) {
+    public void removeClickListener(ClickListener listener) {
+        mClickListeners.remove(listener);
+    }
+
+    public void addDragListener(DragListener listener) {
+        mDragListeners.add(listener);
+    }
+
+    public void removeDragListener(DragListener listener) {
+        mDragListeners.remove(listener);
+    }
+
+
+
+    private void triggerClick(Pointer pointer) {
         for (ClickListener listener : mClickListeners) {
-            listener.onClick(pos);
+            listener.onClick(pointer);
         }
+        if (LOG_TRIGGERS) Log.d(TAG, "Click Triggered: pointer=" + pointer);
     }
 
-    private void triggerDrag(Vec2 currentPos) {
-        Vec2 posDelta = currentPos.subtract(mDragStartPos);
+    private void triggerStartDrag(Pointer pointer) {
         for (DragListener listener : mDragListeners) {
-            listener.onDrag(currentPos, posDelta);
+            listener.onStartDrag(pointer);
         }
+        if (LOG_TRIGGERS) Log.d(TAG, "StartDrag Triggered: pointer=" + pointer);
     }
 
-    private void triggerStartDrag() {
-        for (StartDragListener listener : mStartDragListeners) {
-            listener.onStartDrag();
+    private void triggerEndDrag(Pointer pointer) {
+        for (DragListener listener : mDragListeners) {
+            listener.onEndDrag(pointer);
         }
+        if (LOG_TRIGGERS) Log.d(TAG, "EndDrag Triggered: pointer=" + pointer);
     }
 
-    private void triggerEndDrag() {
-        for (EndDragListener listener : mEndDragListeners) {
-            listener.onEndDrag();
-        }
-    }
 
-    public synchronized void handleTouchEvent(MotionEvent event) {
-        Vec2 currentPos = new Vec2(event.getX(), event.getY());
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                mPressing = true;
-                sWorker.schedule(new DelayedPressRunnable(currentPos),
-                        CLICK_DETECTION_MILLISECONDS, TimeUnit.MILLISECONDS);
-                break;
-            case MotionEvent.ACTION_UP:
-                mPressing = false;
-                if (mDragging) {
-                    mDragging = false;
-                    mDragStartPos = null;
-                    triggerEndDrag();
-                }
-                break;
-            case MotionEvent.ACTION_MOVE:
-                if (mDragging) {
-                    triggerDrag(currentPos);
-                }
-                break;
+
+    public void handleTouchEvents(ArrayList<MotionEvent> events) {
+
+        int size = events.size();
+        for (int i=0; i < size; i++) {
+
+            MotionEvent e = events.get( i );
+            Pointer pointer;
+
+            switch (e.getAction() & MotionEvent.ACTION_MASK) {
+
+                case MotionEvent.ACTION_DOWN:
+                    pointer = new Pointer(e, 0);
+                    pointers.put(pointer.getId(), pointer);
+
+                    if (LOG_INPUT) Log.d(TAG, "ACTION_DOWN: " + pointer);
+                    break;
+
+                case MotionEvent.ACTION_POINTER_DOWN:
+                    pointer = new Pointer(e, e.getActionIndex() );
+                    pointers.put(pointer.getId(), pointer);
+
+                    if (LOG_INPUT) Log.d(TAG, "ACTION_POINTER_DOWN: " + pointer);
+                    break;
+
+                case MotionEvent.ACTION_MOVE:
+                    int count = e.getPointerCount();
+                    for (int j=0; j < count; j++) {
+                        pointer = pointers.get( e.getPointerId(j) );
+                        pointer.update(e, j);
+
+                        if (LOG_INPUT) Log.d(TAG, "ACTION_MOVE: " + pointer);
+
+                        if (!pointer.checkDragging() && pointer.getDelta().dist()>0) {
+                            pointer.setDragging(true);
+                            triggerStartDrag(pointer);
+                        }
+                    }
+                    break;
+
+                case MotionEvent.ACTION_POINTER_UP:
+                    pointer = pointers.remove( e.getPointerId( e.getActionIndex() ) ).up();
+
+                    if (LOG_INPUT) Log.d(TAG, "ACTION_POINTER_UP: " + pointer);
+
+                    if (pointer.checkDragging()) {
+                        triggerEndDrag(pointer);
+                    } else {
+                        triggerClick(pointer);
+                    }
+
+                    break;
+
+                case MotionEvent.ACTION_UP:
+                    pointer = pointers.remove( e.getPointerId( 0 ) ).up();
+
+                    if (LOG_INPUT) Log.d(TAG, "ACTION_UP: " + pointer);
+
+                    if (pointer.checkDragging()) {
+                        triggerEndDrag(pointer);
+                    } else {
+                        triggerClick(pointer);
+                    }
+
+                    break;
+
+            }
+
+            e.recycle();
         }
     }
 }

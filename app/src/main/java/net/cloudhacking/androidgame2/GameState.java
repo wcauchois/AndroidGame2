@@ -12,7 +12,7 @@ public class GameState {
      */
     private static final String TAG = "GameState";
 
-    private int mArenaWidth, mArenaHeight;
+    private float mArenaWidth, mArenaHeight;
 
     private GameLevel mLevel;
     //private GameUI mGameUI;
@@ -43,13 +43,13 @@ public class GameState {
         //
         // However in the future, aspect ratio of the screen should not matter, so we need to make
         // sure that we have some sort of a camera that can handle any aspect ratio.
-        int[] arenaSize = mLevel.getLevelSize();
-        mArenaWidth = arenaSize[0];
-        mArenaHeight = arenaSize[1];
+        Vec2 arenaSize = mLevel.getLevelSize();
+        mArenaWidth = arenaSize.getX();
+        mArenaHeight = arenaSize.getY();
         Log.d(TAG, "Arena size set (width="+ mArenaWidth +"px, height="+ mArenaHeight +"px)");
     }
-    public int getArenaWidth()  { return mArenaWidth; }
-    public int getArenaHeight() { return mArenaHeight; }
+    public float getArenaWidth()  { return mArenaWidth; }
+    public float getArenaHeight() { return mArenaHeight; }
 
 
     /*

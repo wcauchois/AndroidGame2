@@ -85,7 +85,7 @@ public class GameLevel {
     }
 
 
-    public int[] getLevelSize() {
+    public Vec2 getLevelSize() {
         return mLevelGrid.getSize();
     }
 
