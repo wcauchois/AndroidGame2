@@ -6,37 +6,58 @@ package net.cloudhacking.androidgame2;
 public class CameraController {
     private Camera mCamera;
     private SceneInfo mSceneInfo;
-    private CameraScrollListener mListener;
+    private CameraScrollListener mScrollListener;
+    private CameraZoomListener mZoomListener;
+
 
     private class CameraScrollListener implements InputManager.DragListener {
         private InputManager.Pointer mPointer;
         private Vec2 mCameraOrigin;
 
-        public void onStartDrag(InputManager.Pointer pointer) {
+        public void onStart(InputManager.Pointer pointer) {
             mCameraOrigin = mCamera.getPosition();
             mPointer = pointer;
         }
 
-        public void onEndDrag(InputManager.Pointer pointer) {
+        public void onEnd(InputManager.Pointer pointer) {
             mPointer = null;
         }
 
         public void update() {
             // TODO(wcauchois): If we implement zooming this will have to take that into account.
             if (mPointer != null) {
-                mCamera.setPosition( mCameraOrigin.add( mPointer.getDelta().scale( 1/mSceneInfo.getSceneScale() ) ) );
+                mCamera.setPosition( mCameraOrigin.add(mPointer.getDelta().scale(1 / mSceneInfo.getSceneScale())) );
             }
         }
     }
 
+
+    private class CameraZoomListener implements InputManager.MultiTouchListener {
+        public void onStart(InputManager.Pointer[] pointers) {
+
+        }
+
+        public void onEnd(InputManager.Pointer[] pointers) {
+
+        }
+
+        public void update() {
+
+        };
+    }
+
+
     public CameraController(Camera camera, InputManager inputManager, SceneInfo sceneInfo) {
         mCamera = camera;
         mSceneInfo = sceneInfo;
-        mListener = new CameraScrollListener();
-        inputManager.addDragListener(mListener);
+        mScrollListener = new CameraScrollListener();
+        inputManager.addDragListener(mScrollListener);
+        mZoomListener = new CameraZoomListener();
+        inputManager.addMultiTouchListener(mZoomListener);
     }
 
     public void update() {
-        mListener.update();
+        mScrollListener.update();
+        mZoomListener.update();
     }
 }

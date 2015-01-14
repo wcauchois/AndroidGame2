@@ -75,12 +75,15 @@ public class InputManager {
     }
 
     public interface DragListener {
-        void onStartDrag(Pointer pointer);
-        void onEndDrag(Pointer pointer);
+        void onStart(Pointer pointer);
+        void onEnd(Pointer pointer);
+        void update();
     }
 
     public interface MultiTouchListener {
-
+        void onStart(Pointer[] pointers);  // maybe this should just take the pointers arraylist instead?
+        void onEnd(Pointer[] pointers);
+        void update();
     }
 
 
@@ -123,21 +126,30 @@ public class InputManager {
 
     private void triggerStartDrag(Pointer pointer) {
         for (DragListener listener : mDragListeners) {
-            listener.onStartDrag(pointer);
+            listener.onStart(pointer);
         }
         if (LOG_TRIGGERS) Log.d(TAG, "StartDrag Triggered: pointer=" + pointer);
     }
 
     private void triggerEndDrag(Pointer pointer) {
         for (DragListener listener : mDragListeners) {
-            listener.onEndDrag(pointer);
+            listener.onEnd(pointer);
         }
         if (LOG_TRIGGERS) Log.d(TAG, "EndDrag Triggered: pointer=" + pointer);
-        if (LOG_TRIGGERS) Log.d(TAG, "---> total dist: " + pointer.getDelta().dist());
     }
 
-    private void triggerMultiTouch(Pointer[] pointers) {
+    private void triggerStartMultiTouch(Pointer[] pointers) {
+        for (MultiTouchListener listener : mMultiTouchListeners) {
+            listener.onStart(pointers);
+        }
+        if (LOG_TRIGGERS) Log.d(TAG, "StartMultiTouch Triggered: pointer=" + pointers);
+    }
 
+    private void triggerEndMultiTouch(Pointer[] pointers) {
+        for (MultiTouchListener listener : mMultiTouchListeners) {
+            listener.onEnd(pointers);
+        }
+        if (LOG_TRIGGERS) Log.d(TAG, "EndMultiTouch Triggered: pointer=" + pointers);
     }
 
 
@@ -163,7 +175,8 @@ public class InputManager {
                     pointer = new Pointer(e, e.getActionIndex() );
                     pointers.put(pointer.getId(), pointer);
 
-                    // end drag and trigger multi touch listeners here
+                    // end drag and trigger multi touch listeners here,
+                    // only care about the first and second pointers
 
                     if (LOG_INPUT) Log.d(TAG, "ACTION_POINTER_DOWN: " + pointer);
                     break;
@@ -176,7 +189,7 @@ public class InputManager {
 
                         if (LOG_INPUT) Log.d(TAG, "ACTION_MOVE: " + pointer);
 
-                        if (!pointer.checkDragging() && pointer.getDelta().dist()>0) {
+                        if (!pointer.checkDragging() && count<=1 && pointer.getDelta().dist()>0) {
                             pointer.setDragging(true);
                             triggerStartDrag(pointer);
                         }
@@ -187,6 +200,8 @@ public class InputManager {
                     pointer = pointers.remove( e.getPointerId( e.getActionIndex() ) ).up();
 
                     if (LOG_INPUT) Log.d(TAG, "ACTION_POINTER_UP: " + pointer);
+
+                    // end multi touch and resume dragging here
 
                     if (pointer.checkDragging()) {
                         triggerEndDrag(pointer);
