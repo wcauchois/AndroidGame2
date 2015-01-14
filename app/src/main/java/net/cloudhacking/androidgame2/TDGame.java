@@ -43,6 +43,7 @@ public class TDGame extends Activity implements GLSurfaceView.Renderer, View.OnT
     protected ArrayList<MotionEvent> mTouchEvents = new ArrayList<MotionEvent>(); // Accumulated touch events
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +59,9 @@ public class TDGame extends Activity implements GLSurfaceView.Renderer, View.OnT
             private final float[] mProjectionCameraMatrix = new float[16];  // The projection matrix times the camera matrix.
             private float mSceneScale = 1f;
 
+            public void setSceneScale(float sceneScale) {
+                mSceneScale = sceneScale;
+            }
             public float getSceneScale() { return mSceneScale; }
             public float[] getProjection() { return mProjectionMatrix; }
             public float[] getProjectionCamera() { return mProjectionCameraMatrix; }
@@ -92,6 +96,7 @@ public class TDGame extends Activity implements GLSurfaceView.Renderer, View.OnT
         mView.setOnTouchListener( this );
         setContentView( mView );
     }
+
 
     @Override
     public void onPause() {

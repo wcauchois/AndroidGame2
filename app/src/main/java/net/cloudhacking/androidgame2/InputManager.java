@@ -18,9 +18,13 @@ public class InputManager {
     private static final boolean LOG_TRIGGERS = true;
 
 
-    public static HashMap<Integer, Pointer> pointers = new HashMap<Integer, Pointer>();
+    private HashMap<Integer, Pointer> mPointers = new HashMap<Integer, Pointer>();
+    private MultiTouch mMultiTouch = null;
 
     public static class Pointer {
+        /*
+         * Represents a single finger on the touch screen
+         */
         private int mId;
         private Vec2 mStartPos;
         private Vec2 mCurrentPos;
@@ -70,6 +74,33 @@ public class InputManager {
     }
 
 
+    public static class MultiTouch {
+        /*
+         * Represents two fingers on the touch screen
+         */
+        private Pointer p1;
+        private Pointer p2;
+
+        public MultiTouch(Pointer p1, Pointer p2) {
+            this.p1 = p1;
+            this.p2 = p2;
+        }
+
+        public boolean checkDown() {
+            return p1.checkDown() && p2.checkDown();
+        }
+
+        public float getDistBtwn() {
+            return p1.getCurrentPos().subtract(p2.getCurrentPos()).dist();
+        }
+
+        @Override
+        public String toString() {
+            return "{"+p1+", "+p2+"}";
+        }
+    }
+
+
     public interface ClickListener {
         void onClick(Pointer pointer);
     }
@@ -81,8 +112,8 @@ public class InputManager {
     }
 
     public interface MultiTouchListener {
-        void onStart(Pointer[] pointers);  // maybe this should just take the pointers arraylist instead?
-        void onEnd(Pointer[] pointers);
+        void onStart(MultiTouch multiTouch);  // maybe this should just take the pointers arraylist instead?
+        void onEnd(MultiTouch multiTouch);
         void update();
     }
 
@@ -138,18 +169,18 @@ public class InputManager {
         if (LOG_TRIGGERS) Log.d(TAG, "EndDrag Triggered: pointer=" + pointer);
     }
 
-    private void triggerStartMultiTouch(Pointer[] pointers) {
+    private void triggerStartMultiTouch(MultiTouch multiTouch) {
         for (MultiTouchListener listener : mMultiTouchListeners) {
-            listener.onStart(pointers);
+            listener.onStart(multiTouch);
         }
-        if (LOG_TRIGGERS) Log.d(TAG, "StartMultiTouch Triggered: pointer=" + pointers);
+        if (LOG_TRIGGERS) Log.d(TAG, "StartMultiTouch Triggered: multiTouch=" + multiTouch);
     }
 
-    private void triggerEndMultiTouch(Pointer[] pointers) {
+    private void triggerEndMultiTouch(MultiTouch multiTouch) {
         for (MultiTouchListener listener : mMultiTouchListeners) {
-            listener.onEnd(pointers);
+            listener.onEnd(multiTouch);
         }
-        if (LOG_TRIGGERS) Log.d(TAG, "EndMultiTouch Triggered: pointer=" + pointers);
+        if (LOG_TRIGGERS) Log.d(TAG, "EndMultiTouch Triggered: multiTouch=" + multiTouch);
     }
 
 
@@ -160,66 +191,88 @@ public class InputManager {
         for (int i=0; i < size; i++) {
 
             MotionEvent e = events.get( i );
-            Pointer pointer;
+            int count;
+            Pointer pointerTmp, pointerMT0, pointerMT1;
 
             switch (e.getAction() & MotionEvent.ACTION_MASK) {
 
                 case MotionEvent.ACTION_DOWN:
-                    pointer = new Pointer(e, 0);
-                    pointers.put(pointer.getId(), pointer);
+                    pointerTmp = new Pointer(e, 0);
+                    mPointers.put(pointerTmp.getId(), pointerTmp);
 
-                    if (LOG_INPUT) Log.d(TAG, "ACTION_DOWN: " + pointer);
+                    if (LOG_INPUT) Log.d(TAG, "ACTION_DOWN: " + pointerTmp);
                     break;
 
                 case MotionEvent.ACTION_POINTER_DOWN:
-                    pointer = new Pointer(e, e.getActionIndex() );
-                    pointers.put(pointer.getId(), pointer);
+                    pointerTmp = new Pointer(e, e.getActionIndex() );
+                    mPointers.put(pointerTmp.getId(), pointerTmp);
 
-                    // end drag and trigger multi touch listeners here,
-                    // only care about the first and second pointers
-
-                    if (LOG_INPUT) Log.d(TAG, "ACTION_POINTER_DOWN: " + pointer);
+                    if (LOG_INPUT) Log.d(TAG, "ACTION_POINTER_DOWN: " + pointerTmp);
                     break;
 
                 case MotionEvent.ACTION_MOVE:
-                    int count = e.getPointerCount();
+                    count = e.getPointerCount();
                     for (int j=0; j < count; j++) {
-                        pointer = pointers.get( e.getPointerId(j) );
-                        pointer.update(e, j);
+                        pointerTmp = mPointers.get( e.getPointerId(j) );
+                        pointerTmp.update(e, j);
 
-                        if (LOG_INPUT) Log.d(TAG, "ACTION_MOVE: " + pointer);
+                        if (LOG_INPUT) Log.d(TAG, "ACTION_MOVE: " + pointerTmp);
+                    }
 
-                        if (!pointer.checkDragging() && count<=1 && pointer.getDelta().dist()>0) {
-                            pointer.setDragging(true);
-                            triggerStartDrag(pointer);
+                    if (count==1) {
+                        // only trigger drag for first finger down
+                        pointerMT0 = mPointers.get( e.getPointerId(0) );
+                        if (!pointerMT0.checkDragging() && pointerMT0.getDelta().dist()>0) {
+                            pointerMT0.setDragging(true);
+                            triggerStartDrag(pointerMT0);
+                        }
+
+                    } else if (count==2) {
+                        // for two fingers down automatically trigger multitouch and drag for both fingers
+                        pointerMT0 = mPointers.get( e.getPointerId(0) );
+                        pointerMT1 = mPointers.get( e.getPointerId(1) );
+                        if (!pointerMT0.checkDragging() && pointerMT0.getDelta().dist()>0) {
+                            pointerMT0.setDragging(true);
+                            triggerStartDrag(pointerMT0);
+                        }
+                        // if one or both pointers are not dragging, trigger multi touch
+                        if (!pointerMT1.checkDragging() && pointerMT1.getDelta().dist()>0) {
+                            pointerMT1.setDragging(true);
+                            triggerStartDrag(pointerMT1);
+                            mMultiTouch = new MultiTouch(pointerMT0, pointerMT1);
+                            triggerStartMultiTouch(mMultiTouch);
                         }
                     }
+
                     break;
 
                 case MotionEvent.ACTION_POINTER_UP:
-                    pointer = pointers.remove( e.getPointerId( e.getActionIndex() ) ).up();
+                    pointerTmp = mPointers.remove( e.getPointerId( e.getActionIndex() ) ).up();
 
-                    if (LOG_INPUT) Log.d(TAG, "ACTION_POINTER_UP: " + pointer);
+                    if (LOG_INPUT) Log.d(TAG, "ACTION_POINTER_UP: " + pointerTmp);
 
-                    // end multi touch and resume dragging here
+                    if (!mMultiTouch.checkDown()) {
+                        triggerEndMultiTouch(mMultiTouch);
+                        mMultiTouch = null;
+                    }
 
-                    if (pointer.checkDragging()) {
-                        triggerEndDrag(pointer);
+                    if (pointerTmp.checkDragging()) {
+                        triggerEndDrag(pointerTmp);
                     } else {
-                        triggerClick(pointer);
+                        triggerClick(pointerTmp);
                     }
 
                     break;
 
                 case MotionEvent.ACTION_UP:
-                    pointer = pointers.remove( e.getPointerId( 0 ) ).up();
+                    pointerTmp = mPointers.remove( e.getPointerId( 0 ) ).up();
 
-                    if (LOG_INPUT) Log.d(TAG, "ACTION_UP: " + pointer);
+                    if (LOG_INPUT) Log.d(TAG, "ACTION_UP: " + pointerTmp);
 
-                    if (pointer.checkDragging()) {
-                        triggerEndDrag(pointer);
+                    if (pointerTmp.checkDragging()) {
+                        triggerEndDrag(pointerTmp);
                     } else {
-                        triggerClick(pointer);
+                        triggerClick(pointerTmp);
                     }
 
                     break;
