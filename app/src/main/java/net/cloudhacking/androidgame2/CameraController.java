@@ -64,7 +64,6 @@ public class CameraController {
     }
 
     public void update() {
-        mScrollListener.update();
-        mZoomListener.update();
+
     }
 }

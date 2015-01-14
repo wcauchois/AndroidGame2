@@ -17,15 +17,14 @@ public class InputManager {
     private static final boolean LOG_INPUT = false;
     private static final boolean LOG_TRIGGERS = true;
 
-
     private HashMap<Integer, Pointer> mPointers = new HashMap<Integer, Pointer>();
     private MultiTouch mMultiTouch = null;
 
 
+    /*
+     * Represents a single finger on the touch screen
+     */
     public static class Pointer {
-        /*
-         * Represents a single finger on the touch screen
-         */
         private int mId;
         private Vec2 mStartPos;
         private Vec2 mCurrentPos;
@@ -75,10 +74,10 @@ public class InputManager {
     }
 
 
+    /*
+     * Represents two fingers on the touch screen
+     */
     public static class MultiTouch {
-        /*
-         * Represents two fingers on the touch screen
-         */
         private Pointer p1;
         private Pointer p2;
 
@@ -102,6 +101,9 @@ public class InputManager {
     }
 
 
+    /*
+     * Listener Interfaces
+     */
     public interface ClickListener {
         void onClick(Pointer pointer);
     }
@@ -113,7 +115,7 @@ public class InputManager {
     }
 
     public interface MultiTouchListener {
-        void onStart(MultiTouch multiTouch);  // maybe this should just take the pointers arraylist instead?
+        void onStart(MultiTouch multiTouch);
         void onEnd(MultiTouch multiTouch);
         void update();
     }
@@ -148,7 +150,9 @@ public class InputManager {
     }
 
 
-
+    /*
+     * Input Triggers
+     */
     private void triggerClick(Pointer pointer) {
         for (ClickListener listener : mClickListeners) {
             listener.onClick(pointer);
@@ -161,6 +165,12 @@ public class InputManager {
             listener.onStart(pointer);
         }
         if (LOG_TRIGGERS) Log.d(TAG, "StartDrag Triggered: pointer=" + pointer);
+    }
+
+    private void triggerUpdateDrag() {
+        for (DragListener listener : mDragListeners) {
+            listener.update();
+        }
     }
 
     private void triggerEndDrag(Pointer pointer) {
@@ -177,6 +187,12 @@ public class InputManager {
         if (LOG_TRIGGERS) Log.d(TAG, "StartMultiTouch Triggered: multiTouch=" + multiTouch);
     }
 
+    private void triggerUpdateMultiTouch() {
+        for (MultiTouchListener listener : mMultiTouchListeners) {
+            listener.update();
+        }
+    }
+
     private void triggerEndMultiTouch(MultiTouch multiTouch) {
         for (MultiTouchListener listener : mMultiTouchListeners) {
             listener.onEnd(multiTouch);
@@ -185,7 +201,9 @@ public class InputManager {
     }
 
 
-
+    /*
+     * Accumulated Touch Events Handler (called each frame)
+     */
     public void handleTouchEvents(ArrayList<MotionEvent> events) {
 
         int size = events.size();
@@ -244,6 +262,9 @@ public class InputManager {
                             triggerStartMultiTouch(mMultiTouch);
                         }
                     }
+
+                    if (count>0) triggerUpdateDrag();
+                    if (count>1) triggerUpdateMultiTouch();
 
                     break;
 
