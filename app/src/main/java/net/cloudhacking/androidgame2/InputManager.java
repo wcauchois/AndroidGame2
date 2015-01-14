@@ -1,23 +1,30 @@
 package net.cloudhacking.androidgame2;
 
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.MotionEvent;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.HashMap;
 
 /**
  * Created by wcauchois on 1/8/15.
  *
- * Actions needed to be
+ *
+ * Actions needed to be account for:
+ *
+ *      -Click
+ *      -Drag
+ *      -Pinch Zoom
+ *      -others?
+ *
  */
 public class InputManager {
     private static final String TAG = InputManager.class.getSimpleName();
     private static final boolean LOG_INPUT = false;
     private static final boolean LOG_TRIGGERS = true;
 
-    private HashMap<Integer, Pointer> mPointers = new HashMap<Integer, Pointer>();
+    private SparseArray<Pointer> mPointers = new SparseArray<Pointer>();
     private MultiTouch mMultiTouch = null;
 
 
@@ -271,7 +278,8 @@ public class InputManager {
                     break;
 
                 case MotionEvent.ACTION_POINTER_UP:
-                    pointerTmp = mPointers.remove( e.getPointerId( e.getActionIndex() ) ).up();
+                    pointerTmp = mPointers.get( e.getPointerId( e.getActionIndex() ) ).up();
+                    mPointers.remove( pointerTmp.getId() );
 
                     if (LOG_INPUT) Log.d(TAG, "ACTION_POINTER_UP: " + pointerTmp);
 
@@ -289,7 +297,8 @@ public class InputManager {
                     break;
 
                 case MotionEvent.ACTION_UP:
-                    pointerTmp = mPointers.remove( e.getPointerId( 0 ) ).up();
+                    pointerTmp = mPointers.get( e.getPointerId( 0 ) ).up();
+                    mPointers.remove( pointerTmp.getId() );
 
                     if (LOG_INPUT) Log.d(TAG, "ACTION_UP: " + pointerTmp);
 
