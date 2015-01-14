@@ -59,7 +59,6 @@ public class InputManager {
         }
 
         public Pointer up() {
-            mDragging = false;
             mDown = false;
             return this;
         }
@@ -80,36 +79,14 @@ public class InputManager {
         void onEndDrag(Pointer pointer);
     }
 
-    // keep this tho:
+    public interface MultiTouchListener {
 
-    // Used to execute a callback after a delay
-    /*private static final ScheduledExecutorService sWorker =
-            Executors.newSingleThreadScheduledExecutor();*/
-
-    /*private class DelayedPressRunnable implements Runnable {
-        private Vec2 mStartPos;
-
-        public DelayedPressRunnable(Vec2 startPos) {
-            mStartPos = startPos;
-        }
-
-        @Override public void run() {
-            synchronized (InputManager.this) {
-                if (mPressing == true) {
-                    mDragging = true;
-                    mDragStartPos = mStartPos;
-                    triggerStartDrag();
-                    triggerDrag(mStartPos);
-                } else {
-                    triggerClick(mStartPos);
-                }
-            }
-        }
-    }*/
+    }
 
 
     private List<ClickListener> mClickListeners = new ArrayList<ClickListener>();
     private List<DragListener> mDragListeners = new ArrayList<DragListener>();
+    private List<MultiTouchListener> mMultiTouchListeners = new ArrayList<MultiTouchListener>();
 
     public void addClickListener(ClickListener listener) {
         mClickListeners.add(listener);
@@ -125,6 +102,14 @@ public class InputManager {
 
     public void removeDragListener(DragListener listener) {
         mDragListeners.remove(listener);
+    }
+
+    public void addMultiTouchListener(MultiTouchListener listener) {
+        mMultiTouchListeners.add(listener);
+    }
+
+    public void removeMultiTouchListeners(MultiTouchListener listener) {
+        mMultiTouchListeners.remove(listener);
     }
 
 
@@ -148,6 +133,11 @@ public class InputManager {
             listener.onEndDrag(pointer);
         }
         if (LOG_TRIGGERS) Log.d(TAG, "EndDrag Triggered: pointer=" + pointer);
+        if (LOG_TRIGGERS) Log.d(TAG, "---> total dist: " + pointer.getDelta().dist());
+    }
+
+    private void triggerMultiTouch(Pointer[] pointers) {
+
     }
 
 
@@ -172,6 +162,8 @@ public class InputManager {
                 case MotionEvent.ACTION_POINTER_DOWN:
                     pointer = new Pointer(e, e.getActionIndex() );
                     pointers.put(pointer.getId(), pointer);
+
+                    // end drag and trigger multi touch listeners here
 
                     if (LOG_INPUT) Log.d(TAG, "ACTION_POINTER_DOWN: " + pointer);
                     break;

@@ -17,8 +17,16 @@ public class Camera {
         mMatrix[13] = newPosition.getY();
     }
 
+    public void setZoom(float zoom) {
+        mMatrix[0] = mMatrix[5] = zoom;
+    }
+
     public Vec2 getPosition() {
         return new Vec2(mMatrix[12], mMatrix[13]);
+    }
+
+    public float getZoom() {
+        return mMatrix[0];
     }
 
     // Return a transformation matrix corresponding to this camera.

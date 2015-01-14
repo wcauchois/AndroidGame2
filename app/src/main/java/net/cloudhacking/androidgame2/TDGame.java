@@ -26,6 +26,7 @@ public class TDGame extends Activity implements GLSurfaceView.Renderer, View.OnT
     private static final String TAG = "TDGame";
 
     private GLSurfaceView mView;
+    private static final float SCENE_SCALE = 2f;
 
     private SceneInfo mSceneInfo;
     private int mViewportWidth, mViewportHeight;
@@ -50,7 +51,7 @@ public class TDGame extends Activity implements GLSurfaceView.Renderer, View.OnT
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        // Use this instance of SceneInfo for all render layers, since it contains all the info
+        // Use this instance of SceneInfo for all rendering, since it contains all the info
         // about our viewport and provides access to the projection matrix.
         mSceneInfo = new SceneInfo() {
             private final float[] mProjectionMatrix = new float[16];
@@ -67,8 +68,10 @@ public class TDGame extends Activity implements GLSurfaceView.Renderer, View.OnT
                 Matrix.multiplyMM(mProjectionCameraMatrix, 0, mProjectionMatrix, 0, mCamera.getMatrix(), 0);
             }
 
-            public void reset() {
-                mSceneScale = mGameState.getArenaWidth() / mViewportWidth;  // should == mGameState.getArenaHeight() / mViewportHeight ... although this should be temporary.
+            public void reset(int viewportWidth, int viewportHeight, float sceneScale) {
+                mViewportWidth = viewportWidth;
+                mViewportHeight = viewportHeight;
+                mSceneScale = sceneScale;
                 Matrix.orthoM(mProjectionMatrix, 0, 0, mGameState.getArenaWidth(),
                         mGameState.getArenaHeight(), 0, -1, 1);
             }
@@ -135,6 +138,7 @@ public class TDGame extends Activity implements GLSurfaceView.Renderer, View.OnT
 
         // Allocate all components and render layers here before component resources are loaded.
         mGameState.setUpGameLevel(mSceneInfo);
+        mGameState.updateArenaSize();
 
         // prepare resources for all components
         for (Component c : mComponents) {
@@ -146,35 +150,12 @@ public class TDGame extends Activity implements GLSurfaceView.Renderer, View.OnT
 
     @Override
     public void onSurfaceChanged(GL10 unused, int width, int height) {
-        // Sets up viewport so that it is centered on the screen and the aspect ratio of
-        // the game arena is maintained.
 
-        mGameState.updateArenaSize();  // do this before getting arena width/height
+        GLES20.glViewport(0, 0, width, height);
+        mViewportWidth = width;
+        mViewportHeight = height;
 
-        float arenaRatio = mGameState.getArenaHeight() / mGameState.getArenaWidth();
-        int x, y, viewWidth, viewHeight;
-
-        if (height > (int) (width * arenaRatio)) {
-            // limited by narrow width; restrict height
-            viewWidth = width;
-            viewHeight = (int) (width * arenaRatio);
-        } else {
-            // limited by short height; restrict width
-            viewHeight = height;
-            viewWidth = (int) (height / arenaRatio);
-        }
-        x = (width - viewWidth) / 2;
-        y = (height - viewHeight) / 2;
-
-        /*Log.d(TAG, "onSurfaceChanged (width=" + width + ", height=" + height+")");
-        Log.d(TAG, " --> xOffset=" + x + ", yOffset=" + y);
-        Log.d(TAG, " --> viewPortWidth=" + viewWidth + ", viewPortHeight=" + viewHeight);*/
-
-        GLES20.glViewport(x, y, viewWidth, viewHeight);
-        mViewportWidth = viewWidth;
-        mViewportHeight = viewWidth;
-
-        mSceneInfo.reset();
+        mSceneInfo.reset(width, height, SCENE_SCALE);
     }
 
 

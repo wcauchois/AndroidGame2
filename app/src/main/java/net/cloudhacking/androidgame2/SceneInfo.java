@@ -17,5 +17,5 @@ public interface SceneInfo {
 
     public void update();
 
-    public void reset();
+    public void reset(int viewportWidth, int viewportHeight, float sceneScale);
 }

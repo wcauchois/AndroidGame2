@@ -24,7 +24,7 @@ public class CameraController {
         public void update() {
             // TODO(wcauchois): If we implement zooming this will have to take that into account.
             if (mPointer != null) {
-                mCamera.setPosition( mCameraOrigin.add( mPointer.getDelta().scale( mSceneInfo.getSceneScale() ) ) );
+                mCamera.setPosition( mCameraOrigin.add( mPointer.getDelta().scale( 1/mSceneInfo.getSceneScale() ) ) );
             }
         }
     }
