@@ -269,13 +269,7 @@ public class InputManager {
                             triggerStartDrag(pointerMT0);
                         }
 
-                        /*if (mMultiTouch == null && pointerMT1.getDisplacement().dist()>0) {
-                            mMultiTouch = new MultiTouch(pointerMT0, pointerMT1);
-                            triggerStartMultiTouch(mMultiTouch);
-                        }*/
-                        if (!pointerMT1.checkDragging() && pointerMT1.getDisplacement().dist()>0) {
-                            pointerMT1.setDragging(true);
-                            triggerStartDrag(pointerMT1);
+                        if (mMultiTouch == null && pointerMT1.getDisplacement().dist()>0) {
                             mMultiTouch = new MultiTouch(pointerMT0, pointerMT1);
                             triggerStartMultiTouch(mMultiTouch);
                         }
