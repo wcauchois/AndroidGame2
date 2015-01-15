@@ -36,7 +36,7 @@ public class TDGame extends Activity implements GLSurfaceView.Renderer, View.OnT
     private static final float SCENE_SCALE = 2f;
 
     private SceneInfo mSceneInfo;
-    private float mViewportWidth, mViewportHeight;
+    private int mViewportWidth, mViewportHeight;
 
     private GameState mGameState;
     private InputManager mInputManager;
@@ -172,9 +172,11 @@ public class TDGame extends Activity implements GLSurfaceView.Renderer, View.OnT
 
     @Override
     public void onDrawFrame(GL10 unused) {
-        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
+        step();
 
-        update();
+        GLES20.glScissor(0, 0, mViewportWidth, mViewportHeight);
+        GLES20.glClear( GLES20.GL_COLOR_BUFFER_BIT );
+        draw();
     }
 
 
@@ -187,7 +189,12 @@ public class TDGame extends Activity implements GLSurfaceView.Renderer, View.OnT
     }
 
 
-    private void update() {
+    private void step() {
+        /**
+         * Update state and do time keeping in this function.
+         *
+         * TODO: Should have a scene which represents the highest level group.
+         */
 
         synchronized (mTouchEvents) {  // TODO: why does this need to be synchronized?
             mInputManager.handleTouchEvents(mTouchEvents);
@@ -198,11 +205,12 @@ public class TDGame extends Activity implements GLSurfaceView.Renderer, View.OnT
         mGameState.update();
         mSceneInfo.update();
         mCameraController.update();
+    }
 
-        // draw
+
+    private void draw() {
         for (RenderLayer r : mRenderLayers) {
             r.draw();
         }
-
     }
 }

@@ -26,7 +26,6 @@ public class CameraController extends Loggable {
         }
 
         public void update() {
-            // TODO(wcauchois): If we implement zooming this will have to take that into account.
             if (mPointer != null) {
                 mCamera.incPosition(mPointer.getDelta().scale( 1/mSceneInfo.getSceneScale() ));
             }
