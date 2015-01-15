@@ -11,8 +11,7 @@ import android.util.Log;
 /**
  * Created by Andrew on 1/7/2015.
  */
-public class TextureUtils {
-    private static final String TAG = TextureUtils.class.getSimpleName();
+public class TextureUtils extends Loggable {
 
     public static final int GL_MAX_TEXTURE_UNITS = GLES20.GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS;
 

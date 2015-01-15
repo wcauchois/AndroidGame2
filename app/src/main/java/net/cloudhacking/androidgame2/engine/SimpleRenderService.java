@@ -4,7 +4,7 @@ import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 
-import net.cloudhacking.androidgame2.Component;
+import net.cloudhacking.androidgame2.engine.utils.Component;
 import net.cloudhacking.androidgame2.R;
 import net.cloudhacking.androidgame2.engine.utils.RenderUtils;
 

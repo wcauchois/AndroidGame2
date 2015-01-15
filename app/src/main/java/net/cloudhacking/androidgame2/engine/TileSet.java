@@ -3,7 +3,7 @@ package net.cloudhacking.androidgame2.engine;
 import android.content.Context;
 import android.util.Log;
 
-import net.cloudhacking.androidgame2.Component;
+import net.cloudhacking.androidgame2.engine.utils.Component;
 import net.cloudhacking.androidgame2.engine.utils.TextureUtils;
 
 /**

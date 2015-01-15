@@ -17,8 +17,7 @@ import java.nio.ShortBuffer;
 /**
  * Created by wcauchois on 1/3/15.
  */
-public class RenderUtils {
-    private static final String TAG = RenderUtils.class.getSimpleName();
+public class RenderUtils extends Loggable {
 
     public static String readTextFileFromRawResource(final Context context,
                                                      final int resourceId) {

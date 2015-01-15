@@ -15,7 +15,8 @@ import net.cloudhacking.androidgame2.engine.RenderLayer;
 import net.cloudhacking.androidgame2.engine.SceneInfo;
 import net.cloudhacking.androidgame2.engine.Camera;
 import net.cloudhacking.androidgame2.engine.CameraController;
-import net.cloudhacking.androidgame2.engine.InputManager;
+import net.cloudhacking.androidgame2.engine.utils.InputManager;
+import net.cloudhacking.androidgame2.engine.utils.Component;
 import net.cloudhacking.androidgame2.engine.utils.TextureUtils;
 
 import java.util.ArrayList;

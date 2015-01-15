@@ -3,17 +3,17 @@ package net.cloudhacking.androidgame2;
 import android.util.Log;
 
 import net.cloudhacking.androidgame2.engine.SceneInfo;
+import net.cloudhacking.androidgame2.engine.utils.Loggable;
 import net.cloudhacking.androidgame2.engine.utils.Vec2;
 
 /**
  * Created by wcauchois on 1/3/15.
  */
-public class GameState {
+public class GameState extends Loggable {
     /*
      * This should be where most of the game logic is managed.  The game level should interact
      * with the game UI.
      */
-    private static final String TAG = "GameState";
 
     private float mArenaWidth, mArenaHeight;
 

@@ -14,6 +14,7 @@ import java.util.ArrayList;
  * level grid.
  */
 public class LevelGrid {
+
     /*
      * Can access this collection of all grid items in GameLevel instance in update() method.
      */

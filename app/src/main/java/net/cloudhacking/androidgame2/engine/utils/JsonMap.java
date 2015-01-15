@@ -3,8 +3,6 @@ package net.cloudhacking.androidgame2.engine.utils;
 import android.content.Context;
 import android.util.Log;
 
-import net.cloudhacking.androidgame2.Component;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,7 +15,7 @@ import java.util.List;
  *
  * Created by wcauchois on 1/4/15.
  */
-public class JsonMap extends Component implements GameMap {
+public class JsonMap extends Component {
 
     private int[] tiles;
     private int width;

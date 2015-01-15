@@ -8,7 +8,6 @@ import net.cloudhacking.androidgame2.engine.AnimatedGridItem;
  * TODO: Eventually this class should probably be abstract
  */
 public /*abstract*/ class Tower extends AnimatedGridItem {
-    private static final String TAG = Tower.class.getSimpleName();
 
     public Tower() {
     }

@@ -1,4 +1,4 @@
-package net.cloudhacking.androidgame2.engine;
+package net.cloudhacking.androidgame2.engine.utils;
 
 import android.util.Log;
 import android.view.MotionEvent;

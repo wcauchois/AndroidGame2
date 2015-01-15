@@ -5,16 +5,11 @@ import android.util.Log;
 /**
  * Created by Andrew on 1/15/2015.
  *
- * Extend this in order to get access to the TAG variable
- *
+ * Provides access to the TAG variable
  */
 public class Loggable {
 
     // ex: Log.d(TAG, "debug message");
-    protected String TAG;
-
-    public Loggable() {
-        TAG = this.getClass().getSimpleName();
-    }
+    public static final String TAG = "General";
 
 }

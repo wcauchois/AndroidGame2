@@ -10,7 +10,6 @@ import java.util.ArrayDeque;
  * Created by Andrew on 1/7/2015.
  */
 public /*abstract*/ class Creep extends AnimatedGridItem {
-    private static final String TAG = Creep.class.getSimpleName();
 
     private float mVelocity;
     private ArrayDeque<int[]> mWaypoints;   // TODO: Convert all this to use Vec2
