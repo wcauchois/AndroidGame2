@@ -15,10 +15,8 @@ public class CameraController {
         private Vec2 mCameraOriginalPos;
 
         public void onStart(InputManager.Pointer pointer) {
-            if (mPointer != null) {
-                mCameraOriginalPos = mCamera.getPosition();
-                mPointer = pointer;
-            }
+            mCameraOriginalPos = mCamera.getPosition();
+            mPointer = pointer;
         }
 
         public void onEnd(InputManager.Pointer pointer) {
