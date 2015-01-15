@@ -56,13 +56,11 @@ public class Vec2 {
     }
 
     public Vec2 scale(float s) {
-        this.x = s * this.x;
-        this.y = s * this.y;
-        return this;
+        return new Vec2(s * this.x, s * this.y);
     }
 
-    public void normalize() {
-        scale( 1/dist() );
+    public Vec2 normalize() {
+        return scale( 1/dist() );
     }
 
     public float dist() {
@@ -79,6 +77,10 @@ public class Vec2 {
 
     public float cross(Vec2 other) {
         return (this.x * other.y - this.y * other.x);
+    }
+
+    public Vec2 copy() {
+        return new Vec2(this.x, this.y);
     }
 
     public String toString() {

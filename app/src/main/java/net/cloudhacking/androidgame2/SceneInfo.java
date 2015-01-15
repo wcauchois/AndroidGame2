@@ -11,9 +11,9 @@ public interface SceneInfo {
 
     public float[] getProjectionCamera();
 
-    public int getViewportWidth();
+    public float getViewportWidth();
 
-    public int getViewportHeight();
+    public float getViewportHeight();
 
     public void update();
 

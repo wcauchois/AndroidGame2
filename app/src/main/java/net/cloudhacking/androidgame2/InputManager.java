@@ -1,10 +1,10 @@
 package net.cloudhacking.androidgame2;
 
 import android.util.Log;
-import android.util.SparseArray;
 import android.view.MotionEvent;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -24,7 +24,7 @@ public class InputManager {
     private static final boolean LOG_INPUT = false;
     private static final boolean LOG_TRIGGERS = true;
 
-    private SparseArray<Pointer> mPointers = new SparseArray<Pointer>();
+    private HashMap<Integer, Pointer> mPointers = new HashMap<Integer, Pointer>();
     private MultiTouch mMultiTouch = null;
 
 
@@ -35,6 +35,7 @@ public class InputManager {
         private int mId;
         private Vec2 mStartPos;
         private Vec2 mCurrentPos;
+        private Vec2 mLastPos;
         private boolean mDown;
         private boolean mDragging=false;
 
@@ -61,11 +62,15 @@ public class InputManager {
         public Vec2 getCurrentPos() {
             return mCurrentPos;
         }
-        public Vec2 getDelta() {
+        public Vec2 getDisplacement() {
             return mCurrentPos.subtract(mStartPos);
+        }
+        public Vec2 getDelta() {
+            return mCurrentPos.subtract(mLastPos);
         }
 
         public void update( MotionEvent e, int index ) {
+            mLastPos = mCurrentPos.copy();
             mCurrentPos.set(e.getX(index), e.getY(index));
         }
 
@@ -249,7 +254,7 @@ public class InputManager {
                     if (count==1) {
                         // only trigger drag for first finger down
                         pointerMT0 = mPointers.get( e.getPointerId(0) );
-                        if (!pointerMT0.checkDragging() && pointerMT0.getDelta().dist()>0) {
+                        if (!pointerMT0.checkDragging() && pointerMT0.getDisplacement().dist()>0) {
                             pointerMT0.setDragging(true);
                             triggerStartDrag(pointerMT0);
                         }
@@ -259,12 +264,16 @@ public class InputManager {
                         // drag for both fingers
                         pointerMT0 = mPointers.get( e.getPointerId(0) );
                         pointerMT1 = mPointers.get( e.getPointerId(1) );
-                        if (!pointerMT0.checkDragging() && pointerMT0.getDelta().dist()>0) {
+                        if (!pointerMT0.checkDragging() && pointerMT0.getDisplacement().dist()>0) {
                             pointerMT0.setDragging(true);
                             triggerStartDrag(pointerMT0);
                         }
 
-                        if (!pointerMT1.checkDragging() && pointerMT1.getDelta().dist()>0) {
+                        /*if (mMultiTouch == null && pointerMT1.getDisplacement().dist()>0) {
+                            mMultiTouch = new MultiTouch(pointerMT0, pointerMT1);
+                            triggerStartMultiTouch(mMultiTouch);
+                        }*/
+                        if (!pointerMT1.checkDragging() && pointerMT1.getDisplacement().dist()>0) {
                             pointerMT1.setDragging(true);
                             triggerStartDrag(pointerMT1);
                             mMultiTouch = new MultiTouch(pointerMT0, pointerMT1);
@@ -278,8 +287,7 @@ public class InputManager {
                     break;
 
                 case MotionEvent.ACTION_POINTER_UP:
-                    pointerTmp = mPointers.get( e.getPointerId( e.getActionIndex() ) ).up();
-                    mPointers.remove( pointerTmp.getId() );
+                    pointerTmp = mPointers.remove(e.getPointerId(e.getActionIndex())).up();
 
                     if (LOG_INPUT) Log.d(TAG, "ACTION_POINTER_UP: " + pointerTmp);
 
@@ -297,8 +305,7 @@ public class InputManager {
                     break;
 
                 case MotionEvent.ACTION_UP:
-                    pointerTmp = mPointers.get( e.getPointerId( 0 ) ).up();
-                    mPointers.remove( pointerTmp.getId() );
+                    pointerTmp = mPointers.remove(e.getPointerId(0)).up();
 
                     if (LOG_INPUT) Log.d(TAG, "ACTION_UP: " + pointerTmp);
 

@@ -29,7 +29,7 @@ public class TDGame extends Activity implements GLSurfaceView.Renderer, View.OnT
     private static final float SCENE_SCALE = 2f;
 
     private SceneInfo mSceneInfo;
-    private int mViewportWidth, mViewportHeight;
+    private float mViewportWidth, mViewportHeight;
 
     private GameState mGameState;
     private InputManager mInputManager;
@@ -41,7 +41,6 @@ public class TDGame extends Activity implements GLSurfaceView.Renderer, View.OnT
     private TreeSet<RenderLayer> mRenderLayers = RenderLayer.getsRenderLayers();
 
     protected ArrayList<MotionEvent> mTouchEvents = new ArrayList<MotionEvent>(); // Accumulated touch events
-
 
 
     @Override
@@ -65,8 +64,8 @@ public class TDGame extends Activity implements GLSurfaceView.Renderer, View.OnT
             public float getSceneScale() { return mSceneScale; }
             public float[] getProjection() { return mProjectionMatrix; }
             public float[] getProjectionCamera() { return mProjectionCameraMatrix; }
-            public int getViewportWidth()  { return mViewportWidth; }
-            public int getViewportHeight() { return mViewportHeight; }
+            public float getViewportWidth()  { return mViewportWidth; }
+            public float getViewportHeight() { return mViewportHeight; }
 
             public void update() {
                 Matrix.multiplyMM(mProjectionCameraMatrix, 0, mProjectionMatrix, 0, mCamera.getMatrix(), 0);
@@ -84,7 +83,6 @@ public class TDGame extends Activity implements GLSurfaceView.Renderer, View.OnT
         mInputManager = new InputManager();
 
         mGameState = new GameState();
-        mGameState.setUpGameLevel(mSceneInfo);
 
         mCamera = new Camera();
         mCameraController = new CameraController(mCamera, mInputManager, mSceneInfo);
@@ -161,6 +159,7 @@ public class TDGame extends Activity implements GLSurfaceView.Renderer, View.OnT
         mViewportHeight = height;
 
         mSceneInfo.reset(width, height, SCENE_SCALE);
+        mCameraController.reset();
     }
 
 
