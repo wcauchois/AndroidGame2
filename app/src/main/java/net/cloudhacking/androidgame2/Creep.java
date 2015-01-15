@@ -2,8 +2,9 @@ package net.cloudhacking.androidgame2;
 
 import android.opengl.Matrix;
 
+import net.cloudhacking.androidgame2.engine.AnimatedGridItem;
+
 import java.util.ArrayDeque;
-import java.util.HashMap;
 
 /**
  * Created by Andrew on 1/7/2015.
@@ -11,20 +12,8 @@ import java.util.HashMap;
 public /*abstract*/ class Creep extends AnimatedGridItem {
     private static final String TAG = Creep.class.getSimpleName();
 
-    // TODO: see comment in Tower class about this hashmap.
-    private static HashMap<String, int[]> sAnimationCache = new HashMap<String, int[]>();
-
-    public static void addAnimationSeq(String handle, int[] animationSeq) {
-        sAnimationCache.put(handle, animationSeq);
-    }
-
-    public void queueAnimation(String handle, long frameTime, boolean loop) {
-        queueAnimationSequence(sAnimationCache.get(handle), frameTime, loop);
-    }
-
-
     private float mVelocity;
-    private ArrayDeque<int[]> mWaypoints;
+    private ArrayDeque<int[]> mWaypoints;   // TODO: Convert all this to use Vec2
     private int[] mCurrentWaypoint;
     private static final int WAYPOINT_THRESHOLD = 5 /*pixels*/;  // distance from waypoint where we
                                                                  // can consider it reached

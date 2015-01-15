@@ -1,6 +1,6 @@
-package net.cloudhacking.androidgame2;
+package net.cloudhacking.androidgame2.engine;
 
-import android.util.Log;
+import net.cloudhacking.androidgame2.engine.utils.Vec2;
 
 import java.util.ArrayList;
 
@@ -28,9 +28,7 @@ public class LevelGrid {
     }
 
 
-    public static abstract class GridItem {
-        private static final String TAG = GridItem.class.getSimpleName();
-
+    public static abstract class GridItem extends Entity {
         private int mPosX, mPosY;
         private float mRotation;
         private float mScaleX, mScaleY;
@@ -111,9 +109,6 @@ public class LevelGrid {
         public void setTileIndex(int tileIndex) {
             mTileIndex = tileIndex;
         }
-
-        // override this; called in GameLevel.update()
-        public void update() {};
 
         // called in: GameSurfaceRenderer.onDrawFrame() -> RenderLayer.draw() -> SpriteGroup.draw()
         public void draw(QuadDrawer quadDrawer, TileSet tileSet) {

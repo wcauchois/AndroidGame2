@@ -1,16 +1,22 @@
 package net.cloudhacking.androidgame2;
 
 import android.app.Activity;
-import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+
+import net.cloudhacking.androidgame2.engine.LevelGrid;
+import net.cloudhacking.androidgame2.engine.RenderLayer;
+import net.cloudhacking.androidgame2.engine.SceneInfo;
+import net.cloudhacking.androidgame2.engine.Camera;
+import net.cloudhacking.androidgame2.engine.CameraController;
+import net.cloudhacking.androidgame2.engine.InputManager;
+import net.cloudhacking.androidgame2.engine.utils.TextureUtils;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,6 @@
-package net.cloudhacking.androidgame2;
+package net.cloudhacking.androidgame2.engine;
+
+import net.cloudhacking.androidgame2.engine.utils.JsonMap;
 
 /**
  * Created by Andrew on 1/7/2015.

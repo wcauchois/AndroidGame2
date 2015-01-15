@@ -1,4 +1,4 @@
-package net.cloudhacking.androidgame2;
+package net.cloudhacking.androidgame2.engine;
 
 /**
  * Created by wcauchois on 1/4/15.

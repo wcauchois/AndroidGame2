@@ -1,6 +1,4 @@
-package net.cloudhacking.androidgame2;
-
-import android.util.Log;
+package net.cloudhacking.androidgame2.engine;
 
 import java.util.ArrayList;
 import java.util.List;

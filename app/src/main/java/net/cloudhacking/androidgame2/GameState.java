@@ -2,6 +2,9 @@ package net.cloudhacking.androidgame2;
 
 import android.util.Log;
 
+import net.cloudhacking.androidgame2.engine.SceneInfo;
+import net.cloudhacking.androidgame2.engine.utils.Vec2;
+
 /**
  * Created by wcauchois on 1/3/15.
  */

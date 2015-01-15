@@ -1,7 +1,10 @@
-package net.cloudhacking.androidgame2;
+package net.cloudhacking.androidgame2.engine;
 
 import android.content.Context;
 import android.util.Log;
+
+import net.cloudhacking.androidgame2.Component;
+import net.cloudhacking.androidgame2.engine.utils.TextureUtils;
 
 /**
  * This represents a texture containing many uniformly-sized tiles, and
@@ -9,7 +12,6 @@ import android.util.Log;
  * Created by wcauchois on 1/4/15.
  */
 public class TileSet extends Component {
-    private static final String TAG = TileSet.class.getSimpleName();
 
     private int mTileWidth;
     private int mTileHeight;

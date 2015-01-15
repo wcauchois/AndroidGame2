@@ -1,15 +1,24 @@
 package net.cloudhacking.androidgame2;
 
 
-import android.util.Log;
+import net.cloudhacking.androidgame2.engine.AnimatedGridItem.AnimationCache;
+import net.cloudhacking.androidgame2.engine.utils.JsonMap;
+import net.cloudhacking.androidgame2.engine.LevelGrid;
+import net.cloudhacking.androidgame2.engine.RenderLayer;
+import net.cloudhacking.androidgame2.engine.SceneInfo;
+import net.cloudhacking.androidgame2.engine.SimpleRenderService;
+import net.cloudhacking.androidgame2.engine.SpriteGroup;
+import net.cloudhacking.androidgame2.engine.TileSet;
+import net.cloudhacking.androidgame2.engine.TiledBackground;
+import net.cloudhacking.androidgame2.engine.utils.Loggable;
+import net.cloudhacking.androidgame2.engine.utils.Vec2;
 
 import java.util.ArrayList;
 
 /**
  * Created by wcauchois on 1/4/15.
  */
-public class GameLevel {
-    private static final String TAG = GameLevel.class.getSimpleName();
+public class GameLevel extends Loggable {
 
     private SceneInfo mSceneInfo;
     private LevelGrid mLevelGrid;
@@ -41,7 +50,6 @@ public class GameLevel {
         // use this for handling grid and pixel coordinates
         mLevelGrid = new LevelGrid(GRID_WIDTH, GRID_HEIGHT, NODE_PIXEL_WIDTH, NODE_PIXEL_HEIGHT);
 
-
         // add tiled background render layer
         mBackgroundRenderLayer = new RenderLayer(new SimpleRenderService(mSceneInfo),
                                                  BACKGROUND_RENDER_LAYER_PRIORITY);
@@ -66,7 +74,7 @@ public class GameLevel {
 
         // bind animation sequence to Tower class; this sequence will alternate between first and
         // second tile indexes of the mBasicTowerGroup's tile set.
-        Tower.addAnimationSeq("fire", new int[] {0, 1});
+        AnimationCache.addAnimation(Tower.class, "fire", new int[]{0, 1});
 
         mTestTowers = new Tower[5];
         for (int i=0; i<5; i++) {
@@ -99,7 +107,6 @@ public class GameLevel {
         for (LevelGrid.GridItem gridItem : mGridItems) {
             gridItem.update();
         }
-
         // update projectiles here?
 
     }

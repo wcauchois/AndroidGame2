@@ -1,4 +1,6 @@
-package net.cloudhacking.androidgame2;
+package net.cloudhacking.androidgame2.engine;
+
+import java.util.HashMap;
 
 /**
  * Created by Andrew on 1/8/2015.
@@ -16,6 +18,43 @@ public abstract class AnimatedGridItem extends LevelGrid.GridItem {
     private long mSysTimeNow;
     private long mSysTimeSinceSwitch = 0;
 
+    private String mHandlePrefix;
+
+
+    public static class AnimationCache {
+        /**
+         * This maps a handle that describes an animation to an animation sequence itself. The
+         * handle's prefix is the name of the class, so different classes can have animations with
+         * the same handle.
+         *
+         * An animation sequence is a map from the current frame number of the animation sequence to
+         * the corresponding tile index on the sprite sheet, i.e.:
+         *      tileIndex = animationSeq[frameNumber];
+         */
+        private static HashMap<String, int[]> sCache = new HashMap<String, int[]>();
+
+        public static int[] get(String formalHandle) {
+            return sCache.get(formalHandle);
+        }
+
+
+        /**
+         * Add an animation sequence to the animation cache.
+         *
+         * @param cls  Class to which this animation will be attached
+         * @param handle  String describing this animation (used for lookup)
+         * @param animationSeq Animation sequence
+         * @param <T>  Class extending AnimatedGridItem
+         */
+        public static <T extends AnimatedGridItem> void addAnimation(Class<T> cls,
+                                                                     String handle,
+                                                                     int[] animationSeq) {
+            String formalHandle = cls.getSimpleName() + "__" + handle;
+            sCache.put(formalHandle, animationSeq);
+        }
+    }
+
+
 
     public AnimatedGridItem() {
         mDefaultTileIndex = 0;
@@ -23,6 +62,8 @@ public abstract class AnimatedGridItem extends LevelGrid.GridItem {
         mCurrentAnimationSeq = new int[] {0};
         mCurrentlyAnimating = false;
         mLoopAnimation = false;
+
+        mHandlePrefix = this.getClass().getSimpleName() + "__";
     }
 
     public int getDefaultTileIndex() {
@@ -53,6 +94,8 @@ public abstract class AnimatedGridItem extends LevelGrid.GridItem {
         mLoopAnimation = bool;
     }
 
+
+
     /**
      * Queue an animation. TODO: Force animation?
      *
@@ -70,6 +113,11 @@ public abstract class AnimatedGridItem extends LevelGrid.GridItem {
         mSysTimeLast = System.currentTimeMillis();
         mSysTimeSinceSwitch = 0;
     }
+
+    public void queueAnimation(String handle, long frameTime, boolean loop) {
+        queueAnimationSequence(AnimationCache.get(mHandlePrefix + handle), frameTime, loop);
+    }
+
 
 
     public void updateAnimation() {

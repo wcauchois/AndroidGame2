@@ -1,8 +1,12 @@
-package net.cloudhacking.androidgame2;
+package net.cloudhacking.androidgame2.engine;
 
 import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
+
+import net.cloudhacking.androidgame2.Component;
+import net.cloudhacking.androidgame2.R;
+import net.cloudhacking.androidgame2.engine.utils.RenderUtils;
 
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
@@ -11,7 +15,6 @@ import java.nio.ShortBuffer;
  * Created by wcauchois on 1/4/15.
  */
 public class SimpleRenderService extends Component {
-    private static final String TAG = SimpleRenderService.class.getSimpleName();
 
     private SceneInfo mSceneInfo;
     private QuadDrawerImpl mQuadDrawer;
@@ -71,7 +74,7 @@ public class SimpleRenderService extends Component {
         }
 
         public void beginDraw() {
-            checkResourcesPrepared(TAG);
+            checkResourcesPrepared();
 
             GLES20.glUseProgram(mProgramHandle);
             RenderUtils.checkGlError("glUseProgram");

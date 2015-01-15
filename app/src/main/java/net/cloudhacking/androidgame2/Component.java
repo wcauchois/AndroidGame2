@@ -3,6 +3,8 @@ package net.cloudhacking.androidgame2;
 import android.content.Context;
 import android.util.Log;
 
+import net.cloudhacking.androidgame2.engine.utils.Loggable;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,12 +14,12 @@ import java.util.List;
  *
  * Created by wcauchois on 1/4/15.
  */
-public abstract class Component {
+public abstract class Component extends Loggable {
 
     /*
      * This is a static collection which contains all the components.
      */
-    public static List<Component> sComponents = new ArrayList<Component>();
+    private static List<Component> sComponents = new ArrayList<Component>();
 
     public static List<Component> getComponents() {
         return sComponents;
@@ -39,7 +41,7 @@ public abstract class Component {
 
     public void prepareResources(Context context) {}  // set mResourcesPrepared=true;
 
-    public void checkResourcesPrepared(String TAG) {
+    public void checkResourcesPrepared() {
         if (!mResourcesPrepared) {
             Log.e(TAG, "resources not prepared");
             throw new RuntimeException(TAG + ": resources not prepared");
