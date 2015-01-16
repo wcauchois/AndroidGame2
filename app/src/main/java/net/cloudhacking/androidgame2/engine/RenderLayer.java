@@ -25,14 +25,14 @@ public class RenderLayer implements Comparable<RenderLayer> {
 
 
     private SimpleRenderService mRenderService;  // should be generalized render service
-    private List<Renderable> mLayerMembers;
+    private List<RenderableOld> mLayerMembers;
     private int mLayerPriority;
 
 
     public RenderLayer(SimpleRenderService renderService, int layerPriority) {
         mRenderService = renderService;
         mLayerPriority = layerPriority;
-        mLayerMembers = new ArrayList<Renderable>();
+        mLayerMembers = new ArrayList<RenderableOld>();
 
         sRenderLayers.add(this);
     }
@@ -47,12 +47,12 @@ public class RenderLayer implements Comparable<RenderLayer> {
     }
 
 
-    public <T extends Renderable> T addMember(T member) {
+    public <T extends RenderableOld> T addMember(T member) {
         mLayerMembers.add(member);
         return member;
     }
 
-    public List<Renderable> getLayerMembers() {
+    public List<RenderableOld> getLayerMembers() {
         return mLayerMembers;
     }
 
@@ -60,7 +60,7 @@ public class RenderLayer implements Comparable<RenderLayer> {
     public void draw() {
         QuadDrawerOld quadDrawer = mRenderService.getQuadDrawer();
         quadDrawer.beginDraw();
-        for (Renderable member : mLayerMembers) {
+        for (RenderableOld member : mLayerMembers) {
             member.draw(quadDrawer);
         }
         quadDrawer.endDraw();

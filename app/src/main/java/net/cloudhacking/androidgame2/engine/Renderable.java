@@ -1,16 +1,15 @@
 package net.cloudhacking.androidgame2.engine;
 
+import net.cloudhacking.androidgame2.engine.utils.Vec2;
+
 /**
- * Created by Andrew on 1/5/2015.
+ * Created by Andrew on 1/15/2015.
  */
-public interface Renderable {
+public class Renderable extends Entity {
 
-    /*
-     * Represents anything that can be rendered.
-     *
-     * TODO: Implement comparability so that the render layer knows in which order to draw renderables.
-     */
+    protected Vec2 mPos;
+    protected Vec2 mScale;
+    protected float mRotation;
 
-    public void draw(QuadDrawerOld quadDrawer);
 
 }

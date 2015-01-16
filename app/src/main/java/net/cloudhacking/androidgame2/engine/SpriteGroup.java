@@ -5,8 +5,7 @@ import java.util.ArrayList;
 /**
  * Created by Andrew on 1/7/2015.
  */
-public class SpriteGroup implements Renderable {
-    private static final String TAG = SpriteGroup.class.getSimpleName();
+public class SpriteGroup implements RenderableOld {
 
     private TileSet mTileSet;
     private ArrayList<LevelGrid.GridItem> mGridItemList;

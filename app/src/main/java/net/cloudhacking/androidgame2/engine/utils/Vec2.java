@@ -1,5 +1,7 @@
 package net.cloudhacking.androidgame2.engine.utils;
 
+import android.util.FloatMath;
+
 /**
  * Created by wcauchois on 1/8/15.
  */
@@ -64,7 +66,7 @@ public class Vec2 {
     }
 
     public float dist() {
-        return (float) Math.sqrt(this.x * this.x + this.y * this.y);
+        return FloatMath.sqrt(this.x * this.x + this.y * this.y);
     }
 
     public float sqDist() {

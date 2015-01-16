@@ -5,7 +5,7 @@ import net.cloudhacking.androidgame2.engine.utils.JsonMap;
 /**
  * Created by Andrew on 1/7/2015.
  */
-public class TiledBackground implements Renderable {
+public class TiledBackground implements RenderableOld {
     private static final String TAG = TiledBackground.class.getSimpleName();
 
     private TileSet mTileSet;

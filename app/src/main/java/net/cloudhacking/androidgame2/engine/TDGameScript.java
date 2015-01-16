@@ -20,7 +20,7 @@ public class TDGameScript extends GLScript {
     public Uniform uColorA;
 
 
-    public TDGameScript(Context context) {
+    public TDGameScript() {
 
         compileGLAssets();
 
@@ -67,40 +67,47 @@ public class TDGameScript extends GLScript {
         "}";
 
 
+
+    public void use() {
+        super.use();
+
+        aXY.enable();
+        aUV.enable();
+    }
+
+
     /**
-     * Draw a single quad
+     * Set the vertex attribute pointers for the XY coordinates and UV coordinates attributes
      *
      * @param vertices FloatBuffer containing XY coordinates of vertices and UV coordinates of
-     *                 texture vertices.  Each coordinate takes up two positions in the buffer,
-     *                 and the XY and UV coordinates alternate such that the XY coordinates start
+     *                 texture vertices.  Each coordinate takes up two positions in the buffer.
+     *                 The XY and UV coordinates alternate such that the XY coordinates start
      *                 at the zero-th position and occur every 4 positions, and the UV coordinates
      *                 start at the second position and also occur every 4 positions.
      */
-    public void drawQuad(FloatBuffer vertices) {
-
+    public void setVertexAttribPointers(FloatBuffer vertices) {
         vertices.position(0);
         aXY.vertexAttribPointer(2, 4, vertices);
 
         vertices.position(2);
         aUV.vertexAttribPointer(2, 4, vertices);
+    }
 
+    /**
+     * Draw a single quad
+     */
+    public void drawQuad(FloatBuffer vertices) {
+        setVertexAttribPointers(vertices);
         QuadDrawer.drawQuad();
     }
 
     /**
      * Draw multiple quads
      *
-     * @param vertices ***see drawQuad()***
-     * @param quadCount number of quads in vertex buffer
+     * @param quadCount number of quads with vertices in vertex buffer
      */
     public void drawQuadSet(FloatBuffer vertices, int quadCount) {
-
-        vertices.position(0);
-        aXY.vertexAttribPointer(2, 4, vertices);
-
-        vertices.position(2);
-        aUV.vertexAttribPointer(2, 4, vertices);
-
+        setVertexAttribPointers(vertices);
         QuadDrawer.drawQuadSet(quadCount);
     }
 
