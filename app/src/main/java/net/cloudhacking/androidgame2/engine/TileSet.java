@@ -54,11 +54,11 @@ public class TileSet extends Component {
     }
 
 
-    public void prepareTexture(QuadDrawer quadDrawer) {
+    public void prepareTexture(QuadDrawerOld quadDrawer) {
         quadDrawer.prepareTexture(mTextureInfo.getGLTextureUnit());
     }
 
-    public void drawTile(QuadDrawer quadDrawer, int tileIndex, float x, float y, float rot, float sx, float sy) {
+    public void drawTile(QuadDrawerOld quadDrawer, int tileIndex, float x, float y, float rot, float sx, float sy) {
         // TODO(wcauchois): Some of these should probably be precomputed.
         float tw = 1.0f / (float) mSetWidth;
         float th = 1.0f / (float) mSetHeight;

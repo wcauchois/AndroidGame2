@@ -3,7 +3,7 @@ package net.cloudhacking.androidgame2.engine;
 /**
  * Created by wcauchois on 1/4/15.
  */
-public interface QuadDrawer {
+public interface QuadDrawerOld {
     public void beginDraw();
 
     /**

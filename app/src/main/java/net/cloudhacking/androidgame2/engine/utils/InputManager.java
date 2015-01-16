@@ -1,10 +1,6 @@
 package net.cloudhacking.androidgame2.engine.utils;
 
-import android.util.Log;
 import android.view.MotionEvent;
-
-import net.cloudhacking.androidgame2.engine.utils.Loggable;
-import net.cloudhacking.androidgame2.engine.utils.Vec2;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,8 +19,8 @@ import java.util.List;
  *
  */
 public class InputManager extends Loggable {
-    private static final boolean LOG_INPUT = false;
-    private static final boolean LOG_TRIGGERS = false;
+    private static final boolean DEBUG_INPUT = false;
+    private static final boolean DEBUG_TRIGGERS = false;
 
     private HashMap<Integer, Pointer> mPointers = new HashMap<Integer, Pointer>();
     private MultiTouch mMultiTouch = null;
@@ -172,14 +168,14 @@ public class InputManager extends Loggable {
         for (ClickListener listener : mClickListeners) {
             listener.onClick(pointer);
         }
-        if (LOG_TRIGGERS) Log.d(TAG, "Click Triggered: pointer=" + pointer);
+        if (DEBUG_TRIGGERS) d("Click Triggered: pointer=" + pointer);
     }
 
     private void triggerStartDrag(Pointer pointer) {
         for (DragListener listener : mDragListeners) {
             listener.onStart(pointer);
         }
-        if (LOG_TRIGGERS) Log.d(TAG, "StartDrag Triggered: pointer=" + pointer);
+        if (DEBUG_TRIGGERS) d("StartDrag Triggered: pointer=" + pointer);
     }
 
     private void triggerUpdateDrag() {
@@ -192,14 +188,14 @@ public class InputManager extends Loggable {
         for (DragListener listener : mDragListeners) {
             listener.onEnd(pointer);
         }
-        if (LOG_TRIGGERS) Log.d(TAG, "EndDrag Triggered: pointer=" + pointer);
+        if (DEBUG_TRIGGERS) d("EndDrag Triggered: pointer=" + pointer);
     }
 
     private void triggerStartMultiTouch(MultiTouch multiTouch) {
         for (MultiTouchListener listener : mMultiTouchListeners) {
             listener.onStart(multiTouch);
         }
-        if (LOG_TRIGGERS) Log.d(TAG, "StartMultiTouch Triggered: multiTouch=" + multiTouch);
+        if (DEBUG_TRIGGERS) d("StartMultiTouch Triggered: multiTouch=" + multiTouch);
     }
 
     private void triggerUpdateMultiTouch() {
@@ -212,7 +208,7 @@ public class InputManager extends Loggable {
         for (MultiTouchListener listener : mMultiTouchListeners) {
             listener.onEnd(multiTouch);
         }
-        if (LOG_TRIGGERS) Log.d(TAG, "EndMultiTouch Triggered: multiTouch=" + multiTouch);
+        if (DEBUG_TRIGGERS) d("EndMultiTouch Triggered: multiTouch=" + multiTouch);
     }
 
 
@@ -234,14 +230,14 @@ public class InputManager extends Loggable {
                     pointerTmp = new Pointer(e, 0);
                     mPointers.put(pointerTmp.getId(), pointerTmp);
 
-                    if (LOG_INPUT) Log.d(TAG, "ACTION_DOWN: " + pointerTmp);
+                    if (DEBUG_INPUT) d("ACTION_DOWN: " + pointerTmp);
                     break;
 
                 case MotionEvent.ACTION_POINTER_DOWN:
                     pointerTmp = new Pointer(e, e.getActionIndex() );
                     mPointers.put(pointerTmp.getId(), pointerTmp);
 
-                    if (LOG_INPUT) Log.d(TAG, "ACTION_POINTER_DOWN: " + pointerTmp);
+                    if (DEBUG_INPUT) d("ACTION_POINTER_DOWN: " + pointerTmp);
                     break;
 
                 case MotionEvent.ACTION_MOVE:
@@ -250,7 +246,7 @@ public class InputManager extends Loggable {
                         pointerTmp = mPointers.get( e.getPointerId(j) );
                         pointerTmp.update(e, j);
 
-                        if (LOG_INPUT) Log.d(TAG, "ACTION_MOVE: " + pointerTmp);
+                        if (DEBUG_INPUT) d("ACTION_MOVE: " + pointerTmp);
                     }
 
                     if (count==1) {
@@ -285,7 +281,7 @@ public class InputManager extends Loggable {
                 case MotionEvent.ACTION_POINTER_UP:
                     pointerTmp = mPointers.remove(e.getPointerId(e.getActionIndex())).up();
 
-                    if (LOG_INPUT) Log.d(TAG, "ACTION_POINTER_UP: " + pointerTmp);
+                    if (DEBUG_INPUT) d("ACTION_POINTER_UP: " + pointerTmp);
 
                     if (mMultiTouch != null && !mMultiTouch.checkDown()) {
                         triggerEndMultiTouch(mMultiTouch);
@@ -303,7 +299,7 @@ public class InputManager extends Loggable {
                 case MotionEvent.ACTION_UP:
                     pointerTmp = mPointers.remove(e.getPointerId(0)).up();
 
-                    if (LOG_INPUT) Log.d(TAG, "ACTION_UP: " + pointerTmp);
+                    if (DEBUG_INPUT) d("ACTION_UP: " + pointerTmp);
 
                     if (pointerTmp.checkDragging()) {
                         triggerEndDrag(pointerTmp);

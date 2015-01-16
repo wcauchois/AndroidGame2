@@ -29,7 +29,7 @@ public class SpriteGroup implements Renderable {
     }
 
 
-    public void draw(QuadDrawer quadDrawer) {
+    public void draw(QuadDrawerOld quadDrawer) {
         mTileSet.prepareTexture(quadDrawer);
         for (LevelGrid.GridItem gridItem : mGridItemList) {
             gridItem.draw(quadDrawer, mTileSet);

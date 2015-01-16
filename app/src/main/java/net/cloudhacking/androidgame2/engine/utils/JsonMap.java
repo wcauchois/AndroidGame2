@@ -45,7 +45,7 @@ public class JsonMap extends Component {
     }
 
     public void loadFromResource(Context context, int resourceId) {
-        String resourceString = RenderUtils.readTextFileFromRawResource(context, resourceId);
+        String resourceString = Utils.readTextFileFromRawResource(context, resourceId);
         try {
             JSONObject object = new JSONObject(resourceString);
             JSONArray tilesArray = object.getJSONArray("tiles");

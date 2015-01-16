@@ -34,7 +34,7 @@ public class TiledBackground implements Renderable {
     }
 
 
-    public void draw(QuadDrawer quadDrawer) {
+    public void draw(QuadDrawerOld quadDrawer) {
         mTileSet.prepareTexture(quadDrawer);
         for (int row = 0; row < mJsonMap.getHeight(); row++) {
             for (int col = 0; col < mJsonMap.getWidth(); col++) {

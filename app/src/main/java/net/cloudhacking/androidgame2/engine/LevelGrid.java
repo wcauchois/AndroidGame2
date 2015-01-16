@@ -112,7 +112,7 @@ public class LevelGrid {
         }
 
         // called in: GameSurfaceRenderer.onDrawFrame() -> RenderLayer.draw() -> SpriteGroup.draw()
-        public void draw(QuadDrawer quadDrawer, TileSet tileSet) {
+        public void draw(QuadDrawerOld quadDrawer, TileSet tileSet) {
             tileSet.drawTile(quadDrawer, mTileIndex,
                     mPosX, mPosY, mRotation, mScaleX, mScaleY);
         }

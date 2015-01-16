@@ -9,7 +9,32 @@ import android.util.Log;
  */
 public class Loggable {
 
-    // ex: Log.d(TAG, "debug message");
-    public static final String TAG = "General";
+    protected static final String TAG = "Utils";  // for static references
 
+    // ex: Log.d(TAG, "debug message");
+    protected String _TAG;
+
+    public Loggable() {
+        _TAG = this.getClass().getCanonicalName();
+    }
+
+    public void v(String msg) {
+        Log.v(_TAG, msg);
+    }
+
+    public void d(String msg) {
+        Log.d(_TAG, msg);
+    }
+
+    public void i(String msg) {
+        Log.i(_TAG, msg);
+    }
+
+    public void w(String msg) {
+        Log.w(_TAG, msg);
+    }
+
+    public void e(String msg) {
+        Log.e(_TAG, msg);
+    }
 }

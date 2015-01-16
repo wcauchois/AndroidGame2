@@ -11,6 +11,6 @@ public interface Renderable {
      * TODO: Implement comparability so that the render layer knows in which order to draw renderables.
      */
 
-    public void draw(QuadDrawer quadDrawer);
+    public void draw(QuadDrawerOld quadDrawer);
 
 }

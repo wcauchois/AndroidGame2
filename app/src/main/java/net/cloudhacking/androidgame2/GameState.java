@@ -49,7 +49,7 @@ public class GameState extends Loggable {
         Vec2 arenaSize = mLevel.getLevelSize();
         mArenaWidth = arenaSize.getX();
         mArenaHeight = arenaSize.getY();
-        Log.d(TAG, "Arena size set (width="+ mArenaWidth +"px, height="+ mArenaHeight +"px)");
+        i("Arena size set (width="+ mArenaWidth +"px, height="+ mArenaHeight +"px)");
     }
     public float getArenaWidth()  { return mArenaWidth; }
     public float getArenaHeight() { return mArenaHeight; }

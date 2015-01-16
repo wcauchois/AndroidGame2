@@ -58,7 +58,7 @@ public class RenderLayer implements Comparable<RenderLayer> {
 
 
     public void draw() {
-        QuadDrawer quadDrawer = mRenderService.getQuadDrawer();
+        QuadDrawerOld quadDrawer = mRenderService.getQuadDrawer();
         quadDrawer.beginDraw();
         for (Renderable member : mLayerMembers) {
             member.draw(quadDrawer);

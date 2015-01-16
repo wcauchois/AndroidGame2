@@ -17,7 +17,7 @@ import java.nio.ShortBuffer;
 /**
  * Created by wcauchois on 1/3/15.
  */
-public class RenderUtils extends Loggable {
+public class Utils extends Loggable {
 
     public static String readTextFileFromRawResource(final Context context,
                                                      final int resourceId) {
@@ -42,7 +42,7 @@ public class RenderUtils extends Loggable {
     }
 
     public static FloatBuffer makeFloatBuffer(float[] array) {
-        ByteBuffer bb = ByteBuffer.allocateDirect(array.length * 4);
+        ByteBuffer bb = ByteBuffer.allocateDirect(array.length * (Float.SIZE/8) );
         bb.order(ByteOrder.nativeOrder());
         FloatBuffer fb = bb.asFloatBuffer();
         fb.put(array).position(0);
@@ -50,7 +50,7 @@ public class RenderUtils extends Loggable {
     }
 
     public static IntBuffer makeIntBuffer(int[] array) {
-        ByteBuffer bb = ByteBuffer.allocateDirect(array.length * 4);
+        ByteBuffer bb = ByteBuffer.allocateDirect(array.length * (Integer.SIZE/8) );
         bb.order(ByteOrder.nativeOrder());
         IntBuffer ib = bb.asIntBuffer();
         ib.put(array).position(0);
@@ -58,7 +58,7 @@ public class RenderUtils extends Loggable {
     }
 
     public static ShortBuffer makeShortBuffer(short[] array) {
-        ByteBuffer bb = ByteBuffer.allocateDirect(array.length * 4);
+        ByteBuffer bb = ByteBuffer.allocateDirect(array.length * (Short.SIZE/2) );
         bb.order(ByteOrder.nativeOrder());
         ShortBuffer sb = bb.asShortBuffer();
         sb.put(array).position(0);
@@ -87,17 +87,17 @@ public class RenderUtils extends Loggable {
     public static int createProgram(Context context,
                                     int vertexShaderResourceId,
                                     int fragmentShaderResourceId) {
-        return RenderUtils.createProgram(
-                RenderUtils.readTextFileFromRawResource(context, vertexShaderResourceId),
-                RenderUtils.readTextFileFromRawResource(context, fragmentShaderResourceId)
+        return Utils.createProgram(
+                Utils.readTextFileFromRawResource(context, vertexShaderResourceId),
+                Utils.readTextFileFromRawResource(context, fragmentShaderResourceId)
         );
     }
 
     public static int createProgram(String vertexShaderCode, String fragmentShaderCode) {
         int vertexShader =
-                RenderUtils.loadShader(GLES20.GL_VERTEX_SHADER, vertexShaderCode);
+                Utils.loadShader(GLES20.GL_VERTEX_SHADER, vertexShaderCode);
         int fragmentShader =
-                RenderUtils.loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderCode);
+                Utils.loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderCode);
 
         int programHandle = GLES20.glCreateProgram();
         GLES20.glAttachShader(programHandle, vertexShader);
