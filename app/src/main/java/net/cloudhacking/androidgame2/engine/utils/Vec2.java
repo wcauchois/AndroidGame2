@@ -6,7 +6,7 @@ import android.util.FloatMath;
  * Created by wcauchois on 1/8/15.
  */
 public class Vec2 {
-    private float x, y;
+    public float x, y;
 
     public Vec2() {
         this.x = 0.0f;
@@ -86,6 +86,6 @@ public class Vec2 {
     }
 
     public String toString() {
-        return "(" + x + ", " + y + ")";
+        return "Vec2(" + x + ", " + y + ")";
     }
 }

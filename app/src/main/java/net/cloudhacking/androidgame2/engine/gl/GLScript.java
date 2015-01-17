@@ -15,19 +15,13 @@ public abstract class GLScript extends Loggable {
     /**
      * Alias for two different openGL shader types
      */
-    public enum ShaderType {
+    public static enum ShaderType {
         VERTEX      (GLES20.GL_VERTEX_SHADER),
         FRAGMENT    (GLES20.GL_FRAGMENT_SHADER);
 
         private int mValue;
-
-        private ShaderType(int value) {
-            mValue = value;
-        }
-
-        public int getValue() {
-            return mValue;
-        }
+        private ShaderType(int value) { mValue = value; }
+        public int getValue() { return mValue; }
     }
 
     /**
@@ -83,9 +77,9 @@ public abstract class GLScript extends Loggable {
             GLES20.glDeleteShader(mHandle);
         }
 
-        public static Shader createCompiled(ShaderType type, String src) {
+        public static Shader createCompiled(ShaderType type, ShaderSrc src) {
             Shader shader = new Shader(type);
-            shader.source(src);
+            shader.source(src.getSource(type));
             shader.compile();
             return shader;
         }
@@ -122,7 +116,7 @@ public abstract class GLScript extends Loggable {
             super(location);
         }
 
-        public void setValue(int value) {
+        public void setValue1i(int value) {
             GLES20.glUniform1i(mLocation, value);
         }
 
@@ -138,8 +132,8 @@ public abstract class GLScript extends Loggable {
             GLES20.glUniform4f(mLocation, v1, v2, v3, v4);
         }
 
-        public void setValueM4(float[] value) {
-            GLES20.glUniformMatrix4fv(mLocation, 1, false, value, 0);
+        public void setValueM4(float[] matrix) {
+            GLES20.glUniformMatrix4fv(mLocation, 1, false, matrix, 0);
         }
     }
 
@@ -208,21 +202,17 @@ public abstract class GLScript extends Loggable {
     /**********************************************************************************************/
     protected Program mProgram;
 
-
-    abstract public ShaderSrc getShaderSrc();
-
     public GLScript() {
         mProgram = new Program();
     }
 
+
+    abstract public ShaderSrc getShaderSrc();
+
     public void compileGLAssets() {
         ShaderSrc src = getShaderSrc();
-        mProgram.attachShader(Shader.createCompiled(
-                ShaderType.VERTEX, src.getSource(ShaderType.VERTEX)
-        ));
-        mProgram.attachShader(Shader.createCompiled(
-                ShaderType.FRAGMENT, src.getSource(ShaderType.FRAGMENT)
-        ));
+        mProgram.attachShader(Shader.createCompiled(ShaderType.VERTEX, src));
+        mProgram.attachShader(Shader.createCompiled(ShaderType.FRAGMENT, src));
         mProgram.linkProgram();
     }
 

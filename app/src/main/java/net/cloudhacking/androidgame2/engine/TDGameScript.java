@@ -93,6 +93,7 @@ public class TDGameScript extends GLScript {
         aUV.vertexAttribPointer(2, 4, vertices);
     }
 
+
     /**
      * Draw a single quad
      */
@@ -101,10 +102,11 @@ public class TDGameScript extends GLScript {
         QuadDrawer.drawQuad();
     }
 
+
     /**
      * Draw multiple quads
      *
-     * @param quadCount number of quads with vertices in vertex buffer
+     * @param quadCount number of quads for which there are vertices in the vertex buffer
      */
     public void drawQuadSet(FloatBuffer vertices, int quadCount) {
         setVertexAttribPointers(vertices);
