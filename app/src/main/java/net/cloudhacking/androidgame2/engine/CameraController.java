@@ -14,10 +14,8 @@ public class CameraController extends Loggable {
 
     private class CameraScrollListener implements InputManager.DragListener {
         private InputManager.Pointer mPointer = null;
-        private Vec2 mCameraOriginalPos;
 
         public void onStart(InputManager.Pointer pointer) {
-            mCameraOriginalPos = mCamera.getPosition();
             mPointer = pointer;
         }
 

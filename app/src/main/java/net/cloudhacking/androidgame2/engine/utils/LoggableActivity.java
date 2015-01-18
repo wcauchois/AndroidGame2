@@ -1,21 +1,20 @@
 package net.cloudhacking.androidgame2.engine.utils;
 
+import android.app.Activity;
 import android.util.Log;
 
 /**
- * Created by Andrew on 1/15/2015.
- *
- * Provides access to the TAG variable
+ * Created by Andrew on 1/17/2015.
  */
-public class Loggable {
+public class LoggableActivity extends Activity {
 
-    // ex: Log.d(TAG, "message");
-    protected static final String TAG = "Utils";  // for static references
+    protected static final String TAG = "MainActivity";  // for static references
 
-
+    
     protected String _TAG;
 
-    public Loggable() {
+    public LoggableActivity() {
+        super();
         _TAG = this.getClass().getCanonicalName();
     }
 
@@ -38,4 +37,5 @@ public class Loggable {
     public void e(String msg) {
         Log.e(_TAG, msg);
     }
+
 }

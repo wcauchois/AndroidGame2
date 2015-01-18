@@ -13,13 +13,15 @@ public class Entity extends Loggable {
     private boolean mVisible;
     private boolean mActive;
     private boolean mExists;
+    private boolean mOnScreen;
 
     private Group mParent;
 
     public Entity () {
-        mVisible = true;
-        mActive  = true;
-        mExists  = true;
+        mVisible  = true;
+        mActive   = true;
+        mExists   = true;
+        mOnScreen = true;
     }
 
 
@@ -37,29 +39,49 @@ public class Entity extends Loggable {
         return mActive;
     }
 
+    public boolean isOnScreen() {
+        if (mParent != null) {
+            return mParent.isOnScreen() && mOnScreen;
+        }
+        return mOnScreen;
+    }
+
     public boolean exists() {
         return mExists;
     }
 
-    public Group getParent() {
-        return mParent;
-    }
 
     public void setVisibility(boolean bool) {
         mVisible = bool;
     }
 
-    public void setActive(boolean bool) {
-        mActive = bool;
+    public void setActive() {
+        mActive = true;
     }
 
-    public void setExistence(boolean bool) {
-        mExists = bool;
+    public void setInactive() {
+        mActive = false;
+    }
+
+    public void kill() {
+        setInactive();
+        mExists = false;
+    }
+
+    public void revive() {
+        mExists = true;
+        setActive();
+    }
+
+
+    public Group getParent() {
+        return mParent;
     }
 
     public void setParent(Group parent) {
         mParent = parent;
     }
+
 
     public void update() {}
 

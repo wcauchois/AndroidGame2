@@ -36,6 +36,10 @@ public class JsonMap extends Component {
         return tiles[x + y * width];
     }
 
+    public int getTile(int index) {
+        return tiles[index];
+    }
+
     public int getWidth() {
         return width;
     }

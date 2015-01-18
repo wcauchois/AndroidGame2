@@ -313,5 +313,7 @@ public class InputManager extends Loggable {
 
             e.recycle();
         }
+
+        events.clear();  // clear accumulated events
     }
 }

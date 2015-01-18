@@ -25,6 +25,19 @@ public class PointF {
         this.y = v.getY();
     }
 
+    public PointF copy() {
+        return new PointF(this.x, this.y);
+    }
+
+    public PointF add(Vec2 v) {
+        return new PointF(this.x + v.x, this.y + v.y);
+    }
+
+    public void move(Vec2 dir) {
+        this.x += dir.x;
+        this.y += dir.y;
+    }
+
     public float distTo(PointF other) {
         float dx = other.x - x;
         float dy = other.y - y;
@@ -33,6 +46,14 @@ public class PointF {
 
     public Vec2 vecTowards(PointF other) {
         return new Vec2(other.x - x, other.y - y);
+    }
+
+    public PointF scale(int s) {
+        return new PointF(s*x, s*y);
+    }
+
+    public PointF scale(PointF s) {
+        return new PointF(s.x*x, s.y*y);
     }
 
 

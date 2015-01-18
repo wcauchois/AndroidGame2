@@ -39,6 +39,23 @@ public class Texture {
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0 + glTexUnit);
     }
 
+    /**
+     * Texture options
+     */
+    public static class TextureOptions {
+        public FilterType minMode = FilterType.NEAREST;
+        public FilterType magMode = FilterType.NEAREST;
+        public WrapType wrapModeS = WrapType.CLAMP;
+        public WrapType wrapModeT = WrapType.CLAMP;
+
+        public boolean equals(TextureOptions other) {
+            return minMode   == other.minMode   &&
+                   magMode   == other.magMode   &&
+                   wrapModeS == other.wrapModeS &&
+                   wrapModeT == other.wrapModeT;
+        }
+    }
+
 
     private int mHandle;
     private boolean mPreMultiplied=false;  // whether or not alpha value has been premultiplied (I think...)
@@ -62,6 +79,10 @@ public class Texture {
 
     public Texture(Bitmap bmp) {
         this(bmp, FilterType.NEAREST, WrapType.CLAMP);
+    }
+
+    public Texture(Bitmap bmp, TextureOptions opts) {
+        this(bmp, opts.minMode, opts.magMode, opts.wrapModeS, opts.wrapModeT);
     }
 
     public Texture(Bitmap bmp, FilterType fType, WrapType wType) {
@@ -153,4 +174,13 @@ public class Texture {
         return new RectF(left/mWidth, top/mHeight, right/mWidth, bottom/mHeight);
     }
 
+
+    public TextureOptions getOptions() {
+        TextureOptions opts = new TextureOptions();
+        opts.minMode = mMinMode;
+        opts.magMode = mMagMode;
+        opts.wrapModeS = mWrapS;
+        opts.wrapModeT = mWrapT;
+        return opts;
+    }
 }

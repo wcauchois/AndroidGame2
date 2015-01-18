@@ -22,50 +22,54 @@ public class TextureFrameSet {
     private int mColumns;
     private int mRows;
 
-    private HashMap<Integer, RectF> mFrames = new HashMap<Integer, RectF>();
+    private HashMap<Integer, RectF> mUVFrames = new HashMap<Integer, RectF>();
 
 
-    public TextureFrameSet(Texture texture, int cols) {
-        this(texture, cols, 1);
+    public TextureFrameSet(Texture texture, int frameWidth) {
+        this(texture, frameWidth, texture.getHeight());
     }
 
-    public TextureFrameSet(Texture texture, int cols, int rows) {
+    public TextureFrameSet(Texture texture, int frameWidth, int frameHeight) {
+
         mTextureWidth = texture.getWidth();
         mTextureHeight = texture.getHeight();
 
-        float du = (float)mTextureWidth / cols;
-        float dv = (float)mTextureHeight / rows;
-
         RectF rect;
+        float du = frameWidth/mTextureWidth;
+        float dv = frameHeight/mTextureHeight;
+
+        int rows = mTextureWidth/frameWidth;
+        int cols = mTextureHeight/frameHeight;
+
         for (int i=0; i<rows; i++) {
             for (int j=0; j<cols; j++) {
                 rect = new RectF(j*du, i*dv, (j+1)*du, (i+1)*dv);
-                mFrames.put((i*cols + j), rect);
+                mUVFrames.put(i*cols+j, rect);
             }
         }
+        mUVFrames.put(-1, FULL);
 
-        mFrameWidth = (int)du;
-        mFrameHeight = (int)dv;
-
+        mFrameWidth = frameWidth;
+        mFrameHeight = frameHeight;
         mColumns = cols;
         mRows = rows;
     }
 
 
-    public int getFrameWidth() {
+    public int getFrameWidth() {    // in texture pixels
         return mFrameWidth;
     }
 
-    public int getFrameHeight() {
+    public int getFrameHeight() {   // in texture pixels
         return mFrameHeight;
     }
 
-    public RectF getFrame(int index) {
-        return mFrames.get(index);
+    public RectF getUVFrame(int index) {
+        return mUVFrames.get(index);
     }
 
-    public RectF getFrame(int i, int j) {
-        return mFrames.get(i*mColumns + j);
+    public RectF getUVFrame(int ix, int iy) {
+        return mUVFrames.get(iy*mColumns + ix);
     }
 
 

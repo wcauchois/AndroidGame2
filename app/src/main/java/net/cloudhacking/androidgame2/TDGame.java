@@ -1,6 +1,5 @@
 package net.cloudhacking.androidgame2;
 
-import android.app.Activity;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
@@ -15,8 +14,11 @@ import net.cloudhacking.androidgame2.engine.RenderLayer;
 import net.cloudhacking.androidgame2.engine.SceneInfo;
 import net.cloudhacking.androidgame2.engine.Camera;
 import net.cloudhacking.androidgame2.engine.CameraController;
+import net.cloudhacking.androidgame2.engine.utils.GameTime;
 import net.cloudhacking.androidgame2.engine.utils.InputManager;
 import net.cloudhacking.androidgame2.engine.utils.Component;
+import net.cloudhacking.androidgame2.engine.utils.LoggableActivity;
+import net.cloudhacking.androidgame2.engine.utils.TextureCache;
 import net.cloudhacking.androidgame2.engine.utils.TextureUtils;
 
 import java.util.ArrayList;
@@ -29,8 +31,21 @@ import javax.microedition.khronos.opengles.GL10;
 /**
  * Created by Andrew on 1/13/2015.
  */
-public class TDGame extends Activity implements GLSurfaceView.Renderer, View.OnTouchListener {
-    private static final String TAG = "TDGame";
+public class TDGame extends LoggableActivity implements GLSurfaceView.Renderer, View.OnTouchListener {
+
+    /**
+     * Keep static instance
+     */
+    private static TDGame sInstance;
+    public static TDGame getInstance() {
+        return sInstance;
+    }
+
+
+    private static final float GAME_TIME_SCALE = 0.0001f;
+
+    private TestScene mScene;
+
 
     private GLSurfaceView mView;
     private static final float SCENE_SCALE = 2f;
@@ -57,6 +72,17 @@ public class TDGame extends Activity implements GLSurfaceView.Renderer, View.OnT
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+
+        sInstance = this;
+        TextureCache.setContext(sInstance);
+
+        GameTime.setTimeScale(GAME_TIME_SCALE);
+        GameTime.start();
+
+
+
+
 
         // Use this instance of SceneInfo for all rendering, since it contains all the info
         // about our viewport and provides access to the projection matrix.
@@ -172,6 +198,8 @@ public class TDGame extends Activity implements GLSurfaceView.Renderer, View.OnT
 
     @Override
     public void onDrawFrame(GL10 unused) {
+        GameTime.tick();
+
         step();
 
         GLES20.glScissor(0, 0, mViewportWidth, mViewportHeight);
@@ -190,15 +218,8 @@ public class TDGame extends Activity implements GLSurfaceView.Renderer, View.OnT
 
 
     private void step() {
-        /**
-         * Update state and do time keeping in this function.
-         *
-         * TODO: Should have a scene which represents the highest level group.
-         */
-
         synchronized (mTouchEvents) {  // TODO: why does this need to be synchronized?
             mInputManager.handleTouchEvents(mTouchEvents);
-            mTouchEvents.clear();
         }
 
         // update state

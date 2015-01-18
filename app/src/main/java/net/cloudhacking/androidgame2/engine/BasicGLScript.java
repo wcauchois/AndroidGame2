@@ -9,7 +9,7 @@ import java.nio.FloatBuffer;
 /**
  * Created by Andrew on 1/15/2015.
  */
-public class TDGameScript extends GLScript {
+public class BasicGLScript extends GLScript {
 
     public Attribute aXY;  // use to point to coordinates in game space
     public Attribute aUV;  // use to point to coordinates in texture space
@@ -20,7 +20,7 @@ public class TDGameScript extends GLScript {
     public Uniform uColorA;
 
 
-    public TDGameScript() {
+    public BasicGLScript() {
 
         compileGLAssets();
 
