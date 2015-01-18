@@ -22,6 +22,9 @@ public class Renderable extends Entity {
     private float mRotation;
     private float mRotationSpeed;
 
+    private float[] mColorM;
+    private float[] mColorA;
+
     private float[] mModelMatrix;
 
 
@@ -38,8 +41,108 @@ public class Renderable extends Entity {
         mRotation = 0f;
         mRotationSpeed = 0f;
 
+        mColorM = new float[] {1, 1, 1, 1};
+        mColorA = new float[] {0, 0, 0, 0};
+
         mModelMatrix = new float[16];
     }
+
+    public PointF getPos() {
+        return mPos;
+    }
+
+    public void setPos(PointF pos) {
+        mPos = pos;
+    }
+
+    public float getWidth() {
+        return mWidth;
+    }
+
+    public void setWidth(float width) {
+        mWidth = width;
+    }
+
+    public float getHeight() {
+        return mHeight;
+    }
+
+    public void setHeight(float height) {
+        mHeight = height;
+    }
+
+    public PointF getOrigin() {
+        return mOrigin;
+    }
+
+    public void setOrigin(PointF origin) {
+        mOrigin = origin;
+    }
+
+    public PointF getScale() {
+        return mScale;
+    }
+
+    public void setScale(float scale) {
+        mScale = new PointF(scale, scale);
+    }
+
+    public void setScale(PointF scale) {
+        mScale = scale;
+    }
+
+    public Vec2 getVelocity() {
+        return mVelocity;
+    }
+
+    public void setVelocity(Vec2 velocity) {
+        mVelocity = velocity;
+    }
+
+    public Vec2 getAcceleration() {
+        return mAcceleration;
+    }
+
+    public void setAcceleration(Vec2 acceleration) {
+        mAcceleration = acceleration;
+    }
+
+    public float getRotation() {
+        return mRotation;
+    }
+
+    public void setRotation(float rotation) {
+        mRotation = rotation;
+    }
+
+    public float getRotationSpeed() {
+        return mRotationSpeed;
+    }
+
+    public void setRotationSpeed(float rotationSpeed) {
+        mRotationSpeed = rotationSpeed;
+    }
+
+    public float[] getColorM() {
+        return mColorM.clone();
+    }
+
+    public void setColorM(float[] vm) {
+        mColorM = vm.clone();
+    }
+
+    public float[] getColorA() {
+        return mColorA.clone();
+    }
+
+    public void setColorA(float[] va) {
+        mColorA = va.clone();
+    }
+
+    public float[] getModelMatrix() {
+        return mModelMatrix;
+    }
+
 
     @Override
     public void draw() {

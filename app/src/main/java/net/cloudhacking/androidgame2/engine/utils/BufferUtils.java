@@ -17,7 +17,9 @@ import java.nio.ShortBuffer;
 /**
  * Created by wcauchois on 1/3/15.
  */
-public class Utils extends Loggable {
+public class BufferUtils extends Loggable {
+
+    private static final int FLOATS_PER_QUAD = 16;
 
     public static String readTextFileFromRawResource(final Context context,
                                                      final int resourceId) {
@@ -48,6 +50,18 @@ public class Utils extends Loggable {
         fb.put(array).position(0);
         return fb;
     }
+
+    public static FloatBuffer makeEmptyFloatBuffer() {
+        return makeEmptyFloatBuffer(1);
+    }
+
+    public static FloatBuffer makeEmptyFloatBuffer(int quadCount) {
+        ByteBuffer bb = ByteBuffer.allocateDirect(quadCount * FLOATS_PER_QUAD * (Float.SIZE/8) );
+        bb.order(ByteOrder.nativeOrder());
+        FloatBuffer fb = bb.asFloatBuffer();
+        return fb;
+    }
+
 
     public static IntBuffer makeIntBuffer(int[] array) {
         ByteBuffer bb = ByteBuffer.allocateDirect(array.length * (Integer.SIZE/8) );
@@ -87,17 +101,17 @@ public class Utils extends Loggable {
     public static int createProgram(Context context,
                                     int vertexShaderResourceId,
                                     int fragmentShaderResourceId) {
-        return Utils.createProgram(
-                Utils.readTextFileFromRawResource(context, vertexShaderResourceId),
-                Utils.readTextFileFromRawResource(context, fragmentShaderResourceId)
+        return BufferUtils.createProgram(
+                BufferUtils.readTextFileFromRawResource(context, vertexShaderResourceId),
+                BufferUtils.readTextFileFromRawResource(context, fragmentShaderResourceId)
         );
     }
 
     public static int createProgram(String vertexShaderCode, String fragmentShaderCode) {
         int vertexShader =
-                Utils.loadShader(GLES20.GL_VERTEX_SHADER, vertexShaderCode);
+                BufferUtils.loadShader(GLES20.GL_VERTEX_SHADER, vertexShaderCode);
         int fragmentShader =
-                Utils.loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderCode);
+                BufferUtils.loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderCode);
 
         int programHandle = GLES20.glCreateProgram();
         GLES20.glAttachShader(programHandle, vertexShader);

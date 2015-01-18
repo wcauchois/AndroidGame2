@@ -85,4 +85,12 @@ public class MatrixUtils {
         android.opengl.Matrix.multiplyMM( result, 0, left, 0, right, 0 );
     }
 
+    public static String matrixToString(float[] m) {
+        return "\n[["+m[ 0]+", "+m[ 4]+", "+m[ 8]+", "+m[12]+"],\n"+
+                 " ["+m[ 1]+", "+m[ 5]+", "+m[ 9]+", "+m[13]+"],\n"+
+                 " ["+m[ 2]+", "+m[ 6]+", "+m[10]+", "+m[14]+"],\n"+
+                 " ["+m[ 3]+", "+m[ 7]+", "+m[11]+", "+m[15]+"]]";
+    }
+
+
 }

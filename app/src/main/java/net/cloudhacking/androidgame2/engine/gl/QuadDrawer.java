@@ -2,8 +2,8 @@ package net.cloudhacking.androidgame2.engine.gl;
 
 import android.opengl.GLES20;
 
+import net.cloudhacking.androidgame2.engine.utils.BufferUtils;
 import net.cloudhacking.androidgame2.engine.utils.Loggable;
-import net.cloudhacking.androidgame2.engine.utils.Utils;
 
 import java.nio.ShortBuffer;
 
@@ -12,7 +12,7 @@ import java.nio.ShortBuffer;
  */
 public class QuadDrawer extends Loggable {
 
-    private static final short[] QUAD_VERTEX_ORDER = new short[] {0, 1, 2, 0, 2, 3};
+    private static final short[] QUAD_VERTEX_ORDER = new short[] {0, 3, 2, 0, 2, 1};
 
     private static final int SIZE = QUAD_VERTEX_ORDER.length;  // number of vertices per quad
 
@@ -42,7 +42,7 @@ public class QuadDrawer extends Loggable {
                 values[pos++] = (short)(ofs + QUAD_VERTEX_ORDER[5]);
             }
 
-            sCachedBuffer = Utils.makeShortBuffer(values);
+            sCachedBuffer = BufferUtils.makeShortBuffer(values);
         }
 
         return sCachedBuffer;

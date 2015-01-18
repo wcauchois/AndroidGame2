@@ -11,6 +11,11 @@ import java.nio.FloatBuffer;
  */
 public class BasicGLScript extends GLScript {
 
+    public static BasicGLScript get() {
+        return (BasicGLScript)GLScript.get();
+    }
+
+
     public Attribute aXY;  // use to point to coordinates in game space
     public Attribute aUV;  // use to point to coordinates in texture space
     public Uniform uCamera;
@@ -31,6 +36,8 @@ public class BasicGLScript extends GLScript {
         uTex	= mProgram.getUniform("uTex");
         uColorM	= mProgram.getUniform("uColorM");
         uColorA	= mProgram.getUniform("uColorA");
+
+        d("OpenGL program successfully compiled");
 
     }
 
@@ -77,6 +84,21 @@ public class BasicGLScript extends GLScript {
 
 
     /**
+     * Set lighting uniforms
+     */
+    public void setLighting(float[] vm, float[] va) {
+        setLighting(vm[0], vm[1], vm[2], vm[3], va[0], va[1], va[2], va[3]);
+    }
+
+    public void setLighting(float rm, float gm, float bm, float am,
+                            float ra, float ga, float ba, float aa) {
+
+        uColorM.setValue4f(rm, gm, bm, am);
+        uColorA.setValue4f(ra, ga, ba, aa);
+    }
+
+
+    /**
      * Set the vertex attribute pointers for the XY coordinates and UV coordinates attributes
      *
      * @param vertices FloatBuffer containing XY coordinates of vertices and UV coordinates of
@@ -112,5 +134,6 @@ public class BasicGLScript extends GLScript {
         setVertexAttribPointers(vertices);
         QuadDrawer.drawQuadSet(quadCount);
     }
+
 
 }

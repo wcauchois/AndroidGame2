@@ -11,9 +11,11 @@ import android.view.WindowManager;
 
 import net.cloudhacking.androidgame2.TestScene;
 import net.cloudhacking.androidgame2.engine.gl.GLScript;
+import net.cloudhacking.androidgame2.engine.utils.BufferUtils;
 import net.cloudhacking.androidgame2.engine.utils.GameTime;
 import net.cloudhacking.androidgame2.engine.utils.InputManager;
 import net.cloudhacking.androidgame2.engine.utils.LoggableActivity;
+import net.cloudhacking.androidgame2.engine.utils.PointF;
 import net.cloudhacking.androidgame2.engine.utils.TextureCache;
 
 import java.util.ArrayList;
@@ -28,9 +30,7 @@ public abstract class GameSkeleton extends LoggableActivity implements GLSurface
 
     private GLSurfaceView mView;
 
-    /**
-     * Keep static instance of GameSkeleton
-     */
+    // keep static instance of GameSkeleton
     private static GameSkeleton sInstance;
     public static GameSkeleton getInstance() {
         return sInstance;
@@ -43,15 +43,13 @@ public abstract class GameSkeleton extends LoggableActivity implements GLSurface
     }
 
     // get instance of current scene
-    private Scene mScene;
+    private Scene mScene = null;
+    private Class<? extends Scene> mSceneClass;
     public Scene getScene() {
         return mScene;
     }
-
-    // get GLScript instance for drawing
-    private GLScript mGLScript;
-    public GLScript getGLScript() {
-        return mGLScript;
+    public <T extends Scene> void setSceneClass(Class<T> cls) {
+        mSceneClass = cls;
     }
 
     // get input manager instance
@@ -60,88 +58,110 @@ public abstract class GameSkeleton extends LoggableActivity implements GLSurface
         return mInputManager;
     }
 
+    // accumulated touch events
+    private ArrayList<MotionEvent> mTouchEvents = new ArrayList<MotionEvent>();
+    public ArrayList<MotionEvent> getTouchEvents() {
+        return mTouchEvents;
+    }
 
+    // camera and camera controller
     private Camera mCamera;
     private CameraController mCameraController;
 
 
-    protected ArrayList<MotionEvent> mTouchEvents = new ArrayList<MotionEvent>(); // Accumulated touch events
-
-    private static final float GAME_TIME_SCALE = 0.0001f;
-
+    private Bundle mSavedInstanceState;
+    private boolean mInit = false;
 
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-
-        sInstance = this;
-        TextureCache.setContext(sInstance);
-
-        GameTime.setTimeScale(GAME_TIME_SCALE);
-        GameTime.start();
-
-
-        mInputManager = new InputManager();
-
-        //mCamera = new Camera();
-        //mCameraController = new CameraController(mCamera, mInputManager);
         mView = new GLSurfaceView( this );
         mView.setEGLContextClientVersion( 2 );
         mView.setEGLConfigChooser( false );
         mView.setRenderer( this );
         mView.setOnTouchListener( this );
         setContentView( mView );
+
+
+        // init game assets
+
+        sInstance = this;
+        TextureCache.setContext(sInstance);
+
+        GameTime.start();
+
+        mInputManager = new InputManager();
+
+        //mCameraController = new CameraController(mCamera, mInputManager);
+
+        mSavedInstanceState = savedInstanceState;
     }
+
+    abstract public void onCreateGame(Bundle savedInstanceState);
+
 
 
     @Override
     public void onPause() {
         super.onPause();
 
-        // pause game state here
+        onPauseGame();
 
         mView.onPause();
+        GLScript.reset();
     }
+
+    abstract public void onPauseGame();
+
+
 
     @Override
     public void onResume() {
         super.onResume();
+        mView.onResume();
         GameTime.reset();
 
-        // resume game state here
-
-        mView.onResume();
+        onResumeGame();
     }
+
+    abstract public void onResumeGame();
+
+
 
     @Override
     public void onDestroy() {
         super.onDestroy();
 
-        // destroy game state here
+        onDestroyGame();
     }
+
+    abstract public void onDestroyGame();
+
 
 
     @Override
     public void onSurfaceCreated(GL10 unused, EGLConfig config) {
         // All GL state, including shader programs, must be re-generated here.
 
-        GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        GLES20.glDisable(GLES20.GL_DEPTH_TEST);
-        GLES20.glDisable(GLES20.GL_CULL_FACE);
+        //GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        //GLES20.glDisable(GLES20.GL_DEPTH_TEST);
+        //GLES20.glDisable(GLES20.GL_CULL_FACE);
         GLES20.glEnable(GLES20.GL_BLEND);  // enable alpha blending
-        GLES20.glBlendFunc(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
+        GLES20.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+
+        //GLES20.glEnable(GL10.GL_SCISSOR_TEST);
 
         TextureCache.reload();
-        mGLScript = new BasicGLScript();
-
+        GLScript.use(BasicGLScript.class);
     }
+
 
 
     @Override
@@ -160,10 +180,16 @@ public abstract class GameSkeleton extends LoggableActivity implements GLSurface
 
         step();
 
-        GLES20.glScissor(0, 0, mViewport.width(), mViewport.height());
-        GLES20.glClear( GLES20.GL_COLOR_BUFFER_BIT );
+        // Check if there is already an instance of this program, create one if there isn't.
+        // The new instance is available through BasicGLScript.get()
+        GLScript.use(BasicGLScript.class);
+        BasicGLScript.get().uCamera.setValueM4(Camera.getMainCamera().getMatrix());
+
+        //GLES20.glScissor(0, 0, mViewport.width(), mViewport.height());
+        GLES20.glClear( GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
         draw();
     }
+
 
 
     @Override
@@ -175,13 +201,33 @@ public abstract class GameSkeleton extends LoggableActivity implements GLSurface
     }
 
 
+
     private void step() {
+
+        if (!mInit) {
+            onCreateGame(mSavedInstanceState);
+            mInit = true;
+        }
+
+        if (mScene == null) {
+            try {
+                mScene = mSceneClass.newInstance();
+                mScene.create();
+                mCamera = new Camera(new PointF(-50, -50), 2000, 2000, 1);
+                Camera.setMainCamera(mCamera);
+            } catch(Exception e) {
+                e("error creating new instance of scene: " + mSceneClass.getCanonicalName());
+                e.printStackTrace();
+            }
+        }
+
         // TODO: why does this need to be synchronized?
         synchronized (mTouchEvents) {
             mInputManager.handleTouchEvents(mTouchEvents);
         }
 
         //mCameraController.update();
+        mCamera.updateMatrix();
         mScene.update();
     }
 

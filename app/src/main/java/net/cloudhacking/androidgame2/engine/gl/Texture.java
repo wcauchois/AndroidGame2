@@ -122,6 +122,10 @@ public class Texture {
         return mHeight;
     }
 
+    public RectF getRect() {
+        return new RectF(0, 0, mWidth, mHeight);
+    }
+
 
     public void bind() {
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mHandle);

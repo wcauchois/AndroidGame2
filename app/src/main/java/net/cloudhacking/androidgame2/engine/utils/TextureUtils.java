@@ -72,7 +72,7 @@ public class TextureUtils extends Loggable {
 
         GLES20.glGenTextures(1, textureHandles, 0);
         textureHandle = textureHandles[0];
-        Utils.checkGlError("glGenTextures");
+        BufferUtils.checkGlError("glGenTextures");
 
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0 + currentOpenTextureUnit);
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle);
@@ -81,7 +81,7 @@ public class TextureUtils extends Loggable {
                 GLES20.GL_NEAREST);
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER,
                 GLES20.GL_NEAREST);
-        Utils.checkGlError("loadTexture");
+        BufferUtils.checkGlError("loadTexture");
 
         GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
 

@@ -4,9 +4,9 @@ import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 
+import net.cloudhacking.androidgame2.engine.utils.BufferUtils;
 import net.cloudhacking.androidgame2.engine.utils.Component;
 import net.cloudhacking.androidgame2.R;
-import net.cloudhacking.androidgame2.engine.utils.Utils;
 
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
@@ -51,7 +51,7 @@ public class SimpleRenderService extends Component {
         int mTexCoordHandle = -1;
 
         void prepareResources(Context context) {
-            mVertBuffer = Utils.makeFloatBuffer(new float[]{
+            mVertBuffer = BufferUtils.makeFloatBuffer(new float[]{
                     -0.5f, -0.5f, 0.0f, // Bottom left
                     -0.5f, +0.5f, 0.0f, // Top left
                     +0.5f, +0.5f, 0.0f, // Top right
@@ -59,25 +59,25 @@ public class SimpleRenderService extends Component {
             });
 
             // Note for whatever weird reason index buffers appear to only work as shorts, not ints.
-            mIndexBuffer = Utils.makeShortBuffer(new short[]{
+            mIndexBuffer = BufferUtils.makeShortBuffer(new short[]{
                     0, 1, 2,
                     0, 2, 3
             });
 
-            mProgramHandle = Utils.createProgram(context, R.raw.quad_vert, R.raw.quad_frag);
+            mProgramHandle = BufferUtils.createProgram(context, R.raw.quad_vert, R.raw.quad_frag);
 
             mPositionHandle = GLES20.glGetAttribLocation(mProgramHandle, "a_position");
             mMVPMatrixHandle = GLES20.glGetUniformLocation(mProgramHandle, "u_mvpMatrix");
             mTextureUniformHandle = GLES20.glGetUniformLocation(mProgramHandle, "u_texture");
             mTexCoordHandle = GLES20.glGetAttribLocation(mProgramHandle, "a_texCoordinate");
-            Utils.checkGlError("get uniform/attribute locations");
+            BufferUtils.checkGlError("get uniform/attribute locations");
         }
 
         public void beginDraw() {
             checkResourcesPrepared();
 
             GLES20.glUseProgram(mProgramHandle);
-            Utils.checkGlError("glUseProgram");
+            BufferUtils.checkGlError("glUseProgram");
 
             GLES20.glEnableVertexAttribArray(mPositionHandle);
             GLES20.glEnableVertexAttribArray(mTexCoordHandle);
@@ -93,7 +93,7 @@ public class SimpleRenderService extends Component {
         public void draw(float x, float y, float rot, float w, float h, float tx, float ty, float tw, float th) {
 
             // setup texture coordinates buffer
-            FloatBuffer texCoordBuffer = Utils.makeFloatBuffer(new float[]{
+            FloatBuffer texCoordBuffer = BufferUtils.makeFloatBuffer(new float[]{
                     tx, ty,
                     tx, ty + th,
                     tx + tw, ty + th,
@@ -114,7 +114,7 @@ public class SimpleRenderService extends Component {
 
             // draw quad
             GLES20.glDrawElements(GLES20.GL_TRIANGLES, 6 /* number of indices */, GLES20.GL_UNSIGNED_SHORT, mIndexBuffer);
-            Utils.checkGlError("glDrawElements");
+            BufferUtils.checkGlError("glDrawElements");
         }
 
 

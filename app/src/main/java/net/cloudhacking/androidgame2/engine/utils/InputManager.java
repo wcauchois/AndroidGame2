@@ -20,7 +20,7 @@ import java.util.List;
  */
 public class InputManager extends Loggable {
     private static final boolean DEBUG_INPUT = false;
-    private static final boolean DEBUG_TRIGGERS = false;
+    private static final boolean DEBUG_TRIGGERS = true;
 
     private HashMap<Integer, Pointer> mPointers = new HashMap<Integer, Pointer>();
     private MultiTouch mMultiTouch = null;

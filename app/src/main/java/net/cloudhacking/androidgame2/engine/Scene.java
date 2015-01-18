@@ -11,18 +11,12 @@ public abstract class Scene extends Group {
      * draw() and update() methods will be called from the main game thread.
      */
 
+    public Scene() {};
+
     abstract public float getMapWidth();
     abstract public float getMapHeight();
     abstract public RectF getMapRect();
 
-
-
-
-    @Override
-    public void update() {
-
-
-        super.update();
-    }
+    abstract public void create();
 
 }

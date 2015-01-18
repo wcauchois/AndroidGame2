@@ -3,6 +3,7 @@ package net.cloudhacking.androidgame2.engine.utils;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 
 import net.cloudhacking.androidgame2.engine.gl.Texture;
 
@@ -30,8 +31,8 @@ public class TextureCache extends Loggable {
     private static BitmapFactory.Options sBitmapOptions = new BitmapFactory.Options();
     static {
         sBitmapOptions.inScaled = false;
-        sBitmapOptions.inDither = false;
-        sBitmapOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        //sBitmapOptions.inDither = false;
+        //sBitmapOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;
     }
 
     private static Texture.TextureOptions sDefaultTextureOptions;
@@ -53,6 +54,10 @@ public class TextureCache extends Loggable {
         return get(asset, sDefaultTextureOptions, false);
     }
 
+    public static Texture get(Asset asset, Texture.TextureOptions opts) {
+        return get(asset, opts, true);
+    }
+
     public static Texture get(Asset asset, Texture.TextureOptions opts, boolean checkOpts) {
         Texture tex;
 
@@ -63,6 +68,8 @@ public class TextureCache extends Loggable {
 
                 tex = new Texture(bmp, opts);
                 sCache.put(asset, tex);
+
+                Log.d(TAG, "successfully loaded texture: " + asset.getFileName());
                 return tex;
 
             } catch(IOException e) {

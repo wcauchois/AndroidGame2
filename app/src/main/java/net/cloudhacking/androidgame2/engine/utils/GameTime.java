@@ -5,7 +5,7 @@ package net.cloudhacking.androidgame2.engine.utils;
  */
 public class GameTime {
 
-    private static float sTimeScale;
+    private static float sTimeScale = 1f;
 
     private static long sTimeNow;
     private static long sTimeSinceLastTick;
@@ -30,12 +30,15 @@ public class GameTime {
         sTimeNow = System.currentTimeMillis();
     }
 
+    /**
+     * @return Seconds since last frame (scaled by the set time scale)
+     */
     public static float getFrameDelta() {
         if (sFirstTick) {
             sFirstTick = false;
             return 0f;
         }
-        return sTimeScale * (sTimeNow - sTimeSinceLastTick);
+        return sTimeScale * (sTimeNow - sTimeSinceLastTick) * 0.001f;  // convert from ms to s
     }
 
 }
