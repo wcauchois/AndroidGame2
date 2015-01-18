@@ -12,7 +12,7 @@ import java.nio.ShortBuffer;
  */
 public class QuadDrawer extends Loggable {
 
-    private static final short[] QUAD_VERTEX_ORDER = new short[] {0, 3, 2, 0, 2, 1};
+    private static final short[] QUAD_VERTEX_ORDER = new short[] {0, 1, 2, 0, 2, 3};
 
     private static final int SIZE = QUAD_VERTEX_ORDER.length;  // number of vertices per quad
 

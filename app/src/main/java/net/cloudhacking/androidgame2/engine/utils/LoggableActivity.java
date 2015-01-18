@@ -15,7 +15,7 @@ public class LoggableActivity extends Activity {
 
     public LoggableActivity() {
         super();
-        _TAG = this.getClass().getCanonicalName();
+        _TAG = this.getClass().getSimpleName();
     }
 
     public void v(String msg) {

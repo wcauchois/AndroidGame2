@@ -16,7 +16,7 @@ public class Loggable {
     protected String _TAG;
 
     public Loggable() {
-        _TAG = this.getClass().getCanonicalName();
+        _TAG = this.getClass().getSimpleName();
     }
 
     public void v(String msg) {
