@@ -1,11 +1,11 @@
-package net.cloudhacking.androidgame2.engine;
+package net.cloudhacking.androidgame2.engine.old;
 
 import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 
+import net.cloudhacking.androidgame2.engine.gl.GLScript;
 import net.cloudhacking.androidgame2.engine.utils.BufferUtils;
-import net.cloudhacking.androidgame2.engine.utils.Component;
 import net.cloudhacking.androidgame2.R;
 
 import java.nio.FloatBuffer;
@@ -64,20 +64,20 @@ public class SimpleRenderService extends Component {
                     0, 2, 3
             });
 
-            mProgramHandle = BufferUtils.createProgram(context, R.raw.quad_vert, R.raw.quad_frag);
+            mProgramHandle = OldUtils.createProgram(context, R.raw.quad_vert, R.raw.quad_frag);
 
             mPositionHandle = GLES20.glGetAttribLocation(mProgramHandle, "a_position");
             mMVPMatrixHandle = GLES20.glGetUniformLocation(mProgramHandle, "u_mvpMatrix");
             mTextureUniformHandle = GLES20.glGetUniformLocation(mProgramHandle, "u_texture");
             mTexCoordHandle = GLES20.glGetAttribLocation(mProgramHandle, "a_texCoordinate");
-            BufferUtils.checkGlError("get uniform/attribute locations");
+            GLScript.checkGlError("get uniform/attribute locations");
         }
 
         public void beginDraw() {
             checkResourcesPrepared();
 
             GLES20.glUseProgram(mProgramHandle);
-            BufferUtils.checkGlError("glUseProgram");
+            GLScript.checkGlError("glUseProgram");
 
             GLES20.glEnableVertexAttribArray(mPositionHandle);
             GLES20.glEnableVertexAttribArray(mTexCoordHandle);
@@ -114,7 +114,7 @@ public class SimpleRenderService extends Component {
 
             // draw quad
             GLES20.glDrawElements(GLES20.GL_TRIANGLES, 6 /* number of indices */, GLES20.GL_UNSIGNED_SHORT, mIndexBuffer);
-            BufferUtils.checkGlError("glDrawElements");
+            GLScript.checkGlError("glDrawElements");
         }
 
 

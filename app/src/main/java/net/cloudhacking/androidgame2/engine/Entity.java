@@ -13,7 +13,6 @@ public class Entity extends Loggable {
     private boolean mVisible;
     private boolean mActive;
     private boolean mExists;
-    private boolean mOnScreen;
 
     private Group mParent;
 
@@ -21,7 +20,6 @@ public class Entity extends Loggable {
         mVisible  = true;
         mActive   = true;
         mExists   = true;
-        mOnScreen = true;
     }
 
 
@@ -40,10 +38,7 @@ public class Entity extends Loggable {
     }
 
     public boolean isOnScreen() {
-        if (mParent != null) {
-            return mParent.isOnScreen() && mOnScreen;
-        }
-        return mOnScreen;
+        return false;
     }
 
     public boolean exists() {

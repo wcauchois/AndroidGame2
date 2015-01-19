@@ -1,8 +1,5 @@
-package net.cloudhacking.androidgame2;
+package net.cloudhacking.androidgame2.engine.old;
 
-import android.util.Log;
-
-import net.cloudhacking.androidgame2.engine.SceneInfo;
 import net.cloudhacking.androidgame2.engine.utils.Loggable;
 import net.cloudhacking.androidgame2.engine.utils.Vec2;
 

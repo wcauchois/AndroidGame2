@@ -31,8 +31,8 @@ public class TextureCache extends Loggable {
     private static BitmapFactory.Options sBitmapOptions = new BitmapFactory.Options();
     static {
         sBitmapOptions.inScaled = false;
-        //sBitmapOptions.inDither = false;
-        //sBitmapOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        sBitmapOptions.inDither = false;
+        sBitmapOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;
     }
 
     private static Texture.TextureOptions sDefaultTextureOptions;
@@ -69,7 +69,7 @@ public class TextureCache extends Loggable {
                 tex = new Texture(bmp, opts);
                 sCache.put(asset, tex);
 
-                Log.d(TAG, "successfully loaded texture: " + asset.getFileName());
+                Log.d(TAG, "successfully loaded texture into cache: " + asset.getFileName());
                 return tex;
 
             } catch(IOException e) {

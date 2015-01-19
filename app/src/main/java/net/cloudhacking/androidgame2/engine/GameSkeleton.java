@@ -9,13 +9,10 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
-import net.cloudhacking.androidgame2.TestScene;
 import net.cloudhacking.androidgame2.engine.gl.GLScript;
-import net.cloudhacking.androidgame2.engine.utils.BufferUtils;
 import net.cloudhacking.androidgame2.engine.utils.GameTime;
 import net.cloudhacking.androidgame2.engine.utils.InputManager;
 import net.cloudhacking.androidgame2.engine.utils.LoggableActivity;
-import net.cloudhacking.androidgame2.engine.utils.MatrixUtils;
 import net.cloudhacking.androidgame2.engine.utils.PointF;
 import net.cloudhacking.androidgame2.engine.utils.TextureCache;
 
@@ -27,7 +24,11 @@ import javax.microedition.khronos.opengles.GL10;
 /**
  * Created by Andrew on 1/17/2015.
  */
-public abstract class GameSkeleton extends LoggableActivity implements GLSurfaceView.Renderer, View.OnTouchListener {
+public abstract class GameSkeleton
+
+        extends LoggableActivity
+        implements GLSurfaceView.Renderer, View.OnTouchListener
+{
 
     private GLSurfaceView mView;
 
@@ -71,7 +72,7 @@ public abstract class GameSkeleton extends LoggableActivity implements GLSurface
 
 
     private Bundle mSavedInstanceState;
-    private boolean mInit = false;
+    private boolean mInit = true;
 
 
 
@@ -92,16 +93,10 @@ public abstract class GameSkeleton extends LoggableActivity implements GLSurface
 
 
         // init game assets
-
         sInstance = this;
         TextureCache.setContext(sInstance);
-
         GameTime.start();
-
         mInputManager = new InputManager();
-
-        //mCameraController = new CameraController(mCamera, mInputManager);
-
         mSavedInstanceState = savedInstanceState;
     }
 
@@ -116,7 +111,8 @@ public abstract class GameSkeleton extends LoggableActivity implements GLSurface
         onPauseGame();
 
         mView.onPause();
-        GLScript.reset();
+        GLScript.reset();  // TODO: This is supposed to delete the current GL program,
+                           //       but for some reason it raises a GL error--not sure why.
     }
 
     abstract public void onPauseGame();
@@ -156,9 +152,11 @@ public abstract class GameSkeleton extends LoggableActivity implements GLSurface
         GLES20.glDisable(GLES20.GL_CULL_FACE);
 
         GLES20.glEnable(GLES20.GL_BLEND);  // enable alpha blending
+        // For pre-multiplied alpha:
+        // GLES20.glBlendFunc( GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA );
         GLES20.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);  // set alpha blending function
 
-        GLES20.glEnable(GL10.GL_SCISSOR_TEST);  // enable scissor test
+        GLES20.glEnable(GL10.GL_SCISSOR_TEST);
 
         TextureCache.reload();
         GLScript.use(BasicGLScript.class);
@@ -168,11 +166,8 @@ public abstract class GameSkeleton extends LoggableActivity implements GLSurface
 
     @Override
     public void onSurfaceChanged(GL10 unused, int width, int height) {
-
         GLES20.glViewport(0, 0, width, height);
         mViewport = new Rect(0, 0, width, height);
-
-        //mCameraController.reset();
     }
 
 
@@ -186,8 +181,10 @@ public abstract class GameSkeleton extends LoggableActivity implements GLSurface
         // The new instance is available through BasicGLScript.get(), we don't really need to do
         // this here though because we're only using one program right now, so we just need to
         // call it in onSurfaceCreated();
-        //GLScript.use(BasicGLScript.class);
-        BasicGLScript.get().uCamera.setValueM4(Camera.getMainCamera().getMatrix());
+
+        // GLScript.use(BasicGLScript.class);
+
+        BasicGLScript.get().setCamera(Camera.getMainCamera());
 
         GLES20.glScissor(0, 0, mViewport.width(), mViewport.height());
         GLES20.glClear( GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
@@ -208,9 +205,10 @@ public abstract class GameSkeleton extends LoggableActivity implements GLSurface
 
     private void step() {
 
-        if (!mInit) {
+        // below here is mostly temp stuff
+        if (mInit) {
             onCreateGame(mSavedInstanceState);
-            mInit = true;
+            mInit = false;
         }
 
         if (mScene == null) {

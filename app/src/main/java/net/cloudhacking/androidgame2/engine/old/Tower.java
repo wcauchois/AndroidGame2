@@ -1,6 +1,4 @@
-package net.cloudhacking.androidgame2;
-
-import net.cloudhacking.androidgame2.engine.AnimatedGridItem;
+package net.cloudhacking.androidgame2.engine.old;
 
 /**
  * Created by Andrew on 1/7/2015.

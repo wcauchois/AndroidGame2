@@ -18,9 +18,6 @@ public class Camera extends Loggable {
     public static Camera getMainCamera() {
         return sMainCamera;
     }
-    public static void setMainCamera(Camera camera) {
-        sMainCamera = camera;
-    }
 
     private static float sInvGameWidth;
     private static float sInvGameHeight;
@@ -33,6 +30,8 @@ public class Camera extends Loggable {
 
         sMainCamera = newCamera;
     }
+
+
 
     public static Camera createFullscreen(float zoom) {
         RectF mapRect = GameSkeleton.getInstance().getScene().getMapRect();
@@ -129,9 +128,11 @@ public class Camera extends Loggable {
     }
 
     public void updateMatrix() {
-        mMatrix[0]  = mZoom * 2 * sInvGameWidth;
-        mMatrix[5]  = mZoom * 2 * sInvGameHeight;
-        mMatrix[12] = -1 + mPosition.x * 2 * sInvGameWidth;
-        mMatrix[13] = -1 + mPosition.y * 2 * sInvGameHeight;
+        // need to multiply y-related matrix entries by -1 in order to preserve orientation for
+        // some reason.  wat r matrices?
+        mMatrix[0]  =       mZoom * 2 * sInvGameWidth;
+        mMatrix[5]  = -1 * (mZoom * 2 * sInvGameHeight);
+        mMatrix[12] =       -1 + mPosition.x * 2 * sInvGameWidth;
+        mMatrix[13] = -1 * (-1 + mPosition.y * 2 * sInvGameHeight);
     }
 }

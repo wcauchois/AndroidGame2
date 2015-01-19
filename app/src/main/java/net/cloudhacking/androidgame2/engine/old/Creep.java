@@ -1,8 +1,6 @@
-package net.cloudhacking.androidgame2;
+package net.cloudhacking.androidgame2.engine.old;
 
 import android.opengl.Matrix;
-
-import net.cloudhacking.androidgame2.engine.AnimatedGridItem;
 
 import java.util.ArrayDeque;
 

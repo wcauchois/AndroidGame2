@@ -12,9 +12,11 @@ import java.nio.FloatBuffer;
 public class BasicGLScript extends GLScript {
 
     public static BasicGLScript get() {
-        return (BasicGLScript)GLScript.get();
+        return (BasicGLScript)GLScript.getCurrentScript();
     }
 
+
+    private Camera mCamera = null;
 
     public Attribute aXY;  // use to point to coordinates in game space
     public Attribute aUV;  // use to point to coordinates in texture space
@@ -80,6 +82,15 @@ public class BasicGLScript extends GLScript {
 
         aXY.enable();
         aUV.enable();
+    }
+
+
+    /**
+     * Set camera
+     */
+    public void setCamera(Camera camera) {
+        mCamera = camera;
+        uCamera.setValueM4(camera.getMatrix());
     }
 
 

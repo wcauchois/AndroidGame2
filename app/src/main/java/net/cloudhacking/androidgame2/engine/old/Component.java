@@ -1,7 +1,9 @@
-package net.cloudhacking.androidgame2.engine.utils;
+package net.cloudhacking.androidgame2.engine.old;
 
 import android.content.Context;
 import android.util.Log;
+
+import net.cloudhacking.androidgame2.engine.utils.Loggable;
 
 import java.util.ArrayList;
 import java.util.List;

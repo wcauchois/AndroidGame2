@@ -3,6 +3,9 @@ package net.cloudhacking.androidgame2.engine.utils;
 import android.content.Context;
 import android.util.Log;
 
+import net.cloudhacking.androidgame2.engine.old.Component;
+import net.cloudhacking.androidgame2.engine.old.OldUtils;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -49,7 +52,7 @@ public class JsonMap extends Component {
     }
 
     public void loadFromResource(Context context, int resourceId) {
-        String resourceString = BufferUtils.readTextFileFromRawResource(context, resourceId);
+        String resourceString = OldUtils.readTextFileFromRawResource(context, resourceId);
         try {
             JSONObject object = new JSONObject(resourceString);
             JSONArray tilesArray = object.getJSONArray("tiles");

@@ -257,7 +257,7 @@ public abstract class GLScript extends Loggable {
         }
     }
 
-    public static GLScript get() {
+    public static GLScript getCurrentScript() {
         return sCurrentScript;
     }
 
@@ -265,6 +265,20 @@ public abstract class GLScript extends Loggable {
         if (sCurrentScript != null) sCurrentScript.delete();
         sCurrentScript = null;
         sCurrentScriptClass = null;
+    }
+
+
+    /**********************************************************************************************/
+    public static void checkGlError(String msg) {
+        int error, lastError = GLES20.GL_NO_ERROR;
+
+        while ((error = GLES20.glGetError()) != GLES20.GL_NO_ERROR) {
+            Log.e(TAG, msg + ": glError " + error);
+            lastError = error;
+        }
+        if (lastError != GLES20.GL_NO_ERROR) {
+            throw new RuntimeException(msg + ": glError" + lastError);
+        }
     }
 
 }

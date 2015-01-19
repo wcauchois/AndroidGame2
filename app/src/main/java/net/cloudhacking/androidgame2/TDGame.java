@@ -21,8 +21,6 @@ public class TDGame extends GameSkeleton {
         GameTime.setTimeScale(GAME_TIME_SCALE);
 
         setSceneClass(TestScene.class);
-
-        d("GAME CREATED");
     }
 
     @Override

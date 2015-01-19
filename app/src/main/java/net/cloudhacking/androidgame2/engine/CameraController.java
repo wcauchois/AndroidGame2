@@ -1,5 +1,6 @@
 package net.cloudhacking.androidgame2.engine;
 
+import net.cloudhacking.androidgame2.engine.old.SceneInfo;
 import net.cloudhacking.androidgame2.engine.utils.InputManager;
 import net.cloudhacking.androidgame2.engine.utils.Loggable;
 import net.cloudhacking.androidgame2.engine.utils.Vec2;

@@ -1,15 +1,9 @@
-package net.cloudhacking.androidgame2;
+package net.cloudhacking.androidgame2.engine.old;
 
 
-import net.cloudhacking.androidgame2.engine.AnimatedGridItem.AnimationCache;
+import net.cloudhacking.androidgame2.R;
+import net.cloudhacking.androidgame2.engine.old.AnimatedGridItem.AnimationCache;
 import net.cloudhacking.androidgame2.engine.utils.JsonMap;
-import net.cloudhacking.androidgame2.engine.LevelGrid;
-import net.cloudhacking.androidgame2.engine.RenderLayer;
-import net.cloudhacking.androidgame2.engine.SceneInfo;
-import net.cloudhacking.androidgame2.engine.SimpleRenderService;
-import net.cloudhacking.androidgame2.engine.SpriteGroup;
-import net.cloudhacking.androidgame2.engine.TileSet;
-import net.cloudhacking.androidgame2.engine.TiledBackground;
 import net.cloudhacking.androidgame2.engine.utils.Loggable;
 import net.cloudhacking.androidgame2.engine.utils.Vec2;
 

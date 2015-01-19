@@ -5,7 +5,6 @@ import android.graphics.RectF;
 import net.cloudhacking.androidgame2.engine.gl.Texture;
 import net.cloudhacking.androidgame2.engine.utils.Asset;
 import net.cloudhacking.androidgame2.engine.utils.BufferUtils;
-import net.cloudhacking.androidgame2.engine.utils.MatrixUtils;
 import net.cloudhacking.androidgame2.engine.utils.TextureCache;
 
 import java.nio.FloatBuffer;
@@ -113,12 +112,9 @@ public class Image extends Renderable {
     @Override
     public void draw() {
         super.draw();
-
         BasicGLScript script = BasicGLScript.get();
 
         mTexture.bind();
-
-        //script.setCamera( getCamera() );
 
         script.uModel.setValueM4(getModelMatrix());
         script.setLighting(getColorM(), getColorA());
@@ -126,7 +122,7 @@ public class Image extends Renderable {
         if (mNeedBufferUpdate) {
             mVertexBuffer.position(0);
             mVertexBuffer.put(mVertices);
-            mNeedBufferUpdate = true;
+            mNeedBufferUpdate = false;
         }
 
         script.drawQuad(mVertexBuffer);

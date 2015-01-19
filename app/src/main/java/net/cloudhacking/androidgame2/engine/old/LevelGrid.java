@@ -1,5 +1,6 @@
-package net.cloudhacking.androidgame2.engine;
+package net.cloudhacking.androidgame2.engine.old;
 
+import net.cloudhacking.androidgame2.engine.Entity;
 import net.cloudhacking.androidgame2.engine.utils.Vec2;
 
 import java.util.ArrayList;

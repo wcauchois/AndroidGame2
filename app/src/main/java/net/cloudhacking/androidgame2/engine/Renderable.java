@@ -16,11 +16,14 @@ public class Renderable extends Entity {
 
     private PointF mOrigin;
     private PointF mScale;
+    private boolean mScalable;
 
     private Vec2 mVelocity;
     private Vec2 mAcceleration;
+
     private float mRotation;
     private float mRotationSpeed;
+    private boolean mRotatable;
 
     private float[] mColorM;
     private float[] mColorA;
@@ -35,11 +38,14 @@ public class Renderable extends Entity {
 
         mOrigin = new PointF();
         mScale = new PointF(1, 1);
+        mScalable = true;
 
         mVelocity = new Vec2();
         mAcceleration = new Vec2();
+
         mRotation = 0f;
         mRotationSpeed = 0f;
+        mRotatable = true;
 
         mColorM = new float[] {1, 1, 1, 1};
         mColorA = new float[] {0, 0, 0, 0};
@@ -91,6 +97,10 @@ public class Renderable extends Entity {
         mScale = scale;
     }
 
+    public void setScalable(boolean bool) {
+        mScalable = bool;
+    }
+
     public Vec2 getVelocity() {
         return mVelocity;
     }
@@ -121,6 +131,10 @@ public class Renderable extends Entity {
 
     public void setRotationSpeed(float rotationSpeed) {
         mRotationSpeed = rotationSpeed;
+    }
+
+    public void setRotatable(boolean bool) {
+        mRotatable = bool;
     }
 
     public float[] getColorM() {
@@ -156,11 +170,12 @@ public class Renderable extends Entity {
 
     @Override
     public boolean isOnScreen() {
+        // TODO: check if bounding box intersects camera
         return true;
     }
 
 
-    public void updateMotion() {
+    private void updateMotion() {
         float delta = GameTime.getFrameDelta();
 
         mVelocity = mVelocity.add(mAcceleration.scale(delta));
@@ -170,13 +185,13 @@ public class Renderable extends Entity {
     }
 
 
-    public void updateMatrix() {
+    private void updateMatrix() {
         MatrixUtils.setIdentity(mModelMatrix);
         MatrixUtils.translate2D(mModelMatrix, mOrigin.x + mPos.x, mOrigin.y + mPos.y);
-        if (mRotation != 0f) {
+        if (mRotatable) {
             MatrixUtils.rotate2D(mModelMatrix, mRotation);
         }
-        if (mScale.x != 1f || mScale.y != 1f) {
+        if (mScalable) {
             MatrixUtils.scale(mModelMatrix, mScale.x, mScale.y);
         }
         MatrixUtils.translate2D(mModelMatrix, -mOrigin.x, -mOrigin.y);

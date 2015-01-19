@@ -1,10 +1,7 @@
-package net.cloudhacking.androidgame2.engine;
+package net.cloudhacking.androidgame2.engine.old;
 
 import android.content.Context;
 import android.util.Log;
-
-import net.cloudhacking.androidgame2.engine.utils.Component;
-import net.cloudhacking.androidgame2.engine.utils.TextureUtils;
 
 /**
  * This represents a texture containing many uniformly-sized tiles, and

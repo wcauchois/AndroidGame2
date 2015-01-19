@@ -4,7 +4,6 @@ import android.graphics.RectF;
 
 import net.cloudhacking.androidgame2.engine.Image;
 import net.cloudhacking.androidgame2.engine.Scene;
-import net.cloudhacking.androidgame2.engine.utils.MatrixUtils;
 import net.cloudhacking.androidgame2.engine.utils.PointF;
 
 /**
@@ -19,7 +18,7 @@ public class TestScene extends Scene {
         image = new Image(Assets.TEST_TILESET);
         image.setPos(new PointF(10, 10));
         image.setScale(10);
-        image.updateMatrix();
+        image.setRotatable(false);
         add(image);
     }
 
@@ -43,13 +42,13 @@ public class TestScene extends Scene {
     @Override
     public void update() {
 
-        super.update();
+        super.update();  // update all member entities
     }
 
     @Override
     public void draw() {
 
-        super.draw();
+        super.draw();  // draw all member entities
     }
 
 }
