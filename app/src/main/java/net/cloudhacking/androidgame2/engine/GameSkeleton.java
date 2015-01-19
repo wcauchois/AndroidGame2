@@ -15,6 +15,7 @@ import net.cloudhacking.androidgame2.engine.utils.BufferUtils;
 import net.cloudhacking.androidgame2.engine.utils.GameTime;
 import net.cloudhacking.androidgame2.engine.utils.InputManager;
 import net.cloudhacking.androidgame2.engine.utils.LoggableActivity;
+import net.cloudhacking.androidgame2.engine.utils.MatrixUtils;
 import net.cloudhacking.androidgame2.engine.utils.PointF;
 import net.cloudhacking.androidgame2.engine.utils.TextureCache;
 
@@ -150,13 +151,14 @@ public abstract class GameSkeleton extends LoggableActivity implements GLSurface
     public void onSurfaceCreated(GL10 unused, EGLConfig config) {
         // All GL state, including shader programs, must be re-generated here.
 
-        //GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        //GLES20.glDisable(GLES20.GL_DEPTH_TEST);
-        //GLES20.glDisable(GLES20.GL_CULL_FACE);
-        GLES20.glEnable(GLES20.GL_BLEND);  // enable alpha blending
-        GLES20.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+        GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        GLES20.glDisable(GLES20.GL_DEPTH_TEST);
+        GLES20.glDisable(GLES20.GL_CULL_FACE);
 
-        //GLES20.glEnable(GL10.GL_SCISSOR_TEST);
+        GLES20.glEnable(GLES20.GL_BLEND);  // enable alpha blending
+        GLES20.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);  // set alpha blending function
+
+        GLES20.glEnable(GL10.GL_SCISSOR_TEST);  // enable scissor test
 
         TextureCache.reload();
         GLScript.use(BasicGLScript.class);
@@ -181,11 +183,13 @@ public abstract class GameSkeleton extends LoggableActivity implements GLSurface
         step();
 
         // Check if there is already an instance of this program, create one if there isn't.
-        // The new instance is available through BasicGLScript.get()
-        GLScript.use(BasicGLScript.class);
+        // The new instance is available through BasicGLScript.get(), we don't really need to do
+        // this here though because we're only using one program right now, so we just need to
+        // call it in onSurfaceCreated();
+        //GLScript.use(BasicGLScript.class);
         BasicGLScript.get().uCamera.setValueM4(Camera.getMainCamera().getMatrix());
 
-        //GLES20.glScissor(0, 0, mViewport.width(), mViewport.height());
+        GLES20.glScissor(0, 0, mViewport.width(), mViewport.height());
         GLES20.glClear( GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
         draw();
     }
@@ -213,8 +217,8 @@ public abstract class GameSkeleton extends LoggableActivity implements GLSurface
             try {
                 mScene = mSceneClass.newInstance();
                 mScene.create();
-                mCamera = new Camera(new PointF(-50, -50), 2000, 2000, 1);
-                Camera.setMainCamera(mCamera);
+                mCamera = new Camera(new PointF(), mScene.getMapWidth(), mScene.getMapHeight(), 1);
+                Camera.reset(mCamera);
             } catch(Exception e) {
                 e("error creating new instance of scene: " + mSceneClass.getCanonicalName());
                 e.printStackTrace();

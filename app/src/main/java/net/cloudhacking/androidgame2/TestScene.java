@@ -20,7 +20,6 @@ public class TestScene extends Scene {
         image.setPos(new PointF(10, 10));
         image.setScale(10);
         image.updateMatrix();
-        d("image vertex matrix: " + MatrixUtils.matrixToString(image.getVertices()));
         add(image);
     }
 

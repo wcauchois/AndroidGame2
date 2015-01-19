@@ -129,10 +129,6 @@ public class Camera extends Loggable {
     }
 
     public void updateMatrix() {
-        /*mMatrix[0] = mMatrix[5] = mZoom;
-        mMatrix[12] = mPosition.getX() + mTempOffset.getX();
-        mMatrix[13] = mPosition.getY() + mTempOffset.getY();*/
-
         mMatrix[0]  = mZoom * 2 * sInvGameWidth;
         mMatrix[5]  = mZoom * 2 * sInvGameHeight;
         mMatrix[12] = -1 + mPosition.x * 2 * sInvGameWidth;
