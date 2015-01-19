@@ -1,80 +1,101 @@
 package net.cloudhacking.androidgame2.engine;
 
-import net.cloudhacking.androidgame2.engine.old.SceneInfo;
+import android.graphics.Rect;
+
 import net.cloudhacking.androidgame2.engine.utils.InputManager;
 import net.cloudhacking.androidgame2.engine.utils.Loggable;
+import net.cloudhacking.androidgame2.engine.utils.PointF;
 import net.cloudhacking.androidgame2.engine.utils.Vec2;
 
 /**
  * Created by wcauchois on 1/8/15.
  */
-public class CameraController extends Loggable {
-    private Camera mCamera;
-    private SceneInfo mSceneInfo;
-    private Vec2 mAspectRatioVec;
+public class CameraController
 
-    private class CameraScrollListener implements InputManager.DragListener {
-        private InputManager.Pointer mPointer = null;
+        extends Loggable
+        implements InputManager.DragListener,
+                   InputManager.ScaleListener
+{
 
-        public void onStart(InputManager.Pointer pointer) {
-            mPointer = pointer;
-        }
+    private static float sInvGameWidth;
+    private static float sInvGameHeight;
 
-        public void onEnd(InputManager.Pointer pointer) {
-            mPointer = null;
-        }
-
-        public void update() {
-            if (mPointer != null) {
-                mCamera.incPosition(mPointer.getDelta().scale( 1/mSceneInfo.getSceneScale() ));
-            }
-        }
+    public static float getInverseGameWidth() {
+        return sInvGameWidth;
+    }
+    public static float getInverseGameHeight() {
+        return sInvGameHeight;
     }
 
 
-    private class CameraZoomListener implements InputManager.MultiTouchListener {
-        private InputManager.MultiTouch mMultiTouch = null;
-        private float mDistOriginal;
+    /**********************************************************************************************/
+    private Camera mActiveCamera;
 
-        public void onStart(InputManager.MultiTouch multiTouch) {
-            mMultiTouch = multiTouch;
-            // original distance between the two fingers
-            mDistOriginal = mMultiTouch.getDistBtwn();
-        }
 
-        public void onEnd(InputManager.MultiTouch multiTouch) {
-            mMultiTouch = null;
-            mCamera.bindLastZoom();
-            mCamera.bindTempOffset();
-        }
+    @Override
+    public void onStartDrag(PointF start) {
+        if (mActiveCamera == null) return;
+    }
 
-        public void update() {
-            if (mMultiTouch != null) {
-                float dst = mMultiTouch.getDistBtwn();
-                float zoom =  dst / mDistOriginal;
-                mCamera.setRelativeZoom(zoom);
-                mCamera.setTempOffset( mAspectRatioVec.negate().scale( (dst - mDistOriginal)/2 ) );
-                // this doesn't work exactly as intended.  It seems to only
-            }
-        }
+    @Override
+    public void onDrag(PointF cur, Vec2 dv) {
+        if (mActiveCamera == null) return;
+
+        mActiveCamera.incrementPosition(dv.negate());
     }
 
 
-    public CameraController(Camera camera, InputManager inputManager, SceneInfo sceneInfo) {
-        mCamera = camera;
-        mSceneInfo = sceneInfo;
+    private float mRelativeScaleSpan;
 
-        inputManager.addDragListener( new CameraScrollListener() );
-        inputManager.addMultiTouchListener( new CameraZoomListener() );
+    @Override
+    public void onStartScale(PointF focus, float span) {
+        if (mActiveCamera == null) return;
+
+        mRelativeScaleSpan = span;
     }
 
-    public void reset() {
-        mCamera.updateMatrix();
-        mAspectRatioVec = new Vec2(mSceneInfo.getViewportWidth(),
-                mSceneInfo.getViewportHeight()).normalize();
+    @Override
+    public void onScale(PointF focus, float span) {
+        if (mActiveCamera == null) return;
+
+        mActiveCamera.setRelativeZoom( span/mRelativeScaleSpan );
+
+        // TODO: make it so the pinch zoom centers on the focus point.  Figure out the math bro
+    }
+
+    @Override
+    public void onEndScale(PointF focus, float span) {
+        if (mActiveCamera == null) return;
+
+        mActiveCamera.bindLastZoom();
+    }
+
+
+    /**********************************************************************************************/
+    public CameraController() {
+        InputManager inputManager = GameSkeleton.getInstance().getInputManager();
+
+        inputManager.addDragListener(this);
+        inputManager.addScaleListener(this);
+
+        mActiveCamera = null;
+    }
+
+
+    public Camera getActiveCamera() {
+        return mActiveCamera;
+    }
+
+    public void reset(Camera newCamera) {
+        Rect viewport = GameSkeleton.getInstance().getViewport();
+
+        sInvGameWidth  = 1f/viewport.width();
+        sInvGameHeight = 1f/viewport.height();
+
+        mActiveCamera = newCamera;
     }
 
     public void update() {
-        mCamera.updateMatrix();
+        if (mActiveCamera != null) mActiveCamera.update();
     }
 }

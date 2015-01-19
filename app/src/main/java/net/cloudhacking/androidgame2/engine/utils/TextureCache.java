@@ -59,14 +59,13 @@ public class TextureCache extends Loggable {
     }
 
     public static Texture get(Asset asset, Texture.TextureOptions opts, boolean checkOpts) {
-        Texture tex;
 
         if (!sCache.containsKey(asset)) {
             try {
                 InputStream stream = sContext.getAssets().open(asset.getFileName());
                 Bitmap bmp = BitmapFactory.decodeStream(stream, null, sBitmapOptions);
 
-                tex = new Texture(bmp, opts);
+                Texture tex = new Texture(bmp, opts);
                 sCache.put(asset, tex);
 
                 Log.d(TAG, "successfully loaded texture into cache: " + asset.getFileName());
@@ -77,8 +76,9 @@ public class TextureCache extends Loggable {
             }
 
         } else if (checkOpts) {
-            tex = sCache.get(asset);
+            Texture tex = sCache.get(asset);
 
+            // check if the stored textures options equal the requested options
             if (!tex.getOptions().equals(opts)) {
                 tex = new Texture(tex.getBitmap(), opts);
                 sCache.put(asset, tex);

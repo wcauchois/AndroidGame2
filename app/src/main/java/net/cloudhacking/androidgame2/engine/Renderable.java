@@ -61,6 +61,10 @@ public class Renderable extends Entity {
         mPos = pos;
     }
 
+    public void movePos(Vec2 dir) {
+        mPos.move(dir);
+    }
+
     public float getWidth() {
         return mWidth;
     }

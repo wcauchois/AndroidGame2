@@ -35,7 +35,7 @@ public class Texture {
         public int getValue() { return mValue; }
     }
 
-    public static void activate(int glTexUnit) {
+    public static void activateGLTexUnit(int glTexUnit) {
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0 + glTexUnit);
     }
 

@@ -4,19 +4,15 @@ import android.graphics.Rect;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
-import android.view.MotionEvent;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+import net.cloudhacking.androidgame2.TestScene;
 import net.cloudhacking.androidgame2.engine.gl.GLScript;
 import net.cloudhacking.androidgame2.engine.utils.GameTime;
 import net.cloudhacking.androidgame2.engine.utils.InputManager;
 import net.cloudhacking.androidgame2.engine.utils.LoggableActivity;
-import net.cloudhacking.androidgame2.engine.utils.PointF;
 import net.cloudhacking.androidgame2.engine.utils.TextureCache;
-
-import java.util.ArrayList;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -27,10 +23,11 @@ import javax.microedition.khronos.opengles.GL10;
 public abstract class GameSkeleton
 
         extends LoggableActivity
-        implements GLSurfaceView.Renderer, View.OnTouchListener
+        implements GLSurfaceView.Renderer
 {
 
     private GLSurfaceView mView;
+
 
     // keep static instance of GameSkeleton
     private static GameSkeleton sInstance;
@@ -38,15 +35,18 @@ public abstract class GameSkeleton
         return sInstance;
     }
 
+
     // get viewport rectangle
     private Rect mViewport;
     public Rect getViewport() {
         return mViewport;
     }
 
+
     // get instance of current scene
     private Scene mScene = null;
     private Class<? extends Scene> mSceneClass;
+
     public Scene getScene() {
         return mScene;
     }
@@ -54,25 +54,30 @@ public abstract class GameSkeleton
         mSceneClass = cls;
     }
 
+
     // get input manager instance
     private InputManager mInputManager;
     public InputManager getInputManager() {
         return mInputManager;
     }
 
-    // accumulated touch events
-    private ArrayList<MotionEvent> mTouchEvents = new ArrayList<MotionEvent>();
-    public ArrayList<MotionEvent> getTouchEvents() {
-        return mTouchEvents;
-    }
 
     // camera and camera controller
-    private Camera mCamera;
     private CameraController mCameraController;
+    public CameraController getCameraController() {
+        return mCameraController;
+    }
 
 
+
+    private static boolean mInit = true;
     private Bundle mSavedInstanceState;
-    private boolean mInit = true;
+
+    // to implement
+    abstract public void onGameInit(Bundle savedInstanceState);
+    abstract public void onPauseGame();
+    abstract public void onResumeGame();
+    abstract public void onDestroyGame();
 
 
 
@@ -85,62 +90,25 @@ public abstract class GameSkeleton
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         mView = new GLSurfaceView( this );
-        mView.setEGLContextClientVersion( 2 );
-        mView.setEGLConfigChooser( false );
-        mView.setRenderer( this );
-        mView.setOnTouchListener( this );
+        mView.setEGLContextClientVersion(2);
+        mView.setEGLConfigChooser(false);
+        mView.setRenderer(this);
         setContentView( mView );
 
 
         // init game assets
+
         sInstance = this;
+        mSavedInstanceState = savedInstanceState;
+
         TextureCache.setContext(sInstance);
         GameTime.start();
-        mInputManager = new InputManager();
-        mSavedInstanceState = savedInstanceState;
+
+        mInputManager = new InputManager(this);
+        mView.setOnTouchListener(mInputManager);
+
+        mCameraController = new CameraController();
     }
-
-    abstract public void onCreateGame(Bundle savedInstanceState);
-
-
-
-    @Override
-    public void onPause() {
-        super.onPause();
-
-        onPauseGame();
-
-        mView.onPause();
-        GLScript.reset();  // TODO: This is supposed to delete the current GL program,
-                           //       but for some reason it raises a GL error--not sure why.
-    }
-
-    abstract public void onPauseGame();
-
-
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        mView.onResume();
-        GameTime.reset();
-
-        onResumeGame();
-    }
-
-    abstract public void onResumeGame();
-
-
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-
-        onDestroyGame();
-    }
-
-    abstract public void onDestroyGame();
-
 
 
     @Override
@@ -148,6 +116,7 @@ public abstract class GameSkeleton
         // All GL state, including shader programs, must be re-generated here.
 
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        GLES20.glEnable(GL10.GL_SCISSOR_TEST);
         GLES20.glDisable(GLES20.GL_DEPTH_TEST);
         GLES20.glDisable(GLES20.GL_CULL_FACE);
 
@@ -156,13 +125,9 @@ public abstract class GameSkeleton
         // GLES20.glBlendFunc( GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA );
         GLES20.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);  // set alpha blending function
 
-        GLES20.glEnable(GL10.GL_SCISSOR_TEST);
-
         TextureCache.reload();
-        GLScript.use(BasicGLScript.class);
+        GLScript.use(BasicGLScript.class);  // compile GL program
     }
-
-
 
     @Override
     public void onSurfaceChanged(GL10 unused, int width, int height) {
@@ -172,70 +137,73 @@ public abstract class GameSkeleton
 
 
     @Override
-    public void onDrawFrame(GL10 unused) {
-        GameTime.tick();
-
-        step();
-
-        // Check if there is already an instance of this program, create one if there isn't.
-        // The new instance is available through BasicGLScript.get(), we don't really need to do
-        // this here though because we're only using one program right now, so we just need to
-        // call it in onSurfaceCreated();
-
-        // GLScript.use(BasicGLScript.class);
-
-        BasicGLScript.get().setCamera(Camera.getMainCamera());
-
-        GLES20.glScissor(0, 0, mViewport.width(), mViewport.height());
-        GLES20.glClear( GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
-        draw();
+    public void onPause() {
+        super.onPause();
+        onPauseGame();
+        mView.onPause();
+        GLScript.reset();  // TODO: This is supposed to delete the current GL program,
+                           //       but for some reason it raises a GL error--not sure why.
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        mView.onResume();
+        GameTime.reset();
+        onResumeGame();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        onDestroyGame();
+    }
 
 
     @Override
-    public boolean onTouch(View unused, MotionEvent event) {
-        synchronized (mTouchEvents) {
-            mTouchEvents.add(MotionEvent.obtain(event));
-        }
-        return true;
-    }
+    public void onDrawFrame(GL10 unused) {
 
+        if (mInit) {    // initialize on first frame once all GL resources are prepared
 
+            onGameInit(mSavedInstanceState);
+            mSavedInstanceState = null;
 
-    private void step() {
-
-        // below here is mostly temp stuff
-        if (mInit) {
-            onCreateGame(mSavedInstanceState);
-            mInit = false;
-        }
-
-        if (mScene == null) {
             try {
                 mScene = mSceneClass.newInstance();
                 mScene.create();
-                mCamera = new Camera(new PointF(), mScene.getMapWidth(), mScene.getMapHeight(), 1);
-                Camera.reset(mCamera);
+
+                Camera cam = Camera.createFullscreen(1);
+                mCameraController.reset(cam);
+                mScene.setCamera(cam);
+
             } catch(Exception e) {
                 e("error creating new instance of scene: " + mSceneClass.getCanonicalName());
                 e.printStackTrace();
             }
+
+            mInit = false;
+
+        } else {    // update and draw
+
+            GameTime.tick();
+
+            mCameraController.update();
+            mScene.update();
+
+            // Check if there is already an instance of this program, create one if there isn't.
+            // The new instance is available through BasicGLScript.get(), we don't really need to do
+            // this here though because we're only using one program right now, so we just need to
+            // call it in onSurfaceCreated();
+
+            // GLScript.use(BasicGLScript.class);
+
+            BasicGLScript.get().clearLastCamera();
+
+            GLES20.glScissor(0, 0, mViewport.width(), mViewport.height());
+            GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
+
+            mScene.draw();
         }
-
-        // TODO: why does this need to be synchronized?
-        synchronized (mTouchEvents) {
-            mInputManager.handleTouchEvents(mTouchEvents);
-        }
-
-        //mCameraController.update();
-        mCamera.updateMatrix();
-        mScene.update();
-    }
-
-
-    private void draw() {
-        mScene.draw();
     }
 
 }

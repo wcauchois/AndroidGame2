@@ -5,6 +5,7 @@ import android.graphics.RectF;
 import net.cloudhacking.androidgame2.engine.gl.Texture;
 import net.cloudhacking.androidgame2.engine.utils.Asset;
 import net.cloudhacking.androidgame2.engine.utils.BufferUtils;
+import net.cloudhacking.androidgame2.engine.utils.PointF;
 import net.cloudhacking.androidgame2.engine.utils.TextureCache;
 
 import java.nio.FloatBuffer;
@@ -55,9 +56,10 @@ public class Image extends Renderable {
 
     public void setFrame(RectF frame) {
         mFrame = frame;
+        PointF scale = getScale();
 
-        setWidth(frame.width() * mTexture.getWidth());
-        setHeight(frame.height() * mTexture.getHeight());
+        setWidth(frame.width() * scale.x * mTexture.getWidth());
+        setHeight(frame.height() * scale.y * mTexture.getHeight());
 
         updateFrame();
         updateVertices();
@@ -116,8 +118,10 @@ public class Image extends Renderable {
 
         mTexture.bind();
 
-        script.uModel.setValueM4(getModelMatrix());
+        script.useCamera(getCamera());
         script.setLighting(getColorM(), getColorA());
+
+        script.uModel.setValueM4(getModelMatrix());
 
         if (mNeedBufferUpdate) {
             mVertexBuffer.position(0);

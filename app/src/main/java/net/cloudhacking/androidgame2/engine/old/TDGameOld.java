@@ -15,6 +15,7 @@ import net.cloudhacking.androidgame2.engine.CameraController;
 import net.cloudhacking.androidgame2.engine.utils.GameTime;
 import net.cloudhacking.androidgame2.engine.utils.InputManager;
 import net.cloudhacking.androidgame2.engine.utils.LoggableActivity;
+import net.cloudhacking.androidgame2.engine.utils.PointF;
 import net.cloudhacking.androidgame2.engine.utils.TextureCache;
 
 import java.util.ArrayList;
@@ -109,19 +110,19 @@ public class TDGameOld extends LoggableActivity implements GLSurfaceView.Rendere
             }
         };
 
-        mInputManager = new InputManager();
+        mInputManager = new InputManager(this);
 
         mGameState = new GameState();
 
-        mCamera = new Camera();
-        mCameraController = new CameraController(mCamera, mInputManager, mSceneInfo);
+        mCamera = new Camera(new PointF(), 1, 1, 1);
+        mCameraController = new CameraController();
 
         mView = new GLSurfaceView( this );
-        mView.setEGLContextClientVersion( 2 );
-        mView.setEGLConfigChooser( false );
-        mView.setRenderer( this );
-        mView.setOnTouchListener( this );
-        setContentView( mView );
+        mView.setEGLContextClientVersion(2);
+        mView.setEGLConfigChooser(false);
+        mView.setRenderer(this);
+        mView.setOnTouchListener(this);
+        setContentView(mView);
     }
 
 
@@ -188,7 +189,7 @@ public class TDGameOld extends LoggableActivity implements GLSurfaceView.Rendere
         mViewportHeight = height;
 
         mSceneInfo.reset(width, height, SCENE_SCALE);
-        mCameraController.reset();
+        mCameraController.reset(mCamera);
     }
 
 
@@ -214,9 +215,6 @@ public class TDGameOld extends LoggableActivity implements GLSurfaceView.Rendere
 
 
     private void step() {
-        synchronized (mTouchEvents) {  // TODO: why does this need to be synchronized?
-            mInputManager.handleTouchEvents(mTouchEvents);
-        }
 
         // update state
         mGameState.update();

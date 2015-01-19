@@ -11,15 +11,13 @@ import net.cloudhacking.androidgame2.engine.utils.GameTime;
 public class TDGame extends GameSkeleton {
 
     // config
-    private static final float GAME_TIME_SCALE = 0.5f;
+    // TODO: create config/preferences system
+    private static final float GAME_TIME_SCALE = 1f;
 
 
     @Override
-    public void onCreateGame(Bundle savedInstanceState) {
-        // can't make any opengl api calls here.
-
+    public void onGameInit(Bundle savedInstanceState) {
         GameTime.setTimeScale(GAME_TIME_SCALE);
-
         setSceneClass(TestScene.class);
     }
 

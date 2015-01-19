@@ -8,7 +8,7 @@ public class GameTime {
     private static float sTimeScale = 1f;
 
     private static long sTimeNow;
-    private static long sTimeSinceLastTick;
+    private static long sTimeLastTick;
 
     private static boolean sFirstTick = true;
 
@@ -26,7 +26,7 @@ public class GameTime {
     }
 
     public static void tick() {
-        sTimeSinceLastTick = sTimeNow;
+        sTimeLastTick = sTimeNow;
         sTimeNow = System.currentTimeMillis();
     }
 
@@ -38,7 +38,7 @@ public class GameTime {
             sFirstTick = false;
             return 0f;
         }
-        return sTimeScale * (sTimeNow - sTimeSinceLastTick) * 0.001f;  // convert from ms to s
+        return sTimeScale * (sTimeNow - sTimeLastTick) * 0.001f;  // convert from ms to s
     }
 
 }

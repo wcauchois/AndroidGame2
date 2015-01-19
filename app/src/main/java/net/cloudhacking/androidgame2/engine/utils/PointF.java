@@ -25,6 +25,12 @@ public class PointF {
         this.y = v.getY();
     }
 
+
+    public void set(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
     public PointF copy() {
         return new PointF(this.x, this.y);
     }

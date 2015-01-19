@@ -16,7 +16,7 @@ public class BasicGLScript extends GLScript {
     }
 
 
-    private Camera mCamera = null;
+    private Camera mLastCamera;
 
     public Attribute aXY;  // use to point to coordinates in game space
     public Attribute aUV;  // use to point to coordinates in texture space
@@ -41,6 +41,7 @@ public class BasicGLScript extends GLScript {
 
         d("OpenGL program successfully compiled");
 
+        mLastCamera = null;
     }
 
 
@@ -88,9 +89,17 @@ public class BasicGLScript extends GLScript {
     /**
      * Set camera
      */
-    public void setCamera(Camera camera) {
-        mCamera = camera;
-        uCamera.setValueM4(camera.getMatrix());
+    public void useCamera(Camera camera) {
+        if (camera == null) {
+            return;
+        } else if (camera != mLastCamera) {
+            mLastCamera = camera;
+            uCamera.setValueM4(camera.getMatrix());
+        }
+    }
+
+    public void clearLastCamera() {
+        mLastCamera = null;
     }
 
 
