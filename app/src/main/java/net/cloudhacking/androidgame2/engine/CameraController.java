@@ -17,19 +17,8 @@ public class CameraController
                    InputManager.ScaleListener
 {
 
-    private static float sInvGameWidth;
-    private static float sInvGameHeight;
-
-    public static float getInverseGameWidth() {
-        return sInvGameWidth;
-    }
-    public static float getInverseGameHeight() {
-        return sInvGameHeight;
-    }
-
-
-    /**********************************************************************************************/
     private Camera mActiveCamera;
+    private Camera mUICamera;
 
 
     @Override
@@ -72,13 +61,10 @@ public class CameraController
 
 
     /**********************************************************************************************/
+
     public CameraController() {
-        InputManager inputManager = GameSkeleton.getInstance().getInputManager();
-
-        inputManager.addDragListener(this);
-        inputManager.addScaleListener(this);
-
         mActiveCamera = null;
+        // init UI camera
     }
 
 
@@ -89,8 +75,8 @@ public class CameraController
     public void reset(Camera newCamera) {
         Rect viewport = GameSkeleton.getInstance().getViewport();
 
-        sInvGameWidth  = 1f/viewport.width();
-        sInvGameHeight = 1f/viewport.height();
+        Camera.setInverseGameWidth( 1f/viewport.width() );
+        Camera.setInverseGameHeight( 1f/viewport.height() );
 
         mActiveCamera = newCamera;
     }

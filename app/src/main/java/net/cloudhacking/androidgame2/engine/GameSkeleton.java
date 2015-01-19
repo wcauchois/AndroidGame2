@@ -108,6 +108,8 @@ public abstract class GameSkeleton
         mView.setOnTouchListener(mInputManager);
 
         mCameraController = new CameraController();
+        mInputManager.addDragListener(mCameraController);
+        mInputManager.addScaleListener(mCameraController);
     }
 
 
@@ -171,10 +173,6 @@ public abstract class GameSkeleton
             try {
                 mScene = mSceneClass.newInstance();
                 mScene.create();
-
-                Camera cam = Camera.createFullscreen(1);
-                mCameraController.reset(cam);
-                mScene.setCamera(cam);
 
             } catch(Exception e) {
                 e("error creating new instance of scene: " + mSceneClass.getCanonicalName());

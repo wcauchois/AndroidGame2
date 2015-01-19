@@ -111,8 +111,8 @@ public class BasicGLScript extends GLScript {
     }
 
     public void setLighting(float rm, float gm, float bm, float am,
-                            float ra, float ga, float ba, float aa) {
-
+                            float ra, float ga, float ba, float aa)
+    {
         uColorM.setValue4f(rm, gm, bm, am);
         uColorA.setValue4f(ra, ga, ba, aa);
     }

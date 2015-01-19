@@ -12,6 +12,17 @@ import net.cloudhacking.androidgame2.engine.utils.Vec2;
  */
 public class Camera extends Loggable {
 
+    private static float sInvGameWidth;
+    private static float sInvGameHeight;
+
+    public static void setInverseGameWidth(float invw) {
+        sInvGameWidth = invw;
+    }
+    public static void setInverseGameHeight(float invh) {
+        sInvGameHeight = invh;
+    }
+
+
     private PointF mPosition;
     private Vec2 mTempOffset;
     private float mWidth;
@@ -51,7 +62,7 @@ public class Camera extends Loggable {
 
 
     public void focusOn(PointF focus) {
-
+        // TODO: coordinate system and convert from game to camera coords
     }
 
     public void focusOn(Renderable target) {
@@ -115,13 +126,10 @@ public class Camera extends Loggable {
         // This matrix transforms game coordinate vertices into the GL [-1,1]X[-1,1] screen space;
         // ***need to multiply y-related matrix entries by -1 in order to preserve orientation for
         //    some reason.  wat r matrices?
-        float invW = CameraController.getInverseGameWidth();
-        float invH = CameraController.getInverseGameHeight();
-
-        mMatrix[0]  =       mZoom * 2 * invW;
-        mMatrix[5]  = -1 * (mZoom * 2 * invH);
-        mMatrix[12] =       -1 + (mPosition.x + mTempOffset.x) * 2 * invW;
-        mMatrix[13] = -1 * (-1 + (mPosition.y + mTempOffset.y) * 2 * invH);
+        mMatrix[0]  =       mZoom * 2 * sInvGameWidth;
+        mMatrix[5]  = -1 * (mZoom * 2 * sInvGameHeight);
+        mMatrix[12] =       -1 + (mPosition.x + mTempOffset.x) * 2 * sInvGameWidth;
+        mMatrix[13] = -1 * (-1 + (mPosition.y + mTempOffset.y) * 2 * sInvGameHeight);
     }
 
 

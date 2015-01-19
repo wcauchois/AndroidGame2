@@ -118,7 +118,6 @@ public class Image extends Renderable {
 
         mTexture.bind();
 
-        script.useCamera(getCamera());
         script.setLighting(getColorM(), getColorA());
 
         script.uModel.setValueM4(getModelMatrix());
