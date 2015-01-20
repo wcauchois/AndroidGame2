@@ -26,34 +26,38 @@ public class CameraController extends Loggable {
         mDisabled = false;
 
         inputManager.drag.connect(new Signal.Listener<InputManager.DragEvent>() {
-            public void onSignal(InputManager.DragEvent e) {
-                if (mDisabled) return;
+            public boolean onSignal(InputManager.DragEvent e) {
+                if (mDisabled) return false;
 
                 mActiveCamera.incrementFocus(e.getDelta());
+                return true;
             }
         });
 
         inputManager.startScale.connect(new Signal.Listener<InputManager.ScaleEvent>() {
-            public void onSignal(InputManager.ScaleEvent e) {
-                if (mDisabled) return;
+            public boolean onSignal(InputManager.ScaleEvent e) {
+                if (mDisabled) return false;
 
                 mRelativeScaleSpan = e.getSpan();
+                return true;
             }
         });
 
         inputManager.scale.connect(new Signal.Listener<InputManager.ScaleEvent>() {
-            public void onSignal(InputManager.ScaleEvent e) {
-                if (mDisabled) return;
+            public boolean onSignal(InputManager.ScaleEvent e) {
+                if (mDisabled) return false;
 
                 mActiveCamera.setRelativeZoom(e.getSpan() / mRelativeScaleSpan);
+                return true;
             }
         });
 
         inputManager.endScale.connect(new Signal.Listener<InputManager.ScaleEvent>() {
-            public void onSignal(InputManager.ScaleEvent e) {
-                if (mDisabled) return;
+            public boolean onSignal(InputManager.ScaleEvent e) {
+                if (mDisabled) return false;
 
                 mActiveCamera.bindRelativeZoom();
+                return true;
             }
         });
     }

@@ -28,7 +28,7 @@ public class TestScene extends Scene {
         );
         add(mTileMap);
 
-        TestClickDrawer testDrawer = new TestClickDrawer(instance.getInputManager());
+
 
         mCameraController = instance.getCameraController();
         mCameraController.setBoundaryRect( getMapRect() );

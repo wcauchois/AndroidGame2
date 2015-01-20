@@ -19,8 +19,9 @@ public class TestClickDrawer extends Loggable {
         mCameraController = TDGame.getInstance().getCameraController();
 
         inputManager.clickUp.connect(new Signal.Listener<InputManager.ClickEvent>() {
-            public void onSignal(InputManager.ClickEvent e) {
+            public boolean onSignal(InputManager.ClickEvent e) {
                 handleClickUp(e.getPos());
+                return true;
             }
         });
     }

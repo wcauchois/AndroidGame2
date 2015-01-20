@@ -7,10 +7,9 @@ import java.util.LinkedList;
  */
 public class Signal<T> {
     public static interface Listener<T> {
-        public void onSignal(T t);
+        public boolean onSignal(T t);
     }
 
-    private boolean mCancelled = false;
     private LinkedList<Listener<T>> mListeners = new LinkedList<Listener<T>>();
 
     public void connect(Listener<T> listener) {
@@ -24,19 +23,18 @@ public class Signal<T> {
     public void dispatch(T t) {
         Listener<T>[] listeners = mListeners.toArray(new Listener[0]);
 
-        mCancelled = false;
         for (int i = 0; i < listeners.length; i++) {
             Listener<T> listener = listeners[i];
             if (mListeners.contains(listener)) {
-                listener.onSignal(t);
-                if (mCancelled) {
+                /**
+                 * Instead of having to call back to this signal and cancel, onSignal(t) could
+                 * just return true if you want to handle the signal and cancel, or false if
+                 * you don't.  TODO: LMK if you like this idea Bill because I think its way easier.
+                 */
+                if (listener.onSignal(t)) {
                     break;
                 }
             }
         }
-    }
-
-    public void cancel() {
-        mCancelled = true;
     }
 }

@@ -149,6 +149,10 @@ public class InputManager
         }
     }
 
+
+    /**
+     * Drag Events
+     */
     public class AnyDragEvent extends Event {
         protected PointF mPos1, mPos2;
         protected Vec2 mDelta;
@@ -200,6 +204,10 @@ public class InputManager
         }
     }
 
+
+    /**
+     * Scale Event
+     */
     public class ScaleEvent extends Event {
         private PointF mFocus;
         private float mSpan;
@@ -239,6 +247,10 @@ public class InputManager
         START_SCALE, SCALE, END_SCALE
     }
 
+
+    /**
+     * Click Event
+     */
     public class ClickEvent extends PositionedEvent {
         private ClickEventType mEventType;
 

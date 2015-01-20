@@ -74,6 +74,10 @@ public class PointF {
         return new Vec2(other.x - x, other.y - y);
     }
 
+    public Vec2 toVec() {
+        return new Vec2(x, y);
+    }
+
     public PointF scale(int s) {
         return new PointF(s*x, s*y);
     }
