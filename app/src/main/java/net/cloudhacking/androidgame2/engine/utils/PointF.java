@@ -26,7 +26,7 @@ public class PointF {
     }
 
 
-    public void set(int x, int y) {
+    public void set(float x, float y) {
         this.x = x;
         this.y = y;
     }

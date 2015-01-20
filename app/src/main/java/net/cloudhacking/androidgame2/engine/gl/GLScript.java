@@ -269,6 +269,7 @@ public abstract class GLScript extends Loggable {
 
 
     /**********************************************************************************************/
+
     public static void checkGlError(String msg) {
         int error, lastError = GLES20.GL_NO_ERROR;
 

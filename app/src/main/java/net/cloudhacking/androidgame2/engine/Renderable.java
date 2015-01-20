@@ -10,11 +10,11 @@ import net.cloudhacking.androidgame2.engine.utils.Vec2;
  */
 public class Renderable extends Entity {
 
+    private PointF mOrigin;
     private PointF mPos;
     private float mWidth;
     private float mHeight;
 
-    private PointF mOrigin;
     private PointF mScale;
     private boolean mScalable;
 
@@ -32,11 +32,11 @@ public class Renderable extends Entity {
 
 
     public Renderable(int x, int y, float width, float height) {
-        mPos = new PointF(x, y);
-        mWidth = width;
-        mHeight = height;
-
         mOrigin = new PointF();
+        mPos = new PointF(x, y);  // center point
+        mWidth = width;           // width and height are unscaled,
+        mHeight = height;         // use getWidth(), getHeight() to get scaled width/height
+
         mScale = new PointF(1, 1);
         mScalable = true;
 
@@ -57,6 +57,10 @@ public class Renderable extends Entity {
         return mPos;
     }
 
+    public PointF getCenter() {
+        return new PointF(mPos.x + getWidth()/2, mPos.y + getHeight()/2);
+    }
+
     public void setPos(PointF pos) {
         mPos = pos;
     }
@@ -65,8 +69,12 @@ public class Renderable extends Entity {
         mPos.move(dir);
     }
 
+    public void movePos(float x, float y) {
+        movePos( new Vec2(x, y) );
+    }
+
     public float getWidth() {
-        return mWidth;
+        return mWidth * mScale.y;
     }
 
     public void setWidth(float width) {
@@ -74,7 +82,7 @@ public class Renderable extends Entity {
     }
 
     public float getHeight() {
-        return mHeight;
+        return mHeight * mScale.x;
     }
 
     public void setHeight(float height) {
@@ -180,7 +188,7 @@ public class Renderable extends Entity {
 
 
     private void updateMotion() {
-        float delta = GameTime.getFrameDelta();
+        float delta = GameTime.getFrameDelta();  // in seconds
 
         mVelocity = mVelocity.add(mAcceleration.scale(delta));
         mPos.move(mVelocity.scale(delta));
@@ -203,8 +211,9 @@ public class Renderable extends Entity {
 
 
     public boolean overlapsPoint(PointF p) {
-        return p.x >= mPos.x && p.x <= mPos.x + mScale.x * mWidth &&
-               p.y >= mPos.y && p.y <= mPos.y + mScale.y * mHeight;
+        float hw=getWidth()/2, hh=getHeight()/2;
+        return p.x >= mPos.x-hw && p.x <= mPos.x+hw &&
+               p.y >= mPos.y-hh && p.y <= mPos.y+hh;
     }
 
 

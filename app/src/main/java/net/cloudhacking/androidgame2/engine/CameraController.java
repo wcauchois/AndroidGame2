@@ -1,7 +1,5 @@
 package net.cloudhacking.androidgame2.engine;
 
-import android.graphics.Rect;
-
 import net.cloudhacking.androidgame2.engine.utils.InputManager;
 import net.cloudhacking.androidgame2.engine.utils.Loggable;
 import net.cloudhacking.androidgame2.engine.utils.PointF;
@@ -19,18 +17,19 @@ public class CameraController
 
     private Camera mActiveCamera;
     private Camera mUICamera;
+    private boolean mDisabled;
 
 
     @Override
     public void onStartDrag(PointF start) {
-        if (mActiveCamera == null) return;
+        if (mDisabled) return;
     }
 
     @Override
     public void onDrag(PointF cur, Vec2 dv) {
-        if (mActiveCamera == null) return;
+        if (mDisabled) return;
 
-        mActiveCamera.incrementPosition(dv.negate());
+        mActiveCamera.incrementFocus(dv);
     }
 
 
@@ -38,33 +37,32 @@ public class CameraController
 
     @Override
     public void onStartScale(PointF focus, float span) {
-        if (mActiveCamera == null) return;
+        if (mDisabled) return;
 
         mRelativeScaleSpan = span;
     }
 
     @Override
     public void onScale(PointF focus, float span) {
-        if (mActiveCamera == null) return;
+        if (mDisabled) return;
 
-        mActiveCamera.setRelativeZoom( span/mRelativeScaleSpan );
-
-        // TODO: make it so the pinch zoom centers on the focus point.  Figure out the math bro
+        mActiveCamera.setRelativeZoom(span / mRelativeScaleSpan);
     }
 
     @Override
     public void onEndScale(PointF focus, float span) {
-        if (mActiveCamera == null) return;
+        if (mDisabled) return;
 
-        mActiveCamera.bindLastZoom();
+        mActiveCamera.bindRelativeZoom();
     }
 
 
     /**********************************************************************************************/
 
     public CameraController() {
-        mActiveCamera = null;
-        // init UI camera
+        mActiveCamera = new Camera();
+        mUICamera = new Camera();
+        mDisabled = false;
     }
 
 
@@ -72,16 +70,12 @@ public class CameraController
         return mActiveCamera;
     }
 
-    public void reset(Camera newCamera) {
-        Rect viewport = GameSkeleton.getInstance().getViewport();
-
-        Camera.setInverseGameWidth( 1f/viewport.width() );
-        Camera.setInverseGameHeight( 1f/viewport.height() );
-
-        mActiveCamera = newCamera;
+    public Camera getUICamera() {
+        return mUICamera;
     }
 
+
     public void update() {
-        if (mActiveCamera != null) mActiveCamera.update();
+        if (!mDisabled) mActiveCamera.update();
     }
 }

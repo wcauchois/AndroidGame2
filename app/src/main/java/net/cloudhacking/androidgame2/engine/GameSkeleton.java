@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
 
-import net.cloudhacking.androidgame2.TestScene;
 import net.cloudhacking.androidgame2.engine.gl.GLScript;
 import net.cloudhacking.androidgame2.engine.utils.GameTime;
 import net.cloudhacking.androidgame2.engine.utils.InputManager;
@@ -28,41 +27,32 @@ public abstract class GameSkeleton
 
     private GLSurfaceView mView;
 
-
     // keep static instance of GameSkeleton
     private static GameSkeleton sInstance;
     public static GameSkeleton getInstance() {
         return sInstance;
     }
 
-
-    // get viewport rectangle
     private Rect mViewport;
     public Rect getViewport() {
         return mViewport;
     }
 
-
-    // get instance of current scene
     private Scene mScene = null;
-    private Class<? extends Scene> mSceneClass;
-
     public Scene getScene() {
         return mScene;
     }
+
+    private Class<? extends Scene> mSceneClass;
     public <T extends Scene> void setSceneClass(Class<T> cls) {
         mSceneClass = cls;
     }
 
-
-    // get input manager instance
     private InputManager mInputManager;
     public InputManager getInputManager() {
         return mInputManager;
     }
 
-
-    // camera and camera controller
     private CameraController mCameraController;
     public CameraController getCameraController() {
         return mCameraController;
@@ -70,13 +60,14 @@ public abstract class GameSkeleton
 
 
 
-    private static boolean mInit = true;
+    private static boolean sInit = true;
     private Bundle mSavedInstanceState;
 
     // to implement
     abstract public void onGameInit(Bundle savedInstanceState);
     abstract public void onPauseGame();
     abstract public void onResumeGame();
+    //abstract public void onSaveGame(Bundle outState);
     abstract public void onDestroyGame();
 
 
@@ -101,7 +92,7 @@ public abstract class GameSkeleton
         sInstance = this;
         mSavedInstanceState = savedInstanceState;
 
-        TextureCache.setContext(sInstance);
+        TextureCache.setContext(this);
         GameTime.start();
 
         mInputManager = new InputManager(this);
@@ -110,6 +101,8 @@ public abstract class GameSkeleton
         mCameraController = new CameraController();
         mInputManager.addDragListener(mCameraController);
         mInputManager.addScaleListener(mCameraController);
+
+        d("activity created");
     }
 
 
@@ -128,13 +121,18 @@ public abstract class GameSkeleton
         GLES20.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);  // set alpha blending function
 
         TextureCache.reload();
-        GLScript.use(BasicGLScript.class);  // compile GL program
+        GLScript.use(BasicGLScript.class);  // compile GL program for BasicGLScript class
+
+        d("surface created");
     }
 
     @Override
     public void onSurfaceChanged(GL10 unused, int width, int height) {
         GLES20.glViewport(0, 0, width, height);
+        Camera.setView(width, height);
         mViewport = new Rect(0, 0, width, height);
+
+        d("surface changed: width="+width+", height="+height);
     }
 
 
@@ -145,45 +143,58 @@ public abstract class GameSkeleton
         mView.onPause();
         GLScript.reset();  // TODO: This is supposed to delete the current GL program,
                            //       but for some reason it raises a GL error--not sure why.
+        d("game paused");
     }
 
     @Override
     public void onResume() {
         super.onResume();
         mView.onResume();
-        GameTime.reset();
+        GameTime.start();
         onResumeGame();
+
+        d("game resumed");
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         onDestroyGame();
+
+        if (mScene != null) {
+            mScene.destroy();
+            mScene = null;
+        }
+        sInstance = null;
+        sInit = true;
+
+        d("game destroyed");
     }
 
 
     @Override
     public void onDrawFrame(GL10 unused) {
+        GameTime.tick();
 
-        if (mInit) {    // initialize on first frame once all GL resources are prepared
+        if (sInit) {    // initialize on first frame once all GL resources are prepared
+
+            // TODO: This could probably be reworked.  I have no idea how saved states work on Android
 
             onGameInit(mSavedInstanceState);
             mSavedInstanceState = null;
 
             try {
                 mScene = mSceneClass.newInstance();
-                mScene.create();
+                mScene.build();
 
             } catch(Exception e) {
                 e("error creating new instance of scene: " + mSceneClass.getCanonicalName());
                 e.printStackTrace();
             }
 
-            mInit = false;
+            sInit = false;
 
         } else {    // update and draw
-
-            GameTime.tick();
 
             mCameraController.update();
             mScene.update();

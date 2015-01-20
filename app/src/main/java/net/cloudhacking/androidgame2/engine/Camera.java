@@ -12,21 +12,20 @@ import net.cloudhacking.androidgame2.engine.utils.Vec2;
  */
 public class Camera extends Loggable {
 
-    private static float sInvGameWidth;
-    private static float sInvGameHeight;
+    private static float sViewWidth;
+    private static float sViewHeight;
+    private static float sInvViewWidth;
+    private static float sInvViewHeight;
+    private static PointF sViewCenter;
 
-    public static void setInverseGameWidth(float invw) {
-        sInvGameWidth = invw;
+    public static void setView(float vw, float vh) {
+        sViewWidth = vw;
+        sViewHeight = vh;
+        sInvViewWidth = 1/vw;
+        sInvViewHeight = 1/vh;
+        sViewCenter = new PointF(vw/2, vh/2);
     }
-    public static void setInverseGameHeight(float invh) {
-        sInvGameHeight = invh;
-    }
 
-
-    private PointF mPosition;
-    private Vec2 mTempOffset;
-    private float mWidth;
-    private float mHeight;
 
     private PointF mFocus;
     private Renderable mTarget;
@@ -36,85 +35,26 @@ public class Camera extends Loggable {
 
     private float[] mMatrix;
 
+    public Camera() {
+        this(new PointF(), 1f);
+    }
 
-    public Camera(PointF pos, float width, float height, float zoom) {
-        mPosition = pos;
-        mTempOffset = new Vec2();
-        mWidth = width;
-        mHeight = height;
+    /**
+     * Creates a new camera object.  Typically we will only really need a game level
+     * camera (mActiveCamera), and a UI camera (mUICamera).  The camera's center point
+     * will be the [focus].  If [mTarget] is not null then the camera will automatically
+     * focus on the center of the target.
+     *
+     * @param focus focal point of camera
+     * @param zoom zoom>1 := zoom in, zoom<1 := zoom out
+     */
+    public Camera(PointF focus, float zoom) {
+        mFocus = focus;
         mZoom = zoom;
         mLastZoom = zoom;
-        mFocus = new PointF();
         mTarget = null;
         mMatrix = new float[16];
         MatrixUtils.setIdentity(mMatrix);
-    }
-
-
-    public static Camera createFullscreen(float zoom) {
-        RectF mapRect = GameSkeleton.getInstance().getScene().getMapRect();
-
-        float w = mapRect.width()/zoom;
-        float h = mapRect.height()/zoom;
-
-        return new Camera(new PointF(w/2, h/2), w, h, 1);
-    }
-
-
-    public void focusOn(PointF focus) {
-        // TODO: coordinate system and convert from game to camera coords
-    }
-
-    public void focusOn(Renderable target) {
-
-    }
-
-
-    public void setPosition(PointF newPosition) {
-        mPosition = newPosition.copy();
-    }
-
-    public synchronized void incrementPosition(Vec2 inc) {
-        mPosition.move(inc);
-    }
-
-    public PointF getPosition() {
-        return mPosition.copy();
-    }
-
-
-    public void setZoom(float zoom) {
-        mZoom = zoom;
-    }
-
-    public void bindLastZoom() {
-        mLastZoom = mZoom;
-    }
-
-    public void setRelativeZoom(float zoom) {
-        mZoom = zoom * mLastZoom;
-    }
-
-    public float getZoom() {
-        return mZoom;
-    }
-
-    public float getLastZoom() {
-        return mLastZoom;
-    }
-
-
-    public void setTempOffset(Vec2 offset) {
-        mTempOffset = offset;
-    }
-
-    public Vec2 getTempOffset() {
-        return mTempOffset;
-    }
-
-    public void bindTempOffset() {
-        incrementPosition(mTempOffset);
-        mTempOffset = new Vec2();
     }
 
 
@@ -122,22 +62,71 @@ public class Camera extends Loggable {
         return mMatrix;
     }
 
-    private void updateMatrix() {
-        // This matrix transforms game coordinate vertices into the GL [-1,1]X[-1,1] screen space;
-        // ***need to multiply y-related matrix entries by -1 in order to preserve orientation for
-        //    some reason.  wat r matrices?
-        mMatrix[0]  =       mZoom * 2 * sInvGameWidth;
-        mMatrix[5]  = -1 * (mZoom * 2 * sInvGameHeight);
-        mMatrix[12] =       -1 + (mPosition.x + mTempOffset.x) * 2 * sInvGameWidth;
-        mMatrix[13] = -1 * (-1 + (mPosition.y + mTempOffset.y) * 2 * sInvGameHeight);
+
+    public void setTarget(Renderable target) {
+        mTarget = target;
+    }
+
+    public void focusOn(Renderable target) {
+        focusOn(target.getCenter());
+    }
+
+    public void focusOn(PointF focus) {
+        focusOn(focus.x, focus.y);
+    }
+
+    public void focusOn(float x, float y) {
+        mFocus.set(x, y);
+    }
+
+    public synchronized void incrementFocus(Vec2 inc) {
+        mFocus.move(inc.scale(1/mZoom));
     }
 
 
+    public void setZoom(float zoom) {
+        mZoom = zoom;
+    }
+
+    public void setRelativeZoom(float zoom) {
+        mZoom = zoom * mLastZoom;
+    }
+
+    public void bindRelativeZoom() {
+        mLastZoom = mZoom;
+    }
+
+    public float getZoom() {
+        return mZoom;
+    }
+
+
+    public PointF sceneToCamera(PointF scenePoint) {
+        Vec2 adjust = mFocus.vecTowards(scenePoint).scale(mZoom);
+
+        return sViewCenter.add(adjust);
+    }
+
+    public PointF cameraToScene(PointF touchPoint) {
+        Vec2 adjust = sViewCenter.vecTowards(touchPoint).scale(1/mZoom);
+
+        return mFocus.add(adjust);
+    }
+
+
+    private void updateMatrix() {
+        // This matrix transforms game coordinate vertices into the GL [-1,1]X[-1,1] screen space;
+        // The center of this camera will be Vec2(0,0) + mFocus .  The zoom is multiplied by
+        // the inverse of the view width/height in order to correct for the screen's aspect ratio.
+
+        mMatrix[0]  = +mZoom * 2 * sInvViewWidth;
+        mMatrix[5]  = -mZoom * 2 * sInvViewHeight;  // negative to preserve vertical orientation
+        mMatrix[12] = -mFocus.x * mMatrix[0];
+        mMatrix[13] = -mFocus.y * mMatrix[5];
+    }
+
     public void update() {
-
         if (mTarget != null) focusOn(mTarget);
-
-        // for UI camera we won't need to update the matrix
         updateMatrix();
     }
 }

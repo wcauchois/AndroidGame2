@@ -3,11 +3,9 @@ package net.cloudhacking.androidgame2;
 import android.graphics.RectF;
 
 import net.cloudhacking.androidgame2.engine.BasicGLScript;
-import net.cloudhacking.androidgame2.engine.Camera;
-import net.cloudhacking.androidgame2.engine.GameSkeleton;
+import net.cloudhacking.androidgame2.engine.CameraController;
 import net.cloudhacking.androidgame2.engine.Image;
 import net.cloudhacking.androidgame2.engine.Scene;
-import net.cloudhacking.androidgame2.engine.utils.PointF;
 import net.cloudhacking.androidgame2.engine.utils.Vec2;
 
 /**
@@ -15,34 +13,50 @@ import net.cloudhacking.androidgame2.engine.utils.Vec2;
  */
 public class TestScene extends Scene {
 
-    private Image image;
+    BasicGLScript mGLScript;
+    CameraController mCameraController;
+
+    private Image image1, image2;
+
 
     @Override
-    public void create() {
-        image = new Image(Assets.TEST_TILESET);
-        image.setRotatable(false);
-        image.setVelocity(new Vec2(10, 10));
-        add(image);
+    public void build() {
+        image1 = new Image(Assets.TEST_TILESET);
+        image1.setRotatable(false);
+        image1.setScalable(false);
+        add(image1);
 
-        Camera cam = Camera.createFullscreen(1);
-        TDGame.getInstance().getCameraController().reset(cam);
-        setCamera(cam);
+        image2 = new Image(Assets.TEST_TILESET);
+        image2.setRotatable(false);
+        image2.setScalable(false);
+        image2.setVelocity(new Vec2(15, 15));
+        add(image2);
+
+        TestClickDrawer testDrawer = new TestClickDrawer();
+        TDGame.getInstance().getInputManager().addClickListener(testDrawer);
+
+        mCameraController = TDGame.getInstance().getCameraController();
+    }
+
+    @Override
+    public void destroy() {
+
     }
 
 
     @Override
     public float getMapWidth() {
-        return image.getWidth();
+        return image1.getWidth();
     }
 
     @Override
     public float getMapHeight() {
-        return image.getHeight();
+        return image1.getHeight();
     }
 
     @Override
     public RectF getMapRect() {
-        return image.getTexture().getRect();
+        return image1.getTexture().getRect();
     }
 
 
@@ -55,13 +69,16 @@ public class TestScene extends Scene {
     @Override
     public void draw() {
 
-        BasicGLScript.get().useCamera( getCamera() );  // set active camera
-        // draw level
-        // set ui camera
-        // draw ui
-        // ( don't call super.draw() )
+        mGLScript = BasicGLScript.get();
 
-        super.draw();  // draw all member entities
+        // draw level
+        mGLScript.useCamera(mCameraController.getActiveCamera());
+        super.draw(); // don't call super.draw() here, do like mGameLevel.draw() or something
+
+        // draw ui
+        mGLScript.useCamera(mCameraController.getUICamera());
+        // mUIGroup.draw() or something;
+
     }
 
 }

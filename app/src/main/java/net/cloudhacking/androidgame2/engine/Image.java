@@ -89,19 +89,19 @@ public class Image extends Renderable {
 
     private void updateVertices() {
 
-        float width = getWidth(), height = getHeight();
+        float halfWidth = getWidth()/2, halfHeight = getHeight()/2;
 
-        mVertices[0] 	= 0;
-        mVertices[1] 	= 0;
+        mVertices[0] 	= -halfWidth;
+        mVertices[1] 	= -halfHeight;
 
-        mVertices[4] 	= width;
-        mVertices[5] 	= 0;
+        mVertices[4] 	= +halfWidth;
+        mVertices[5] 	= -halfHeight;
 
-        mVertices[8] 	= width;
-        mVertices[9] 	= height;
+        mVertices[8] 	= +halfWidth;
+        mVertices[9] 	= +halfHeight;
 
-        mVertices[12]	= 0;
-        mVertices[13]	= height;
+        mVertices[12]	= -halfWidth;
+        mVertices[13]	= +halfHeight;
 
         mNeedBufferUpdate = true;
     }
