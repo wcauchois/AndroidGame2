@@ -128,28 +128,28 @@ public class Camera extends Loggable {
         focusOn(focus.x, focus.y);
     }
 
-    public synchronized void focusOn(float x, float y) {
+    public void focusOn(float x, float y) {
         mFocus.set(x, y);
         enforceBounds();
     }
 
-    public synchronized void incrementFocus(Vec2 inc) {
+    public void incrementFocus(Vec2 inc) {
         mFocus.move( inc.scale( sScrollSpeed / mZoom ) );
         enforceBounds();
     }
 
 
-    public synchronized void setZoom(float zoom) {
+    public void setZoom(float zoom) {
         mZoom = zoom;
         mLastZoom = zoom;
     }
 
-    public synchronized void setRelativeZoom(float zoom) {
+    public void setRelativeZoom(float zoom) {
         mZoom = Math.max( zoom*mLastZoom, mMinZoom );
         enforceBounds();
     }
 
-    public synchronized void bindRelativeZoom() {
+    public void bindRelativeZoom() {
         mLastZoom = mZoom;
     }
 

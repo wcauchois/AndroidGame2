@@ -18,7 +18,7 @@ public class Group extends Entity {
     }
 
     @Override
-    public synchronized void update() {
+    public void update() {
         for (Entity e : mEntities) {
             if (e.exists() && e.isActive()) {
                 e.update();
@@ -27,7 +27,7 @@ public class Group extends Entity {
     }
 
     @Override
-    public synchronized void draw() {
+    public void draw() {
         for (Entity e : mEntities) {
             if (e.exists() && e.isOnScreen() && e.isVisible()) {
                 e.draw();
@@ -36,7 +36,7 @@ public class Group extends Entity {
     }
 
 
-    public synchronized Entity add(Entity e) {
+    public Entity add(Entity e) {
 
         if (e.getParent()==this) {
             return e;
@@ -58,7 +58,7 @@ public class Group extends Entity {
     }
 
 
-    public synchronized Entity fastRemove(Entity e) {
+    public Entity fastRemove(Entity e) {
         int index = mEntities.indexOf(e);
         if (index != -1) {
             mEntities.set(index, null);
@@ -69,7 +69,7 @@ public class Group extends Entity {
         }
     }
 
-    public synchronized Entity remove(Entity e) {
+    public Entity remove(Entity e) {
         if (mEntities.remove(e)) {
             length--;
             e.setParent(null);
@@ -80,7 +80,7 @@ public class Group extends Entity {
     }
 
 
-    public synchronized void clear() {
+    public void clear() {
         Entity e;
         for (int i=0; i<length; i++) {
             e = mEntities.get(i);
@@ -93,7 +93,7 @@ public class Group extends Entity {
     }
 
 
-    public synchronized Entity bringToFront(Entity e) {
+    public Entity bringToFront(Entity e) {
         if (mEntities.contains(e)) {
             mEntities.remove(e);
             mEntities.add(e);
@@ -103,7 +103,7 @@ public class Group extends Entity {
         }
     }
 
-    public synchronized Entity sentToBack(Entity e) {
+    public Entity sentToBack(Entity e) {
         if (mEntities.contains(e)) {
             mEntities.remove(e);
             mEntities.add(0, e);
@@ -113,7 +113,7 @@ public class Group extends Entity {
         }
     }
 
-    public synchronized ArrayList<Entity> getEntities() {
+    public ArrayList<Entity> getEntities() {
         return mEntities;
     }
 

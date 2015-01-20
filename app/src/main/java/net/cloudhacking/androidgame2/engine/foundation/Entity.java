@@ -1,6 +1,5 @@
 package net.cloudhacking.androidgame2.engine.foundation;
 
-import net.cloudhacking.androidgame2.engine.Camera;
 import net.cloudhacking.androidgame2.engine.utils.Loggable;
 
 /**
@@ -75,7 +74,7 @@ public class Entity extends Loggable {
     }
 
     public void setParent(Group parent) {
-        parent.add(this);
+        mParent = parent;
     }
 
     public void orphan() {
