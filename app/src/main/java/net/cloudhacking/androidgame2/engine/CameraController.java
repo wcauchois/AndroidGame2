@@ -22,15 +22,8 @@ public class CameraController extends Loggable {
     public CameraController(InputManager inputManager) {
         mActiveCamera = new Camera();
         mUICamera = new Camera();
-        mUICamera.update();  // only need to update once in order to generate matrix
+        mUICamera.update();  // only need to update UI camera once in order to generate matrix
         mDisabled = false;
-
-        inputManager.startDrag.connect(new Signal.Listener<InputManager.StartDragEvent>() {
-            public void onSignal(InputManager.StartDragEvent e) {
-                // TODO(wcauchois): Copied this from andrew's code, doesn't seem to do anything?
-                if (mDisabled) return;
-            }
-        });
 
         inputManager.drag.connect(new Signal.Listener<InputManager.DragEvent>() {
             public void onSignal(InputManager.DragEvent e) {

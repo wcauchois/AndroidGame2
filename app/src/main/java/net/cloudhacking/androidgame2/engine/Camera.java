@@ -41,10 +41,14 @@ public class Camera extends Loggable {
     private float mZoom;
     private float mLastZoom;
 
+    private float[] mMatrix;
+
+
     /**
      * Camera will not be able to pan outside this rectangle if it is defined.
      *
-     * Note: this rect should have an (x,y) position of (0,0);
+     * Note: the left and top values of the rect should both be zero, i.e. the top-left vertex
+     *       of the rect should be (0,0).
      */
     private RectF mBoundaryRect;
     private float mMinZoom;
@@ -64,11 +68,7 @@ public class Camera extends Loggable {
         setZoom( mMinZoom );
     }
 
-    private float[] mMatrix;
 
-    public Camera() {
-        this(new PointF(), 1f);
-    }
 
     /**
      * Creates a new camera object.  Typically we will only really need a game level
@@ -89,6 +89,10 @@ public class Camera extends Loggable {
         mMinZoom = 0f;
         mMatrix = new float[16];
         MatrixUtils.setIdentity(mMatrix);
+    }
+
+    public Camera() {
+        this(new PointF(), 1f);
     }
 
 

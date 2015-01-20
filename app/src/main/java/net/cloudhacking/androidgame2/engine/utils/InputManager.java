@@ -93,6 +93,10 @@ public class InputManager
         return true;
     }
 
+
+    /**
+     * Scale listener callbacks
+     */
     private void addScaleEvent(ScaleGestureDetector detector, ScaleEventType eventType) {
         addEvent(new ScaleEvent(
                 new PointF(detector.getFocusX(), detector.getFocusY()),
@@ -101,9 +105,6 @@ public class InputManager
         ));
     }
 
-    /**
-     * Scale listener callbacks
-     */
     @Override
     public boolean onScaleBegin(ScaleGestureDetector detector) {
         if (INPUT_DEBUG) d("onScaleBegin called");
@@ -263,6 +264,9 @@ public class InputManager
     private enum ClickEventType {
         CLICK_UP, CLICK_DOWN
     }
+
+
+    /**********************************************************************************************/
 
     private List<Event> mQueuedEvents = new ArrayList<Event>();
 
