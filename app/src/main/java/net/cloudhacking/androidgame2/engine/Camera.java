@@ -51,15 +51,17 @@ public class Camera extends Loggable {
     private boolean mCheckBounds;
 
     public void setBoundaryRect(RectF br) {
-        if (br == null) { return; }
-
+        if (br == null) {
+            mBoundaryRect = null;
+            mCheckBounds = false;
+            mMinZoom = 0f;
+            return;
+        }
         mBoundaryRect = br;
         mCheckBounds = true;
         mFocus = new PointF(br.centerX(), br.centerY());
         mMinZoom = Math.max(sViewWidth/br.right, sViewHeight/br.bottom);
         setZoom( mMinZoom );
-
-        d("setting boundary rect: "+br);
     }
 
     private float[] mMatrix;
@@ -84,6 +86,7 @@ public class Camera extends Loggable {
         mTarget = null;
         mBoundaryRect = null;
         mCheckBounds = false;
+        mMinZoom = 0f;
         mMatrix = new float[16];
         MatrixUtils.setIdentity(mMatrix);
     }

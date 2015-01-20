@@ -53,6 +53,12 @@ public class Vec2 {
         return new Vec2(x + other.x, y + other.y);
     }
 
+    public Vec2 increment(Vec2 other) {
+        this.x += other.x;
+        this.y += other.y;
+        return this;
+    }
+
     public Vec2 negate() {
         return new Vec2(-x, -y);
     }

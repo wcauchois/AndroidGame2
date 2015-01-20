@@ -26,7 +26,7 @@ public class TestClickDrawer extends Loggable implements InputManager.ClickListe
         image = new Image(Assets.TEST_TILESET);
         image.setPos( mCameraController.getActiveCamera().cameraToScene(up) );
         image.setRotatable(true);
-        image.setRotationSpeed(30);
+        image.setRotationSpeed( 360 * (float)Math.random() );
         TDGame.getInstance().getScene().add(image);
     }
 

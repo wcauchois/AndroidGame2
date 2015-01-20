@@ -196,7 +196,7 @@ public class Renderable extends Entity {
     private void updateMotion() {
         float delta = GameTime.getFrameDelta();  // in seconds
 
-        mVelocity = mVelocity.add(mAcceleration.scale(delta));
+        mVelocity.increment(mAcceleration.scale(delta));
         mPos.move(mVelocity.scale(delta));
 
         mRotation += mRotationSpeed * delta;
@@ -205,6 +205,10 @@ public class Renderable extends Entity {
 
     private void updateMatrix() {
         MatrixUtils.setIdentity(mModelMatrix);
+        if (!mRotatable && !mScalable) {
+            MatrixUtils.translate2D(mModelMatrix, mPos.x, mPos.y);
+            return;
+        }
         MatrixUtils.translate2D(mModelMatrix, mOrigin.x + mPos.x, mOrigin.y + mPos.y);
         if (mRotatable) {
             MatrixUtils.rotate2D(mModelMatrix, mRotation);
