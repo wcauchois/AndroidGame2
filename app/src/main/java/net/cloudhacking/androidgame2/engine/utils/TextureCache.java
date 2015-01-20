@@ -51,7 +51,7 @@ public class TextureCache extends Loggable {
      * into the cache.
      */
     public static Texture get(Asset asset) {
-        return get(asset, sDefaultTextureOptions, false);
+        return get(asset, sDefaultTextureOptions, true);
     }
 
     public static Texture get(Asset asset, Texture.TextureOptions opts) {

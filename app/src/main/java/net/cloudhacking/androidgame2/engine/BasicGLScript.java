@@ -31,8 +31,8 @@ public class BasicGLScript extends GLScript {
 
         compileGLAssets();
 
-        aXY		= mProgram.getAttribute("aXYZW");
-        aUV		= mProgram.getAttribute("aUV");
+        aXY	    = mProgram.getAttribute("aXYZW");
+        aUV     = mProgram.getAttribute("aUV");
         uCamera	= mProgram.getUniform("uCamera");
         uModel	= mProgram.getUniform("uModel");
         uTex	= mProgram.getUniform("uTex");

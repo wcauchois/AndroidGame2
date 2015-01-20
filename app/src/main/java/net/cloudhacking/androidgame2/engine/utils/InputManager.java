@@ -186,21 +186,21 @@ public class InputManager
 
 
     private void triggerClickDown(PointF down) {
-        if (TRIGGER_DEBUG) d("onClick triggered : down="+down);
+        if (TRIGGER_DEBUG) d("onClickDown triggered : down="+down);
         for (ClickListener l : mClickListeners) {
             l.onClickDown(down);
         }
     }
 
     private void triggerClickUp(PointF up) {
-        if (TRIGGER_DEBUG) d("onClick triggered : up="+up);
+        if (TRIGGER_DEBUG) d("onClickUp triggered : up="+up);
         for (ClickListener l : mClickListeners) {
             l.onClickUp(up);
         }
     }
 
     private void triggerClickCancel() {
-        if (TRIGGER_DEBUG) d("onClick triggered");
+        if (TRIGGER_DEBUG) d("onClickCancel triggered");
         for (ClickListener l : mClickListeners) {
             l.onClickCancel();
         }
