@@ -5,8 +5,8 @@ import java.util.HashMap;
 /**
  * Created by Andrew on 1/8/2015.
  */
-public abstract class AnimatedGridItem extends LevelGrid.GridItem {
-
+public abstract class AnimatedGridItem {
+/*
     private int mDefaultTileIndex;
     private int mCurrentFrame;
     private int[] mCurrentAnimationSeq;
@@ -22,7 +22,7 @@ public abstract class AnimatedGridItem extends LevelGrid.GridItem {
 
 
     public static class AnimationCache {
-        /**
+        *//**
          * This maps a handle that describes an animation to an animation sequence itself. The
          * handle's prefix is the name of the class, so different classes can have animations with
          * the same handle.
@@ -30,7 +30,7 @@ public abstract class AnimatedGridItem extends LevelGrid.GridItem {
          * An animation sequence is a map from the current frame number of the animation sequence to
          * the corresponding tile index on the sprite sheet, i.e.:
          *      tileIndex = animationSeq[frameNumber];
-         */
+         *//*
         private static HashMap<String, int[]> sCache = new HashMap<String, int[]>();
 
         public static int[] get(String formalHandle) {
@@ -38,14 +38,14 @@ public abstract class AnimatedGridItem extends LevelGrid.GridItem {
         }
 
 
-        /**
+        *//**
          * Add an animation sequence to the animation cache.
          *
          * @param cls  Class to which this animation will be attached
          * @param handle  String describing this animation (used for lookup)
          * @param animationSeq Animation sequence
          * @param <T>  Class extending AnimatedGridItem
-         */
+         *//*
         public static <T extends AnimatedGridItem> void addAnimation(Class<T> cls,
                                                                      String handle,
                                                                      int[] animationSeq) {
@@ -96,14 +96,14 @@ public abstract class AnimatedGridItem extends LevelGrid.GridItem {
 
 
 
-    /**
+    *//**
      * Queue an animation. TODO: Force animation?
      *
      * @param animationSeq maps animation frame index number to tile indexes on tile set,
      *                     i.e. tileIndex = animationSeq[frameNumber]
      * @param frameTime time between frame switch (in millis)
      * @param loop boolean which determines whether or not animation will loop
-     */
+     *//*
     public void queueAnimationSequence(int[] animationSeq, long frameTime, Boolean loop) {
         mCurrentAnimationSeq = animationSeq;
         setTileIndex(mCurrentAnimationSeq[0]);
@@ -144,5 +144,5 @@ public abstract class AnimatedGridItem extends LevelGrid.GridItem {
             setTileIndex(mCurrentAnimationSeq[mCurrentFrame]);
             mSysTimeSinceSwitch -= mFrameTime;
         }
-    }
+    }*/
 }

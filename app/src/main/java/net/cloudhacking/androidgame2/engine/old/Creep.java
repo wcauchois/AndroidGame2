@@ -8,11 +8,14 @@ import java.util.ArrayDeque;
  * Created by Andrew on 1/7/2015.
  */
 public /*abstract*/ class Creep extends AnimatedGridItem {
+/*
 
     private float mVelocity;
     private ArrayDeque<int[]> mWaypoints;   // TODO: Convert all this to use Vec2
     private int[] mCurrentWaypoint;
-    private static final int WAYPOINT_THRESHOLD = 5 /*pixels*/;  // distance from waypoint where we
+    private static final int WAYPOINT_THRESHOLD = 5 */
+/*pixels*//*
+;  // distance from waypoint where we
                                                                  // can consider it reached
 
     public Creep() {
@@ -87,6 +90,7 @@ public /*abstract*/ class Creep extends AnimatedGridItem {
         setPosX(pos[0] + (int) (dir[0]*(mVelocity/distToWaypoint)));
         setPosY(pos[1] + (int) (dir[1]*(mVelocity/distToWaypoint)));
     }
+*/
 
 
 }

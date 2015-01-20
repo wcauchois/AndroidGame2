@@ -6,6 +6,8 @@ import net.cloudhacking.androidgame2.engine.BasicGLScript;
 import net.cloudhacking.androidgame2.engine.CameraController;
 import net.cloudhacking.androidgame2.engine.Image;
 import net.cloudhacking.androidgame2.engine.Scene;
+import net.cloudhacking.androidgame2.engine.TileMap;
+import net.cloudhacking.androidgame2.engine.utils.JsonMap;
 import net.cloudhacking.androidgame2.engine.utils.Vec2;
 
 /**
@@ -16,26 +18,21 @@ public class TestScene extends Scene {
     BasicGLScript mGLScript;
     CameraController mCameraController;
 
-    private Image image1, image2;
-
+    TileMap mTileMap;
 
     @Override
-    public void build() {
-        image1 = new Image(Assets.TEST_TILESET);
-        image1.setRotatable(false);
-        image1.setScalable(false);
-        add(image1);
+    public void create() {
 
-        image2 = new Image(Assets.TEST_TILESET);
-        image2.setRotatable(false);
-        image2.setScalable(false);
-        image2.setVelocity(new Vec2(15, 15));
-        add(image2);
+        mTileMap = new TileMap(
+                Assets.TEST_TILESET, new JsonMap(Resources.JSON_MAP_SIMPLE), 32, 32
+        );
+        add(mTileMap);
 
         TestClickDrawer testDrawer = new TestClickDrawer();
         TDGame.getInstance().getInputManager().addClickListener(testDrawer);
 
         mCameraController = TDGame.getInstance().getCameraController();
+        mCameraController.setBoundaryRect( getMapRect() );
     }
 
     @Override
@@ -46,17 +43,17 @@ public class TestScene extends Scene {
 
     @Override
     public float getMapWidth() {
-        return image1.getWidth();
+        return mTileMap.getWidth();
     }
 
     @Override
     public float getMapHeight() {
-        return image1.getHeight();
+        return mTileMap.getHeight();
     }
 
     @Override
     public RectF getMapRect() {
-        return image1.getTexture().getRect();
+        return mTileMap.getRect();
     }
 
 

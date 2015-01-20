@@ -1,5 +1,7 @@
 package net.cloudhacking.androidgame2.engine;
 
+import android.graphics.RectF;
+
 import net.cloudhacking.androidgame2.engine.utils.InputManager;
 import net.cloudhacking.androidgame2.engine.utils.Loggable;
 import net.cloudhacking.androidgame2.engine.utils.PointF;
@@ -62,9 +64,13 @@ public class CameraController
     public CameraController() {
         mActiveCamera = new Camera();
         mUICamera = new Camera();
+        mUICamera.update();  // only need to update once in order to generate matrix
         mDisabled = false;
     }
 
+    public void setBoundaryRect(RectF boundaryRect) {
+        mActiveCamera.setBoundaryRect(boundaryRect);
+    }
 
     public Camera getActiveCamera() {
         return mActiveCamera;

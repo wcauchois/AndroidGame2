@@ -21,13 +21,14 @@ public class Image extends Renderable {
     private float[] mVertices;
     private FloatBuffer mVertexBuffer;
 
-    private boolean mNeedBufferUpdate = false;
+    private boolean mNeedBufferUpdate;
 
 
     public Image() {
         super(0, 0, 0, 0);
         mVertices = new float[16];
         mVertexBuffer = BufferUtils.makeEmptyFloatBuffer();
+        mNeedBufferUpdate = false;
     }
 
     public Image(Asset asset) {
@@ -44,6 +45,10 @@ public class Image extends Renderable {
     public void setTexture(Asset asset) {
         mTexture = TextureCache.get(asset);
         setFrame(new RectF(0, 0, 1, 1));
+    }
+
+    public void setTexture(Texture tex) {
+        mTexture = tex;
     }
 
     public Texture getTexture() {
@@ -132,8 +137,13 @@ public class Image extends Renderable {
     }
 
 
-    @Override
-    public String toString() {
-        return "Image(x="+getPos().x+", y="+getPos().y+", w="+getWidth()+", h="+getHeight()+")";
+    public boolean overlapsPoint(PointF p) {
+        // this test assumes a square bounding box
+        // where the position point is at its center
+        PointF c=getPos();
+        float hw=getWidth()/2, hh=getHeight()/2;
+
+        return p.x >= c.x-hw && p.x <= c.x+hw &&
+               p.y >= c.y-hh && p.y <= c.y+hh;
     }
 }

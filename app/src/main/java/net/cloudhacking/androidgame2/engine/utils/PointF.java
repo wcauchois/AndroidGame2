@@ -26,10 +26,33 @@ public class PointF {
     }
 
 
+    public void setX(float x) {
+        this.x = x;
+    }
+
+    public void setY(float y) {
+        this.y = y;
+    }
+
     public void set(float x, float y) {
         this.x = x;
         this.y = y;
     }
+
+
+    public void moveX(float x) {
+        this.x += x;
+    }
+
+    public void moveY(float y) {
+        this.y += y;
+    }
+
+    public void move(Vec2 dir) {
+        this.x += dir.x;
+        this.y += dir.y;
+    }
+
 
     public PointF copy() {
         return new PointF(this.x, this.y);
@@ -39,10 +62,7 @@ public class PointF {
         return new PointF(this.x + v.x, this.y + v.y);
     }
 
-    public void move(Vec2 dir) {
-        this.x += dir.x;
-        this.y += dir.y;
-    }
+
 
     public float distTo(PointF other) {
         float dx = other.x - x;

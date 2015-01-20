@@ -1,6 +1,7 @@
 package net.cloudhacking.androidgame2.engine;
 
 import android.graphics.RectF;
+import android.util.FloatMath;
 
 import net.cloudhacking.androidgame2.engine.utils.Loggable;
 import net.cloudhacking.androidgame2.engine.utils.MatrixUtils;
@@ -14,15 +15,15 @@ public class Camera extends Loggable {
 
     private static float sViewWidth;
     private static float sViewHeight;
-    private static float sInvViewWidth;
-    private static float sInvViewHeight;
+    private static float sDoubleInvViewWidth;
+    private static float sDoubleInvViewHeight;
     private static PointF sViewCenter;
 
     public static void setView(float vw, float vh) {
         sViewWidth = vw;
         sViewHeight = vh;
-        sInvViewWidth = 1/vw;
-        sInvViewHeight = 1/vh;
+        sDoubleInvViewWidth = 2/vw;
+        sDoubleInvViewHeight = 2/vh;
         sViewCenter = new PointF(vw/2, vh/2);
     }
 
@@ -32,6 +33,23 @@ public class Camera extends Loggable {
 
     private float mZoom;
     private float mLastZoom;
+
+    /**
+     * Camera will not be able to pan outside this rectangle if it is defined.
+     *
+     * Note: this rect should have an (x,y) position of (0,0);
+     */
+    private RectF mBoundaryRect;
+    private float mMinZoom;
+
+    public void setBoundaryRect(RectF br) {
+        mBoundaryRect = br;
+        mFocus = new PointF(br.centerX(), br.centerY());
+        mMinZoom = Math.max(sViewWidth/br.right, sViewHeight/br.bottom);
+        setZoom( mMinZoom );
+
+        d("setting boundary rect: "+br);
+    }
 
     private float[] mMatrix;
 
@@ -46,13 +64,14 @@ public class Camera extends Loggable {
      * focus on the center of the target.
      *
      * @param focus focal point of camera
-     * @param zoom zoom>1 := zoom in, zoom<1 := zoom out
+     * @param zoom zoom>1 := zoom-in; zoom<1 := zoom-out
      */
     public Camera(PointF focus, float zoom) {
         mFocus = focus;
         mZoom = zoom;
         mLastZoom = zoom;
         mTarget = null;
+        mBoundaryRect = null;
         mMatrix = new float[16];
         MatrixUtils.setIdentity(mMatrix);
     }
@@ -75,24 +94,46 @@ public class Camera extends Loggable {
         focusOn(focus.x, focus.y);
     }
 
-    public void focusOn(float x, float y) {
+    public synchronized void focusOn(float x, float y) {
         mFocus.set(x, y);
+        checkBounds();
     }
 
     public synchronized void incrementFocus(Vec2 inc) {
         mFocus.move(inc.scale(1/mZoom));
+        checkBounds();
+    }
+
+    float hwz, hhz, lb, tb, rb, bb;
+    private synchronized void checkBounds() {
+        if (mBoundaryRect != null) {
+            hwz = sViewWidth / (2 * mZoom);
+            hhz = sViewHeight / (2 * mZoom);
+
+            lb = mFocus.x;
+            tb = mFocus.y;
+            rb = mBoundaryRect.right - mFocus.x;
+            bb = mBoundaryRect.bottom - mFocus.y;
+
+            if (lb < hwz) { mFocus.moveX( hwz-lb ); }
+            if (rb < hwz) { mFocus.moveX( rb-hwz ); }
+            if (tb < hhz) { mFocus.moveY( hhz-tb ); }
+            if (bb < hhz) { mFocus.moveY( bb-hhz ); }
+        }
     }
 
 
-    public void setZoom(float zoom) {
+    public synchronized void setZoom(float zoom) {
         mZoom = zoom;
+        mLastZoom = zoom;
     }
 
-    public void setRelativeZoom(float zoom) {
-        mZoom = zoom * mLastZoom;
+    public synchronized void setRelativeZoom(float zoom) {
+        mZoom = Math.max( zoom*mLastZoom, mMinZoom );
+        checkBounds();
     }
 
-    public void bindRelativeZoom() {
+    public synchronized void bindRelativeZoom() {
         mLastZoom = mZoom;
     }
 
@@ -115,12 +156,14 @@ public class Camera extends Loggable {
 
 
     private void updateMatrix() {
-        // This matrix transforms game coordinate vertices into the GL [-1,1]X[-1,1] screen space;
-        // The center of this camera will be Vec2(0,0) + mFocus .  The zoom is multiplied by
-        // the inverse of the view width/height in order to correct for the screen's aspect ratio.
-
-        mMatrix[0]  = +mZoom * 2 * sInvViewWidth;
-        mMatrix[5]  = -mZoom * 2 * sInvViewHeight;  // negative to preserve vertical orientation
+        /*
+         * This matrix transforms game coordinate vertices into the GL [-1,1]X[-1,1] screen space.
+         * The center of this camera will be [mFocus] (which is in scene space).  The zoom is
+         * multiplied by the inverse of the view width/height in order to correct for
+         * the screen's aspect ratio.
+         */
+        mMatrix[0]  = +mZoom * sDoubleInvViewWidth;
+        mMatrix[5]  = -mZoom * sDoubleInvViewHeight;  // negative to preserve vertical orientation
         mMatrix[12] = -mFocus.x * mMatrix[0];
         mMatrix[13] = -mFocus.y * mMatrix[5];
     }

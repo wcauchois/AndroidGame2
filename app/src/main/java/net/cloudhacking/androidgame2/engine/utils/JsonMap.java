@@ -1,10 +1,6 @@
 package net.cloudhacking.androidgame2.engine.utils;
 
-import android.content.Context;
-import android.util.Log;
-
-import net.cloudhacking.androidgame2.engine.old.Component;
-import net.cloudhacking.androidgame2.engine.old.OldUtils;
+import net.cloudhacking.androidgame2.engine.TileMap;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,25 +14,19 @@ import java.util.List;
  *
  * Created by wcauchois on 1/4/15.
  */
-public class JsonMap extends Component {
+public class JsonMap extends Loggable implements TileMap.Map {
 
     private int[] tiles;
     private int width;
     private int height;
-    private int mResourceId;
 
-    public JsonMap(int resourceId) {
-        mResourceId = resourceId;
+    public JsonMap(Resource resource) {
+        loadFromResource(resource.getId());
     }
 
-    @Override
-    public void prepareResources(Context context) {
-        loadFromResource(context, mResourceId);
-        mResourcesPrepared = true;
-    }
 
-    public int getTile(int x, int y) {
-        return tiles[x + y * width];
+    public int getTile(int ix, int iy) {
+        return tiles[iy * width + ix];
     }
 
     public int getTile(int index) {
@@ -51,8 +41,9 @@ public class JsonMap extends Component {
         return height;
     }
 
-    public void loadFromResource(Context context, int resourceId) {
-        String resourceString = OldUtils.readTextFileFromRawResource(context, resourceId);
+
+    public void loadFromResource(int resourceId) {
+        String resourceString = ResourceUtils.readTextFileFromRawResource(resourceId);
         try {
             JSONObject object = new JSONObject(resourceString);
             JSONArray tilesArray = object.getJSONArray("tiles");
@@ -68,7 +59,7 @@ public class JsonMap extends Component {
                 }
 
                 if (maxCols >= 0 && rowArray.size() != maxCols) {
-                    Log.w(TAG, "Tile row of abnormal length (expected: " +
+                    w("tile row of abnormal length (expected: " +
                             maxCols + ", actual: " + rowArray.size() + ")");
                 }
 
@@ -84,16 +75,16 @@ public class JsonMap extends Component {
                 for (col = 0; col < this.width; col++) {
                     List<Integer> rowArray = rows.get(row);
                     if (rowArray == null || rowArray.get(col) == null) {
-                        Log.w(TAG, "Couldn't get value at (" + col + ", " + row + ")");
+                        w("couldn't get value at (" + col + ", " + row + ")");
                     } else {
                         this.tiles[col + row * this.width] = rowArray.get(col);
                     }
                 }
             }
 
-            Log.i(TAG, "Loaded JSON map (width=" + this.width + ", height=" + this.height+")");
+            i("loaded JSON map: width=" + this.width + ", height=" + this.height);
         } catch (JSONException e) {
-            Log.e(TAG, "Failed to load JSON map", e);
+            e("failed to load JSON map: " + e);
             throw new RuntimeException(e);
         }
     }

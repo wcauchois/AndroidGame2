@@ -1,5 +1,7 @@
 package net.cloudhacking.androidgame2.engine;
 
+import android.graphics.RectF;
+
 import net.cloudhacking.androidgame2.engine.utils.GameTime;
 import net.cloudhacking.androidgame2.engine.utils.MatrixUtils;
 import net.cloudhacking.androidgame2.engine.utils.PointF;
@@ -38,14 +40,14 @@ public class Renderable extends Entity {
         mHeight = height;         // use getWidth(), getHeight() to get scaled width/height
 
         mScale = new PointF(1, 1);
-        mScalable = true;
+        mScalable = false;
 
         mVelocity = new Vec2();
         mAcceleration = new Vec2();
 
         mRotation = 0f;
         mRotationSpeed = 0f;
-        mRotatable = true;
+        mRotatable = false;
 
         mColorM = new float[] {1, 1, 1, 1};
         mColorA = new float[] {0, 0, 0, 0};
@@ -87,6 +89,10 @@ public class Renderable extends Entity {
 
     public void setHeight(float height) {
         mHeight = height;
+    }
+
+    public RectF getRect() {
+        return new RectF(mPos.x, mPos.y, mPos.x + getWidth(), mPos.y + getHeight());
     }
 
     public PointF getOrigin() {
@@ -207,13 +213,6 @@ public class Renderable extends Entity {
             MatrixUtils.scale(mModelMatrix, mScale.x, mScale.y);
         }
         MatrixUtils.translate2D(mModelMatrix, -mOrigin.x, -mOrigin.y);
-    }
-
-
-    public boolean overlapsPoint(PointF p) {
-        float hw=getWidth()/2, hh=getHeight()/2;
-        return p.x >= mPos.x-hw && p.x <= mPos.x+hw &&
-               p.y >= mPos.y-hh && p.y <= mPos.y+hh;
     }
 
 

@@ -3,13 +3,14 @@ package net.cloudhacking.androidgame2.engine;
 import android.graphics.RectF;
 
 import net.cloudhacking.androidgame2.engine.gl.Texture;
+import net.cloudhacking.androidgame2.engine.utils.Loggable;
 
 import java.util.HashMap;
 
 /**
  * Created by Andrew on 1/16/2015.
  */
-public class TextureFrameSet {
+public class TextureFrameSet extends Loggable {
 
     private static final RectF FULL = new RectF( 0, 0, 1, 1 );
 
@@ -35,8 +36,8 @@ public class TextureFrameSet {
         mTextureHeight = texture.getHeight();
 
         RectF rect;
-        float du = frameWidth/mTextureWidth;
-        float dv = frameHeight/mTextureHeight;
+        float du = (float)frameWidth/mTextureWidth;
+        float dv = (float)frameHeight/mTextureHeight;
 
         int rows = mTextureWidth/frameWidth;
         int cols = mTextureHeight/frameHeight;

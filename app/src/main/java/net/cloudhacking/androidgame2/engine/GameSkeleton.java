@@ -185,7 +185,7 @@ public abstract class GameSkeleton
 
             try {
                 mScene = mSceneClass.newInstance();
-                mScene.build();
+                mScene.create();
 
             } catch(Exception e) {
                 e("error creating new instance of scene: " + mSceneClass.getCanonicalName());
