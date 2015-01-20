@@ -2,6 +2,7 @@ package net.cloudhacking.androidgame2;
 
 import android.os.Bundle;
 
+import net.cloudhacking.androidgame2.engine.Camera;
 import net.cloudhacking.androidgame2.engine.GameSkeleton;
 
 /**
@@ -10,11 +11,13 @@ import net.cloudhacking.androidgame2.engine.GameSkeleton;
 public class TDGame extends GameSkeleton {
 
     // TODO: create config/preferences system
+    private static final float SCROLL_SPEED = 1.2f;
 
 
     @Override
     public void onGameInit(Bundle savedInstanceState) {
         setSceneClass(TestScene.class);
+        Camera.setScrollSpeed(SCROLL_SPEED);
     }
 
     @Override

@@ -2,6 +2,7 @@ package net.cloudhacking.androidgame2.engine;
 
 import android.graphics.RectF;
 
+import net.cloudhacking.androidgame2.engine.foundation.Renderable;
 import net.cloudhacking.androidgame2.engine.gl.Texture;
 import net.cloudhacking.androidgame2.engine.utils.Asset;
 import net.cloudhacking.androidgame2.engine.utils.BufferUtils;

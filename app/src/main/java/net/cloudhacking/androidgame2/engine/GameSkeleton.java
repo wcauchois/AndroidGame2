@@ -4,9 +4,11 @@ import android.graphics.Rect;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.os.ConditionVariable;
 import android.view.Window;
 import android.view.WindowManager;
 
+import net.cloudhacking.androidgame2.engine.foundation.Scene;
 import net.cloudhacking.androidgame2.engine.gl.GLScript;
 import net.cloudhacking.androidgame2.engine.utils.GameTime;
 import net.cloudhacking.androidgame2.engine.utils.InputManager;
@@ -53,6 +55,11 @@ public abstract class GameSkeleton
         return mInputManager;
     }
 
+    private final ConditionVariable mInputSyncObj = new ConditionVariable();
+    public ConditionVariable getInputSyncObj() {
+        return mInputSyncObj;
+    }
+
     private CameraController mCameraController;
     public CameraController getCameraController() {
         return mCameraController;
@@ -95,7 +102,7 @@ public abstract class GameSkeleton
         TextureCache.setContext(this);
         GameTime.start();
 
-        mInputManager = new InputManager(this);
+        mInputManager = new InputManager(this, mInputSyncObj);
         mView.setOnTouchListener(mInputManager);
 
         mCameraController = new CameraController();
@@ -132,7 +139,7 @@ public abstract class GameSkeleton
         Camera.setView(width, height);
         mViewport = new Rect(0, 0, width, height);
 
-        d("surface changed: width="+width+", height="+height);
+        d("surface changed: width=" + width + ", height=" + height);
     }
 
 

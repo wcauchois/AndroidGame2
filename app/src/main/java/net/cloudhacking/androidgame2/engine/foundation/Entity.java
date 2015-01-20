@@ -1,5 +1,6 @@
-package net.cloudhacking.androidgame2.engine;
+package net.cloudhacking.androidgame2.engine.foundation;
 
+import net.cloudhacking.androidgame2.engine.Camera;
 import net.cloudhacking.androidgame2.engine.utils.Loggable;
 
 /**

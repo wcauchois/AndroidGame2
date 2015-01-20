@@ -1,6 +1,7 @@
 package net.cloudhacking.androidgame2.engine.utils;
 
 import android.content.Context;
+import android.os.ConditionVariable;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -10,8 +11,6 @@ import java.util.ArrayList;
 
 /**
  * Created by wcauchois on 1/8/15.
- *
- * TODO: Idk much about synchronization, but I think some of this might need to be synchronized?
  */
 public class InputManager
 
@@ -147,14 +146,17 @@ public class InputManager
 
     private GestureDetector mGestureDetector;
     private ScaleGestureDetector mScaleGestureDetector;
+    private ConditionVariable mInputSyncObj;
 
     ArrayList<ClickListener> mClickListeners = new ArrayList<ClickListener>();
     ArrayList<DragListener>  mDragListeners  = new ArrayList<DragListener>();
     ArrayList<ScaleListener> mScaleListeners = new ArrayList<ScaleListener>();
 
-    public InputManager(Context context) {
+    public InputManager(Context context, ConditionVariable inputSyncObj) {
         mGestureDetector = new GestureDetector(context, this);
         mScaleGestureDetector = new ScaleGestureDetector(context, this);
+
+        mInputSyncObj = inputSyncObj;  // this will block while the game is drawing
     }
 
 
@@ -206,28 +208,28 @@ public class InputManager
 
     private void triggerStartDrag(PointF start) {
         if (TRIGGER_DEBUG) d("onStartDrag triggered : start="+start);
-            for (DragListener l : mDragListeners) {
+        for (DragListener l : mDragListeners) {
             l.onStartDrag(start);
         }
     }
 
     private void triggerDrag(PointF cur, Vec2 dv) {
         if (TRIGGER_DEBUG) d("onDrag triggered : cur="+cur+", dv="+dv);
-            for (DragListener l : mDragListeners) {
+        for (DragListener l : mDragListeners) {
             l.onDrag(cur, dv);
         }
     }
 
     private void triggerStartScale(PointF focus, float span) {
         if (TRIGGER_DEBUG) d("onStartScale triggered : focus="+focus+", span="+span);
-            for (ScaleListener l : mScaleListeners) {
+        for (ScaleListener l : mScaleListeners) {
             l.onStartScale(focus, span);
         }
     }
 
     private void triggerScale(PointF focus, float span) {
         if (TRIGGER_DEBUG) d("onScale triggered : focus="+focus+", span="+span);
-            for (ScaleListener l : mScaleListeners) {
+        for (ScaleListener l : mScaleListeners) {
             l.onScale(focus, span);
         }
     }

@@ -1,8 +1,8 @@
 package net.cloudhacking.androidgame2.engine;
 
 import android.graphics.RectF;
-import android.util.FloatMath;
 
+import net.cloudhacking.androidgame2.engine.foundation.Renderable;
 import net.cloudhacking.androidgame2.engine.utils.Loggable;
 import net.cloudhacking.androidgame2.engine.utils.MatrixUtils;
 import net.cloudhacking.androidgame2.engine.utils.PointF;
@@ -12,6 +12,13 @@ import net.cloudhacking.androidgame2.engine.utils.Vec2;
  * Created by wcauchois on 1/8/15.
  */
 public class Camera extends Loggable {
+
+    private static float sScrollSpeed;
+
+    public static void setScrollSpeed(float s) {
+        sScrollSpeed = s;
+    }
+
 
     private static float sViewWidth;
     private static float sViewHeight;
@@ -41,9 +48,13 @@ public class Camera extends Loggable {
      */
     private RectF mBoundaryRect;
     private float mMinZoom;
+    private boolean mCheckBounds;
 
     public void setBoundaryRect(RectF br) {
+        if (br == null) { return; }
+
         mBoundaryRect = br;
+        mCheckBounds = true;
         mFocus = new PointF(br.centerX(), br.centerY());
         mMinZoom = Math.max(sViewWidth/br.right, sViewHeight/br.bottom);
         setZoom( mMinZoom );
@@ -72,6 +83,7 @@ public class Camera extends Loggable {
         mLastZoom = zoom;
         mTarget = null;
         mBoundaryRect = null;
+        mCheckBounds = false;
         mMatrix = new float[16];
         MatrixUtils.setIdentity(mMatrix);
     }
@@ -79,6 +91,25 @@ public class Camera extends Loggable {
 
     public float[] getMatrix() {
         return mMatrix;
+    }
+
+
+    float hwz, hhz, lb, tb, rb, bb;
+    private void enforceBounds() {
+        if (mCheckBounds) {
+            hwz = sViewWidth / (2 * mZoom);
+            hhz = sViewHeight / (2 * mZoom);
+
+            lb = mFocus.x;
+            tb = mFocus.y;
+            rb = mBoundaryRect.right - mFocus.x;
+            bb = mBoundaryRect.bottom - mFocus.y;
+
+            if (lb < hwz) { mFocus.moveX( hwz-lb ); }
+            if (rb < hwz) { mFocus.moveX( rb-hwz ); }
+            if (tb < hhz) { mFocus.moveY( hhz-tb ); }
+            if (bb < hhz) { mFocus.moveY( bb-hhz ); }
+        }
     }
 
 
@@ -96,30 +127,12 @@ public class Camera extends Loggable {
 
     public synchronized void focusOn(float x, float y) {
         mFocus.set(x, y);
-        checkBounds();
+        enforceBounds();
     }
 
     public synchronized void incrementFocus(Vec2 inc) {
-        mFocus.move(inc.scale(1/mZoom));
-        checkBounds();
-    }
-
-    float hwz, hhz, lb, tb, rb, bb;
-    private synchronized void checkBounds() {
-        if (mBoundaryRect != null) {
-            hwz = sViewWidth / (2 * mZoom);
-            hhz = sViewHeight / (2 * mZoom);
-
-            lb = mFocus.x;
-            tb = mFocus.y;
-            rb = mBoundaryRect.right - mFocus.x;
-            bb = mBoundaryRect.bottom - mFocus.y;
-
-            if (lb < hwz) { mFocus.moveX( hwz-lb ); }
-            if (rb < hwz) { mFocus.moveX( rb-hwz ); }
-            if (tb < hhz) { mFocus.moveY( hhz-tb ); }
-            if (bb < hhz) { mFocus.moveY( bb-hhz ); }
-        }
+        mFocus.move( inc.scale( sScrollSpeed / mZoom ) );
+        enforceBounds();
     }
 
 
@@ -130,7 +143,7 @@ public class Camera extends Loggable {
 
     public synchronized void setRelativeZoom(float zoom) {
         mZoom = Math.max( zoom*mLastZoom, mMinZoom );
-        checkBounds();
+        enforceBounds();
     }
 
     public synchronized void bindRelativeZoom() {
@@ -149,7 +162,7 @@ public class Camera extends Loggable {
     }
 
     public PointF cameraToScene(PointF touchPoint) {
-        Vec2 adjust = sViewCenter.vecTowards(touchPoint).scale(1/mZoom);
+        Vec2 adjust = sViewCenter.vecTowards(touchPoint).scale( 1 / mZoom );
 
         return mFocus.add(adjust);
     }

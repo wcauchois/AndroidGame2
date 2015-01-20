@@ -2,12 +2,10 @@ package net.cloudhacking.androidgame2.engine;
 
 import android.graphics.RectF;
 
+import net.cloudhacking.androidgame2.engine.foundation.Renderable;
 import net.cloudhacking.androidgame2.engine.gl.Texture;
 import net.cloudhacking.androidgame2.engine.utils.Asset;
 import net.cloudhacking.androidgame2.engine.utils.BufferUtils;
-import net.cloudhacking.androidgame2.engine.utils.JsonMap;
-import net.cloudhacking.androidgame2.engine.utils.PointF;
-import net.cloudhacking.androidgame2.engine.utils.Resource;
 import net.cloudhacking.androidgame2.engine.utils.TextureCache;
 
 import java.nio.FloatBuffer;
@@ -121,7 +119,7 @@ public class TileMap extends Renderable {
         return mColumns;
     }
 
-    public int getRowLength() {
+    public int getRowsLength() {
         return mRows;
     }
 
