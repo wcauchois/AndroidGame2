@@ -1,12 +1,11 @@
 package net.cloudhacking.androidgame2;
 
 import android.graphics.RectF;
-import android.os.ConditionVariable;
 
 import net.cloudhacking.androidgame2.engine.BasicGLScript;
 import net.cloudhacking.androidgame2.engine.CameraController;
-import net.cloudhacking.androidgame2.engine.foundation.Scene;
 import net.cloudhacking.androidgame2.engine.TileMap;
+import net.cloudhacking.androidgame2.engine.foundation.Scene;
 import net.cloudhacking.androidgame2.engine.utils.JsonMap;
 
 /**
@@ -15,7 +14,6 @@ import net.cloudhacking.androidgame2.engine.utils.JsonMap;
 public class TestScene extends Scene {
 
     BasicGLScript mGLScript;
-    ConditionVariable mInputSyncObj;
     CameraController mCameraController;
 
     TileMap mTileMap;
@@ -30,13 +28,10 @@ public class TestScene extends Scene {
         );
         add(mTileMap);
 
-        TestClickDrawer testDrawer = new TestClickDrawer();
-        instance.getInputManager().addClickListener(testDrawer);
+        TestClickDrawer testDrawer = new TestClickDrawer(instance.getInputManager());
 
         mCameraController = instance.getCameraController();
         mCameraController.setBoundaryRect( getMapRect() );
-
-        mInputSyncObj = instance.getInputSyncObj();
     }
 
     @Override
@@ -79,9 +74,7 @@ public class TestScene extends Scene {
         // artifacts.  I'm not actually sure if we need to do this or if its the
         // best way to implement it.
         // TODO: Not yet implemented in input manager or camera controller
-        mInputSyncObj.close();
         super.draw();
-        mInputSyncObj.open();
 
         // draw ui
         mGLScript.useCamera(mCameraController.getUICamera());

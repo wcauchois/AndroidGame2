@@ -1,13 +1,13 @@
 package net.cloudhacking.androidgame2.engine.utils;
 
 import android.content.Context;
-import android.os.ConditionVariable;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by wcauchois on 1/8/15.
@@ -20,9 +20,15 @@ public class InputManager
                    ScaleGestureDetector.OnScaleGestureListener
 {
 
+    public Signal<ClickEvent> clickUp = new Signal<ClickEvent>();
+    public Signal<StartDragEvent> startDrag = new Signal<StartDragEvent>();
+    public Signal<DragEvent> drag = new Signal<DragEvent>();
+    public Signal<ScaleEvent> startScale = new Signal<ScaleEvent>();
+    public Signal<ScaleEvent> scale = new Signal<ScaleEvent>();
+    public Signal<ScaleEvent> endScale = new Signal<ScaleEvent>();
+
     private static final boolean INPUT_DEBUG = false;
     private static final boolean TRIGGER_DEBUG = false;
-
 
     /**
      * Touch listener callback
@@ -44,8 +50,7 @@ public class InputManager
     public boolean onDown(MotionEvent e) {
         if (INPUT_DEBUG) d("onDown called");
 
-        mScrolling = false;
-        triggerClickDown( new PointF(e.getX(), e.getY()) );
+        addEvent(new ClickEvent(new PointF(e.getX(), e.getY()), ClickEventType.CLICK_DOWN));
 
         return true;
     }
@@ -65,13 +70,11 @@ public class InputManager
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float dx, float dy) {
         if (INPUT_DEBUG) d("onScroll called");
 
-        if (!mScrolling) {
-            triggerClickCancel();
-            triggerStartDrag( new PointF(e1.getX(), e1.getY()) );
-            mScrolling = true;
-        } else {
-            triggerDrag( new PointF(e2.getX(), e2.getY()), new Vec2(dx, dy) );
-        }
+        addEvent(new AnyDragEvent(
+                new PointF(e1.getX(), e1.getY()),
+                new PointF(e2.getX(), e2.getY()),
+                new Vec2(dx, dy)
+        ));
 
         return true;
     }
@@ -85,11 +88,18 @@ public class InputManager
     public boolean onSingleTapUp(MotionEvent e) {
         if (INPUT_DEBUG) d("onSingleTapUp called");
 
-        triggerClickUp( new PointF(e.getX(), e.getY()) );
+        addEvent(new ClickEvent(new PointF(e.getX(), e.getY()), ClickEventType.CLICK_UP));
 
         return true;
     }
 
+    private void addScaleEvent(ScaleGestureDetector detector, ScaleEventType eventType) {
+        addEvent(new ScaleEvent(
+                new PointF(detector.getFocusX(), detector.getFocusY()),
+                detector.getCurrentSpan(),
+                eventType
+        ));
+    }
 
     /**
      * Scale listener callbacks
@@ -98,8 +108,7 @@ public class InputManager
     public boolean onScaleBegin(ScaleGestureDetector detector) {
         if (INPUT_DEBUG) d("onScaleBegin called");
 
-        triggerStartScale( new PointF(detector.getFocusX(), detector.getFocusY()),
-                detector.getCurrentSpan() );
+        addScaleEvent(detector, ScaleEventType.START_SCALE);
 
         return true;
     }
@@ -108,8 +117,7 @@ public class InputManager
     public boolean onScale(ScaleGestureDetector detector) {
         if (INPUT_DEBUG) d("onScale called");
 
-        triggerScale( new PointF(detector.getFocusX(), detector.getFocusY()),
-                detector.getCurrentSpan() );
+        addScaleEvent(detector, ScaleEventType.SCALE);
 
         return true;
     }
@@ -118,127 +126,166 @@ public class InputManager
     public void onScaleEnd(ScaleGestureDetector detector) {
         if (INPUT_DEBUG) d("onScaleEnd called");
 
-        triggerEndScale( new PointF(detector.getFocusX(), detector.getFocusY()),
-                detector.getCurrentSpan() );
-
+        addScaleEvent(detector, ScaleEventType.END_SCALE);
     }
 
 
     /**********************************************************************************************/
 
-    public static interface ClickListener {
-        public void onClickDown(PointF down);
-        public void onClickUp(PointF up);
-        public void onClickCancel();
+    public abstract class Event {
+        protected abstract void doDispatch();
     }
 
-    public static interface DragListener {
-        public void onStartDrag(PointF start);
-        public void onDrag(PointF cur, Vec2 dv);
+    public abstract class PositionedEvent extends Event {
+        private PointF mPos;
+
+        public PointF getPos() {
+            return mPos;
+        }
+
+        private PositionedEvent(PointF pos) {
+            mPos = pos;
+        }
     }
 
-    public static interface ScaleListener {
-        public void onStartScale(PointF focus, float span);
-        public void onScale(PointF focus, float span);
-        public void onEndScale(PointF focus, float span);
+    public class AnyDragEvent extends Event {
+        protected PointF mPos1, mPos2;
+        protected Vec2 mDelta;
+
+        @Override
+        protected void doDispatch() {
+            if (!mScrolling) {
+                startDrag.dispatch(new StartDragEvent(this));
+                mScrolling = true;
+            } else {
+                drag.dispatch(new DragEvent(this));
+            }
+        }
+
+        private AnyDragEvent(PointF pos1, PointF pos2, Vec2 delta) {
+            mPos1 = pos1;
+            mPos2 = pos2;
+            mDelta = delta;
+        }
+
+        private AnyDragEvent(AnyDragEvent proto) {
+            mPos1 = proto.mPos1;
+            mPos2 = proto.mPos2;
+            mDelta = proto.mDelta;
+        }
     }
 
+    public class StartDragEvent extends AnyDragEvent {
+        private StartDragEvent(AnyDragEvent proto) {
+            super(proto);
+        }
+
+        public PointF getPos() {
+            return mPos1;
+        }
+    }
+
+    public class DragEvent extends AnyDragEvent {
+        private DragEvent(AnyDragEvent proto) {
+            super(proto);
+        }
+
+        public PointF getPos() {
+            return mPos2;
+        }
+
+        public Vec2 getDelta() {
+            return mDelta;
+        }
+    }
+
+    public class ScaleEvent extends Event {
+        private PointF mFocus;
+        private float mSpan;
+        private ScaleEventType mEventType;
+
+        public PointF getFocus() {
+            return mFocus;
+        }
+
+        public float getSpan() {
+            return mSpan;
+        }
+
+        private ScaleEvent(PointF focus, float span, ScaleEventType eventType) {
+            mFocus = focus;
+            mSpan = span;
+            mEventType = eventType;
+        }
+
+        @Override
+        protected void doDispatch() {
+            switch (mEventType) {
+                case START_SCALE:
+                    startScale.dispatch(this);
+                    break;
+                case SCALE:
+                    scale.dispatch(this);
+                    break;
+                case END_SCALE:
+                    endScale.dispatch(this);
+                    break;
+            }
+        }
+    }
+
+    private enum ScaleEventType {
+        START_SCALE, SCALE, END_SCALE
+    }
+
+    public class ClickEvent extends PositionedEvent {
+        private ClickEventType mEventType;
+
+        protected ClickEvent(PointF pos, ClickEventType eventType) {
+            super(pos);
+            mEventType = eventType;
+        }
+
+        @Override
+        protected void doDispatch() {
+            switch (mEventType) {
+                case CLICK_UP:
+                    clickUp.dispatch(this);
+                    break;
+                case CLICK_DOWN:
+                    // Currently no click down signal.
+                    mScrolling = false;
+                    break;
+            }
+        }
+    }
+
+    private enum ClickEventType {
+        CLICK_UP, CLICK_DOWN
+    }
+
+    private List<Event> mQueuedEvents = new ArrayList<Event>();
+
+    private void addEvent(Event e) {
+        synchronized (mQueuedEvents) {
+            mQueuedEvents.add(e);
+        }
+    }
+
+    public void processEvents() {
+        synchronized (mQueuedEvents) {
+            for (Event e : mQueuedEvents) {
+                e.doDispatch();
+            }
+            mQueuedEvents.clear();
+        }
+    }
 
     private GestureDetector mGestureDetector;
     private ScaleGestureDetector mScaleGestureDetector;
-    private ConditionVariable mInputSyncObj;
 
-    ArrayList<ClickListener> mClickListeners = new ArrayList<ClickListener>();
-    ArrayList<DragListener>  mDragListeners  = new ArrayList<DragListener>();
-    ArrayList<ScaleListener> mScaleListeners = new ArrayList<ScaleListener>();
-
-    public InputManager(Context context, ConditionVariable inputSyncObj) {
+    public InputManager(Context context) {
         mGestureDetector = new GestureDetector(context, this);
         mScaleGestureDetector = new ScaleGestureDetector(context, this);
-
-        mInputSyncObj = inputSyncObj;  // this will block while the game is drawing
     }
-
-
-    public void addClickListener(ClickListener listener) {
-        mClickListeners.add(listener);
-    }
-
-    public void removeClickListener(ClickListener listener) {
-        mClickListeners.remove(listener);
-    }
-
-    public void addDragListener(DragListener listener) {
-        mDragListeners.add(listener);
-    }
-
-    public void removeDragListener(DragListener listener) {
-        mDragListeners.remove(listener);
-    }
-
-    public void addScaleListener(ScaleListener listener) {
-        mScaleListeners.add(listener);
-    }
-
-    public void removeScaleListener(ScaleListener listener) {
-        mScaleListeners.remove(listener);
-    }
-
-
-    private void triggerClickDown(PointF down) {
-        if (TRIGGER_DEBUG) d("onClickDown triggered : down="+down);
-        for (ClickListener l : mClickListeners) {
-            l.onClickDown(down);
-        }
-    }
-
-    private void triggerClickUp(PointF up) {
-        if (TRIGGER_DEBUG) d("onClickUp triggered : up="+up);
-        for (ClickListener l : mClickListeners) {
-            l.onClickUp(up);
-        }
-    }
-
-    private void triggerClickCancel() {
-        if (TRIGGER_DEBUG) d("onClickCancel triggered");
-        for (ClickListener l : mClickListeners) {
-            l.onClickCancel();
-        }
-    }
-
-    private void triggerStartDrag(PointF start) {
-        if (TRIGGER_DEBUG) d("onStartDrag triggered : start="+start);
-        for (DragListener l : mDragListeners) {
-            l.onStartDrag(start);
-        }
-    }
-
-    private void triggerDrag(PointF cur, Vec2 dv) {
-        if (TRIGGER_DEBUG) d("onDrag triggered : cur="+cur+", dv="+dv);
-        for (DragListener l : mDragListeners) {
-            l.onDrag(cur, dv);
-        }
-    }
-
-    private void triggerStartScale(PointF focus, float span) {
-        if (TRIGGER_DEBUG) d("onStartScale triggered : focus="+focus+", span="+span);
-        for (ScaleListener l : mScaleListeners) {
-            l.onStartScale(focus, span);
-        }
-    }
-
-    private void triggerScale(PointF focus, float span) {
-        if (TRIGGER_DEBUG) d("onScale triggered : focus="+focus+", span="+span);
-        for (ScaleListener l : mScaleListeners) {
-            l.onScale(focus, span);
-        }
-    }
-
-    private void triggerEndScale(PointF focus, float span) {
-        if (TRIGGER_DEBUG) d("onEndScale triggered : focus="+focus+", span="+span);
-        for (ScaleListener l : mScaleListeners) {
-            l.onEndScale(focus, span);
-        }
-    }
-
 }
