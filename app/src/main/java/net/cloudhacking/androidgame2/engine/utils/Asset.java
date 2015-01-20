@@ -5,6 +5,8 @@ package net.cloudhacking.androidgame2.engine.utils;
  */
 public class Asset {
 
+    // idea: put this and resources.java in a registry package
+
     private String mAssetFileName;
 
     public Asset(String assetFileName) {

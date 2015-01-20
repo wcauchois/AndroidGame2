@@ -17,8 +17,6 @@ public class Entity extends Loggable {
 
     private Group mParent;
 
-    private Camera mCamera;
-
     public Entity () {
         mVisible  = true;
         mActive   = true;
@@ -77,18 +75,12 @@ public class Entity extends Loggable {
     }
 
     public void setParent(Group parent) {
-        mParent = parent;
+        parent.add(this);
     }
 
-    public Camera getCamera() {
-        if (mParent != null) {
-            return mParent.getCamera();
-        }
-        return mCamera;
-    }
-
-    public void setCamera(Camera camera) {
-        mCamera = camera;
+    public void orphan() {
+        mParent.remove(this);
+        mParent = null;
     }
 
 
