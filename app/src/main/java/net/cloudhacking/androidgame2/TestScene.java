@@ -75,13 +75,17 @@ public class TestScene extends Scene {
         // draw level
         mGLScript.useCamera(mCameraController.getActiveCamera());
 
-        mInputSyncObj.close();  // block camera movement while drawing  TODO: Not yet implemented
+        // Block camera movement while drawing the level in order to prevent drawing
+        // artifacts.  I'm not actually sure if we need to do this or if its the
+        // best way to implement it.
+        // TODO: Not yet implemented in input manager or camera controller
+        mInputSyncObj.close();
         super.draw();
         mInputSyncObj.open();
 
         // draw ui
         mGLScript.useCamera(mCameraController.getUICamera());
-        // mUIGroup.draw() or something;
+        // mUIGroup.draw() or something
 
     }
 

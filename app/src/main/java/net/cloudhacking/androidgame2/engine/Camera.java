@@ -75,7 +75,7 @@ public class Camera extends Loggable {
      * focus on the center of the target.
      *
      * @param focus focal point of camera
-     * @param zoom zoom>1 := zoom-in; zoom<1 := zoom-out
+     * @param zoom zoom level
      */
     public Camera(PointF focus, float zoom) {
         mFocus = focus;
