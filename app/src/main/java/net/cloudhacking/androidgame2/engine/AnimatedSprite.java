@@ -1,15 +1,11 @@
 package net.cloudhacking.androidgame2.engine;
 
-import android.graphics.RectF;
-
-import net.cloudhacking.androidgame2.engine.foundation.Entity;
 import net.cloudhacking.androidgame2.engine.foundation.Renderable;
 import net.cloudhacking.androidgame2.engine.utils.AssetCache;
 import net.cloudhacking.androidgame2.engine.utils.GameTime;
-import net.cloudhacking.androidgame2.engine.utils.Sprite;
+import net.cloudhacking.androidgame2.engine.foundation.Sprite;
 import net.cloudhacking.androidgame2.engine.utils.SpriteAsset;
 
-import java.nio.FloatBuffer;
 import java.util.HashMap;
 
 /**

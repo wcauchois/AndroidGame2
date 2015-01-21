@@ -33,7 +33,7 @@ public class Grid extends Entity {
     public static class SelectorIcon extends AnimatedSprite {
 
         private final AnimationSequence ANIM
-                = new AnimationSequence(new int[] {0, 1}, 0, 1);
+                = new AnimationSequence(new int[] {0, 1}, 0, 2);
 
         public SelectorIcon() {
             super(Assets.SELECTOR_ICON);

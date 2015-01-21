@@ -39,8 +39,8 @@ public class TextureFrameSet extends Loggable {
         float du = (float)frameWidth/mTextureWidth;
         float dv = (float)frameHeight/mTextureHeight;
 
-        int rows = mTextureWidth/frameWidth;
-        int cols = mTextureHeight/frameHeight;
+        int rows = mTextureHeight/frameHeight;
+        int cols = mTextureWidth/frameWidth;
 
         for (int i=0; i<rows; i++) {
             for (int j=0; j<cols; j++) {
@@ -63,6 +63,14 @@ public class TextureFrameSet extends Loggable {
 
     public int getFrameHeight() {   // in texture pixels
         return mFrameHeight;
+    }
+
+    public int getFrameColumns() {
+        return mColumns;
+    }
+
+    public int getFrameRows() {
+        return mRows;
     }
 
     public RectF getUVFrame(int index) {
