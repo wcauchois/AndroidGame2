@@ -34,6 +34,10 @@ public class Camera extends Loggable {
         sViewCenter = new PointF(vw/2, vh/2);
     }
 
+    public static PointF getViewportCenter() {
+        return sViewCenter;
+    }
+
 
     public PointF mFocus; // XXX
     private Renderable mTarget;

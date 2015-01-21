@@ -19,10 +19,21 @@ public class CameraController extends Loggable {
 
     /**********************************************************************************************/
 
+    private static class UICamera extends Camera {
+        public UICamera() {
+            super();
+        }
+        @Override
+        public void update() {
+            focusOn(Camera.getViewportCenter());
+            super.update();
+        }
+    }
+
+
     public CameraController(InputManager inputManager) {
         mActiveCamera = new Camera();
-        mUICamera = new Camera();
-        mUICamera.update();  // only need to update UI camera once in order to generate matrix
+        mUICamera = new UICamera();
         mDisabled = false;
 
         inputManager.drag.connect(new Signal.Listener<InputManager.DragEvent>() {

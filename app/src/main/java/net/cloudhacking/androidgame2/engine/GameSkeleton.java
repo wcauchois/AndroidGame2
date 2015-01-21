@@ -123,7 +123,7 @@ public abstract class GameSkeleton
         // GLES20.glBlendFunc( GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA );
         GLES20.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);  // set alpha blending function
 
-        AssetCache.reload();
+        AssetCache.reloadTextures();
         mGLScript = new BasicGLScript();
 
         d("surface created");
@@ -133,6 +133,8 @@ public abstract class GameSkeleton
     public void onSurfaceChanged(GL10 unused, int width, int height) {
         GLES20.glViewport(0, 0, width, height);
         Camera.setView(width, height);
+        mCameraController.getUICamera().update();  // update UI camera matrix for viewport
+
         mViewport = new Rect(0, 0, width, height);
 
         d("surface changed: width=" + width + ", height=" + height);

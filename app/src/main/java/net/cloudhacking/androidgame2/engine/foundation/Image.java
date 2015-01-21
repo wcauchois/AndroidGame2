@@ -7,6 +7,7 @@ import net.cloudhacking.androidgame2.engine.gl.Texture;
 import net.cloudhacking.androidgame2.engine.utils.Asset;
 import net.cloudhacking.androidgame2.engine.utils.AssetCache;
 import net.cloudhacking.androidgame2.engine.utils.BufferUtils;
+import net.cloudhacking.androidgame2.engine.utils.MatrixUtils;
 import net.cloudhacking.androidgame2.engine.utils.PointF;
 
 import java.nio.FloatBuffer;
@@ -16,6 +17,7 @@ import java.nio.FloatBuffer;
  */
 public class Image extends Renderable {
 
+    private Asset mAsset;
     private Texture mTexture = null;
     private RectF mFrame;
 
@@ -43,7 +45,20 @@ public class Image extends Renderable {
     }
 
 
+    /**
+     * Move and scale this image to the size of the given rectangle
+     */
+    public void setToRect(RectF r) {
+        float w = r.width(), h = r.height();
+
+        setPos( new PointF(r.left + w/2, r.top + h/2) );
+        setScalable(true);
+        setScale( new PointF( w/getWidth(), h/getHeight() ) );
+    }
+
+
     public void setTexture(Asset asset) {
+        mAsset = asset;
         mTexture = AssetCache.getTexture(asset);
         setFrame(new RectF(0, 0, 1, 1));
     }
@@ -120,7 +135,6 @@ public class Image extends Renderable {
     @Override
     public void draw(BasicGLScript gls) {
         super.draw(gls);
-
         mTexture.bind();
 
         gls.setLighting(getColorM(), getColorA());

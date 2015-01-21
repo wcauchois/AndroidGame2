@@ -1,5 +1,6 @@
 package net.cloudhacking.androidgame2;
 
+import net.cloudhacking.androidgame2.engine.foundation.Group;
 import net.cloudhacking.androidgame2.engine.foundation.Image;
 import net.cloudhacking.androidgame2.engine.Scene;
 import net.cloudhacking.androidgame2.engine.utils.InputManager;
@@ -14,21 +15,21 @@ public class TestClickDrawer extends Loggable {
 
     private Image image;
 
-    public TestClickDrawer(final Scene scene) {
+    public TestClickDrawer(final Group group) {
 
-        scene.getInputManager().clickUp.connect(new Signal.Listener<InputManager.ClickEvent>() {
+        group.getScene().getInputManager().clickUp.connect(new Signal.Listener<InputManager.ClickEvent>() {
             public boolean onSignal(InputManager.ClickEvent e) {
-                handleClickUp(scene, e.getPos());
+                handleClickUp(group, e.getPos());
                 return true;
             }
         });
     }
 
-    private void handleClickUp(Scene scene, PointF up) {
+    private void handleClickUp(Group group, PointF up) {
         image = new Image(Assets.TEST_TILESET);
-        image.setPos( scene.activeCameraToScene(up) );
+        image.setPos( group.getScene().activeCameraToScene(up) );
         image.setRotatable(true);
         image.setRotationSpeed( 360 * (float)Math.random() );
-        scene.add(image);
+        group.add(image);
     }
 }

@@ -17,15 +17,16 @@ import java.util.HashMap;
  */
 public class AssetCache extends Loggable {
 
-    /***********************************************************************************************
-     * TEXTURE CACHE
-     */
-
     private static Context sContext;
 
     public static void setContext(Context context) {
         sContext = context;
     }
+
+
+    /***********************************************************************************************
+     * TEXTURE CACHE
+     */
 
     private static HashMap<Asset, Texture> sTextureCache = new HashMap<Asset, Texture>();
 
@@ -99,16 +100,7 @@ public class AssetCache extends Loggable {
 
     }
 
-
-    public static void clear() {
-        for (Texture t : sTextureCache.values()) {
-            t.delete();
-        }
-        sTextureCache.clear();
-        sSpriteCache.clear();
-    }
-
-    public static void reload() {
+    public static void reloadTextures() {
         for (Texture t : sTextureCache.values()) {
             t.reload();
         }
@@ -137,6 +129,17 @@ public class AssetCache extends Loggable {
         } else {
             return sSpriteCache.get(asset);
         }
+    }
+
+
+    /**********************************************************************************************/
+
+    public static void clear() {
+        for (Texture t : sTextureCache.values()) {
+            t.delete();
+        }
+        sTextureCache.clear();
+        sSpriteCache.clear();
     }
 
 }

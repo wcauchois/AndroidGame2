@@ -6,10 +6,13 @@ import net.cloudhacking.androidgame2.engine.BasicGLScript;
 import net.cloudhacking.androidgame2.engine.CameraGroup;
 import net.cloudhacking.androidgame2.engine.Grid;
 import net.cloudhacking.androidgame2.engine.Scene;
+import net.cloudhacking.androidgame2.engine.foundation.Image;
 import net.cloudhacking.androidgame2.engine.foundation.TileMap;
 import net.cloudhacking.androidgame2.engine.ui.Button;
 import net.cloudhacking.androidgame2.engine.ui.RootWidget;
 import net.cloudhacking.androidgame2.engine.utils.JsonMap;
+import net.cloudhacking.androidgame2.engine.utils.MatrixUtils;
+import net.cloudhacking.androidgame2.engine.utils.PointF;
 
 /**
  * Created by Andrew on 1/15/2015.
@@ -21,6 +24,7 @@ public class TestScene extends Scene {
 
     TileMap mTileMap;
     Grid mGrid;
+    TestClickDrawer mTestDrawer;
 
     @Override
     public TestScene create() {
@@ -38,7 +42,7 @@ public class TestScene extends Scene {
         mActiveCameraGroup.add(mTileMap);
 
         mGrid = new Grid(mTileMap);
-        d("best path: " + mGrid.getBestPath(mGrid.getCell(1,1), mGrid.getCell(5,10)) );
+        // d("best path: " + mGrid.getBestPath(mGrid.getCell(1,1), mGrid.getCell(5,10)) );
 
         mGrid.addSelectorListener(new Grid.CellSelectorListener() {
             @Override
@@ -48,9 +52,13 @@ public class TestScene extends Scene {
         });
         mActiveCameraGroup.add(mGrid);
 
-        RootWidget rootWidget = new RootWidget(TDGame.getInstance().getInputManager());
-        rootWidget.add(new Button(new RectF(0.0f, 0.0f, 100.0f, 38.0f)));
+
+        // UI
+
+        RootWidget rootWidget = new RootWidget( getInputManager() );
+        rootWidget.addToFront(new Button(new RectF(0.0f, 0.0f, 100.0f, 38.0f), Assets.OK_BUTTON));
         mUICameraGroup.add(rootWidget);
+
 
         return this;
     }
