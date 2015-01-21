@@ -227,48 +227,6 @@ public abstract class GLScript extends Loggable {
 
 
     /**********************************************************************************************/
-    private static GLScript sCurrentScript = null;
-    private static Class<? extends GLScript> sCurrentScriptClass = null;
-
-    /**
-     * Call this before rendering in order to make sure that the given GLScript class
-     * is the one that is being used.  If its not, a new instance will be created and used.
-     *
-     * @param cls Class of GLScript being used for rendering.
-     */
-    public static <T extends GLScript> void use(Class<T> cls) {
-
-        if (cls != sCurrentScriptClass) {
-
-            if (sCurrentScript != null) sCurrentScript.delete();
-
-            GLScript script;
-            try {
-                script = cls.newInstance();
-            } catch(Exception e) {
-                Log.e(TAG, "error loading instance of: " + cls.getCanonicalName());
-                e.printStackTrace();
-                return;
-            }
-
-            sCurrentScript = script;
-            sCurrentScriptClass = cls;
-            sCurrentScript.use();
-        }
-    }
-
-    public static GLScript getCurrentScript() {
-        return sCurrentScript;
-    }
-
-    public static void reset() {
-        if (sCurrentScript != null) sCurrentScript.delete();
-        sCurrentScript = null;
-        sCurrentScriptClass = null;
-    }
-
-
-    /**********************************************************************************************/
 
     public static void checkGlError(String msg) {
         int error, lastError = GLES20.GL_NO_ERROR;

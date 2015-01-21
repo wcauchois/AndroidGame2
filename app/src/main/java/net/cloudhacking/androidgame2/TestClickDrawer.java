@@ -26,7 +26,7 @@ public class TestClickDrawer extends Loggable {
 
     private void handleClickUp(Scene scene, PointF up) {
         image = new Image(Assets.TEST_TILESET);
-        image.setPos( scene.getActiveCamera().cameraToScene(up) );
+        image.setPos( scene.activeCameraToScene(up) );
         image.setRotatable(true);
         image.setRotationSpeed( 360 * (float)Math.random() );
         scene.add(image);

@@ -11,11 +11,6 @@ import java.nio.FloatBuffer;
  */
 public class BasicGLScript extends GLScript {
 
-    public static BasicGLScript get() {
-        return (BasicGLScript)GLScript.getCurrentScript();
-    }
-
-
     private Camera mLastCamera;
 
     public Attribute aXY;  // use to point to coordinates in game space
@@ -28,7 +23,6 @@ public class BasicGLScript extends GLScript {
 
 
     public BasicGLScript() {
-
         compileGLAssets();
 
         aXY	    = mProgram.getAttribute("aXYZW");
@@ -42,6 +36,14 @@ public class BasicGLScript extends GLScript {
         d("OpenGL program successfully compiled");
 
         mLastCamera = null;
+        this.use();
+    }
+
+
+    public void use() {
+        super.use();
+        aXY.enable();
+        aUV.enable();
     }
 
 
@@ -76,14 +78,6 @@ public class BasicGLScript extends GLScript {
         "  gl_FragColor = texture2D( uTex, vUV ) * uColorM + uColorA;" +
         "}";
 
-
-
-    public void use() {
-        super.use();
-
-        aXY.enable();
-        aUV.enable();
-    }
 
 
     /**

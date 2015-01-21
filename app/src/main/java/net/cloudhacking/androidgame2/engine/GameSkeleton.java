@@ -125,9 +125,7 @@ public abstract class GameSkeleton
         GLES20.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);  // set alpha blending function
 
         TextureCache.reload();
-        GLScript.use(BasicGLScript.class);  // compile GL program for BasicGLScript class
-
-        mGLScript = (BasicGLScript) GLScript.getCurrentScript();
+        mGLScript = new BasicGLScript();
 
         d("surface created");
     }
@@ -147,8 +145,8 @@ public abstract class GameSkeleton
         super.onPause();
         onPauseGame();
         mView.onPause();
-        GLScript.reset();  // TODO: This is supposed to delete the current GL program,
-                           //       but for some reason it raises a GL error--not sure why.
+        mGLScript.delete();
+
         d("game paused");
     }
 
@@ -166,7 +164,6 @@ public abstract class GameSkeleton
     public void onDestroy() {
         super.onDestroy();
         onDestroyGame();
-
         if (mScene != null) {
             mScene.destroy();
             mScene = null;
@@ -201,6 +198,8 @@ public abstract class GameSkeleton
             sInit = false;
 
         } else {    // update and draw
+
+            mScene.setGLScript(mGLScript);
 
             mInputManager.processEvents();
             mCameraController.update();

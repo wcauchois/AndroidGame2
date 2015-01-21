@@ -45,6 +45,10 @@ public abstract class Scene extends Group {
         return gls;
     }
 
+    public void setGLScript(BasicGLScript gls) {
+        this.gls = gls;
+    }
+
     public InputManager getInputManager() {
         return im;
     }
