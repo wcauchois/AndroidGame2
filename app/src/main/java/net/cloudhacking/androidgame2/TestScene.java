@@ -34,7 +34,7 @@ public class TestScene extends Scene {
         mActiveCameraGroup.add(mTileMap);
 
         mGrid = new Grid(mTileMap);
-        mGrid.generateFloodMap( mGrid.getCell(0) );
+        d("best path: " + mGrid.getBestPath(mGrid.getCell(1,1), mGrid.getCell(5,10)) );
 
         mGrid.addSelectorListener(new Grid.CellSelectorListener() {
             @Override

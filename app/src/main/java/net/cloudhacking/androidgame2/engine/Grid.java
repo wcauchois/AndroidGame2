@@ -1,5 +1,8 @@
 package net.cloudhacking.androidgame2.engine;
 
+import android.util.SparseArray;
+import android.util.SparseIntArray;
+
 import net.cloudhacking.androidgame2.Assets;
 import net.cloudhacking.androidgame2.TDGame;
 import net.cloudhacking.androidgame2.engine.foundation.Entity;
@@ -12,6 +15,9 @@ import net.cloudhacking.androidgame2.engine.utils.PointF;
 import net.cloudhacking.androidgame2.engine.utils.Signal;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.PriorityQueue;
 import java.util.Stack;
 
 /**
@@ -69,6 +75,7 @@ public class Grid extends Entity {
     public class Cell {
         public int ix;
         public int iy;
+        public int index;
         private boolean mOccupied;
 
         // pathfinding
@@ -78,13 +85,10 @@ public class Grid extends Entity {
         public Cell(int ix, int iy) {
             this.ix = ix;
             this.iy = iy;
+            this.index = ix + iy * mColumns;
             mOccupied = false;
             mBestNeighbor = null;
             mDistToSource = -1;
-        }
-
-        public int getIndex() {
-            return ix + iy * mColumns;
         }
 
         public void setOccupation(boolean bool) {
@@ -190,6 +194,7 @@ public class Grid extends Entity {
         mColumns = cols;
         mRows = rows;
         mReachable = new boolean[mColumns * mRows];
+        mFloodSource = null;
 
         mCellWidth = cellWidth;
         mCellHeight = cellHeight;
@@ -270,32 +275,34 @@ public class Grid extends Entity {
 
     /**********************************************************************************************/
     // ref: http://www.redblobgames.com/pathfinding/tower-defense/
+    //      http://www.redblobgames.com/pathfinding/a-star/implementation.html#sec-1-4
 
+    /**
+     * Flood map
+     */
     private ArrayList<Cell> neighbors;
     private boolean[] mReachable;
+    private Cell mFloodSource;
 
     private ArrayList<Cell> getCellNeighbors(Cell c) {
         neighbors = new ArrayList<Cell>(4);
-        neighbors.add( (c.ix-1) >= 0       ? getCell(c.ix-1, c.iy) : null );
-        neighbors.add( (c.iy+1) < mRows    ? getCell(c.ix, c.iy+1) : null );
-        neighbors.add( (c.ix+1) < mColumns ? getCell(c.ix+1, c.iy) : null );
-        neighbors.add( (c.iy-1) >= 0       ? getCell(c.ix, c.iy-1) : null );
+        if ( c.ix-1 >= 0       ) neighbors.add( getCell(c.ix-1, c.iy) );
+        if ( c.iy+1 < mRows    ) neighbors.add( getCell(c.ix, c.iy+1) );
+        if ( c.ix+1 < mColumns ) neighbors.add( getCell(c.ix+1, c.iy) );
+        if ( c.iy-1 >= 0       ) neighbors.add( getCell(c.ix, c.iy-1) );
 
         return neighbors;
     }
 
-    private void emptyReachableArray() {
-        int size = mColumns * mRows;
-        for (int i=0; i<size; i++) mReachable[i] = false;
-    }
-
-    public void generateFloodMap(Cell source) {
+    public boolean[] generateFloodMap(Cell source) {
+        mFloodSource = source;
         Stack<Cell> frontier = new Stack<Cell>();
 
-        emptyReachableArray();
+        int size = mColumns * mRows;
+        for (int i=0; i<size; i++) mReachable[i] = false;
 
         frontier.push(source);
-        mReachable[ source.getIndex() ] = true;
+        mReachable[source.index] = true;
         source.setBestNeighbor(null);
         source.setDistToSource(0);
 
@@ -304,14 +311,93 @@ public class Grid extends Entity {
             current = frontier.pop();
 
             for(Cell n : getCellNeighbors(current)) {
-                if ( n != null && !mReachable[n.getIndex()] ) {
+                if ( !mReachable[n.index] ) {
                     frontier.push(n);
-                    mReachable[n.getIndex()] = true;
+                    mReachable[n.index] = true;
                     n.setBestNeighbor( current );
                     n.setDistToSource( current.getDistToSource() + 1 );
                 }
             }
         }
+        // set unreachable cells
+        for (int i=0; i<size; i++) {
+            if (!mReachable[i]) getCell(i).setDistToSource(-1);
+        }
+        return mReachable;
+    }
+
+
+    /**
+     * A* implementation
+     */
+
+    private static class Sortable implements Comparable<Sortable> {
+        public Cell cell;
+        public float cost;
+
+        public Sortable(Cell cell, float cost) {
+            this.cell = cell;
+            this.cost = cost;
+        }
+
+        @Override
+        public int compareTo(Sortable other) {
+            float diff = this.cost - other.cost;
+            if (diff<0) return -1;
+            if (diff>0) return +1;
+            return 0;
+        }
+    }
+
+    private float heuristic(Cell c1, Cell c2) {
+        return c1.getCenter().manhattanDistTo(c2.getCenter());
+    }
+
+    private LinkedList<Cell> buildPath(SparseIntArray history, int goalIndex) {
+        LinkedList<Cell> path = new LinkedList<Cell>();
+        path.add(getCell(goalIndex));
+
+        int nextIndex = history.get(goalIndex);
+        while (nextIndex != -1) {
+            path.addFirst(getCell(nextIndex));
+            nextIndex = history.get(nextIndex);
+        }
+        return path;
+    }
+
+    public LinkedList<Cell> getBestPath(Cell start, Cell goal) {
+        PriorityQueue<Sortable> frontier = new PriorityQueue<Sortable>();
+        HashSet<Integer> visited = new HashSet<Integer>();
+        SparseArray<Float> costs = new SparseArray<Float>();
+        SparseIntArray history = new SparseIntArray();
+
+        frontier.add(new Sortable(start, 0f));
+        history.put(start.index, -1);
+        costs.put(start.index, 0f);
+        visited.add(start.index);
+
+        Cell current;
+        float newCost;
+        while (!frontier.isEmpty()) {
+            current = frontier.poll().cell;
+
+            if (current.equals(goal)) {
+                return buildPath(history, goal.index);
+            }
+
+            for (Cell n : getCellNeighbors(current)) {
+                newCost = costs.get(current.index) + /* weight to next cell = */ 1 ;
+
+                if ( !visited.contains(n.index) || newCost<costs.get(n.index) ) {
+                    costs.put(n.index, newCost);
+                    frontier.add( new Sortable(n, newCost + heuristic(n, goal)) );
+                    history.put(n.index, current.index);
+                    visited.add(n.index);
+                }
+            }
+
+        }
+        return null;
     }
 
 }

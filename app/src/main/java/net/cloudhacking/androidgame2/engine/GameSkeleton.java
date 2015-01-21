@@ -90,6 +90,7 @@ public abstract class GameSkeleton
         mView.setRenderer(this);
         setContentView( mView );
 
+        mGLScript = null;
 
         sInstance = this;
         mSavedInstanceState = savedInstanceState;
@@ -143,7 +144,7 @@ public abstract class GameSkeleton
         super.onPause();
         onPauseGame();
         mView.onPause();
-        mGLScript.delete();
+        if (mGLScript != null) mGLScript.delete();
 
         d("game paused");
     }
