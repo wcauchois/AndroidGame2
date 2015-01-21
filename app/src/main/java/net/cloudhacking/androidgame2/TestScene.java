@@ -56,7 +56,8 @@ public class TestScene extends Scene {
         // UI
 
         RootWidget rootWidget = new RootWidget( getInputManager() );
-        rootWidget.addToFront(new Button(new RectF(0.0f, 0.0f, 100.0f, 38.0f), Assets.OK_BUTTON));
+        // example of stretching with rect
+        rootWidget.addToFront(new Button(new RectF(0.0f, 0.0f, 500.0f, 200.0f), Assets.OK_BUTTON));
         mUICameraGroup.add(rootWidget);
 
 

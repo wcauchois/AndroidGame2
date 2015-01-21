@@ -124,6 +124,14 @@ public class Renderable extends Entity {
         mScale = scale;
     }
 
+    public void setScaleX(float scaleX) {
+        mScale.x = scaleX;
+    }
+
+    public void setScaleY(float scaleY) {
+        mScale.y = scaleY;
+    }
+
     public void setScalable(boolean bool) {
         mScalable = bool;
     }

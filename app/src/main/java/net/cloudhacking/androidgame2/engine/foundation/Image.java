@@ -53,7 +53,29 @@ public class Image extends Renderable {
 
         setPos( new PointF(r.left + w/2, r.top + h/2) );
         setScalable(true);
-        setScale( new PointF( w/getWidth(), h/getHeight() ) );
+        setWidth(w);
+        setHeight(h);
+    }
+
+    // don't fuck with actual pixel width
+    private void setActualWidth(float width) {
+        super.setWidth(width);
+    }
+
+    private void setActualHeight(float height) {
+        super.setHeight(height);
+    }
+
+    @Override
+    public void setWidth(float width) {
+        PointF scale = getScale();
+        setScaleX( width/getWidth() );
+    }
+
+    @Override
+    public void setHeight(float height) {
+        PointF scale = getScale();
+        setScaleY( height/getHeight() );
     }
 
 
@@ -79,8 +101,8 @@ public class Image extends Renderable {
     public void setFrame(RectF frame) {
         mFrame = frame;
 
-        setWidth(frame.width() * mTexture.getWidth());
-        setHeight(frame.height() * mTexture.getHeight());
+        setActualWidth(frame.width() * mTexture.getWidth());
+        setActualHeight(frame.height() * mTexture.getHeight());
 
         updateFrame();
         updateVertices();
