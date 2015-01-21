@@ -34,7 +34,7 @@ public class TestScene extends Scene {
         mGrid.addSelectorListener(new Grid.CellSelectorListener() {
             @Override
             public void onCellSelect(Grid.Cell selected) {
-                Grid.SELECTOR_ICON.startAnimationAt(getOuter(), selected.getCenter());
+                Grid.SELECTOR_ICON.startAnimationAt(TestScene.this, selected.getCenter());
             }
         });
         add(mGrid);
@@ -89,11 +89,6 @@ public class TestScene extends Scene {
         mGLScript.useCamera(mCameraController.getUICamera());
         // mUIGroup.draw() or something
 
-    }
-
-
-    private Scene getOuter() {
-        return this;
     }
 
 }

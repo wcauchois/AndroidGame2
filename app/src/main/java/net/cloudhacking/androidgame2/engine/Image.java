@@ -50,6 +50,7 @@ public class Image extends Renderable {
 
     public void setTexture(Texture tex) {
         mTexture = tex;
+        setFrame(new RectF(0, 0, 1, 1));
     }
 
     public Texture getTexture() {
