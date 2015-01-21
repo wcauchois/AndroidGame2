@@ -3,9 +3,10 @@ package net.cloudhacking.androidgame2;
 import android.graphics.RectF;
 
 import net.cloudhacking.androidgame2.engine.BasicGLScript;
-import net.cloudhacking.androidgame2.engine.CameraController;
+import net.cloudhacking.androidgame2.engine.CameraGroup;
 import net.cloudhacking.androidgame2.engine.Grid;
 import net.cloudhacking.androidgame2.engine.TileMap;
+import net.cloudhacking.androidgame2.engine.foundation.Group;
 import net.cloudhacking.androidgame2.engine.foundation.Scene;
 import net.cloudhacking.androidgame2.engine.utils.JsonMap;
 
@@ -14,27 +15,36 @@ import net.cloudhacking.androidgame2.engine.utils.JsonMap;
  */
 public class TestScene extends Scene {
 
+    CameraGroup mLevelGroup;
+    CameraGroup mUIGroup;
+
     TileMap mTileMap;
     Grid mGrid;
 
     @Override
     public void create() {
 
+        mLevelGroup = new CameraGroup( getActiveCamera() );
+        mUIGroup = new CameraGroup( getUICamera() );
+
         mTileMap = new TileMap(
                 Assets.TEST_TILESET, new JsonMap(Resources.JSON_MAP_SIMPLE), 32, 32
         );
-        add(mTileMap);
+        mLevelGroup.add(mTileMap);
 
         mGrid = new Grid(mTileMap);
         mGrid.addSelectorListener(new Grid.CellSelectorListener() {
             @Override
             public void onCellSelect(Grid.Cell selected) {
-                Grid.SELECTOR_ICON.startAnimationAt(TestScene.this, selected.getCenter());
+                Grid.SELECTOR_ICON.startAnimationAt(mLevelGroup, selected.getCenter());
             }
         });
-        add(mGrid);
+        mLevelGroup.add(mGrid);
 
-        getCameraController().setBoundaryRect( getMapRect() );
+        add(mLevelGroup);
+        add(mUIGroup);
+
+        getCameraController().setBoundaryRect(getMapRect());
     }
 
     @Override
@@ -68,19 +78,7 @@ public class TestScene extends Scene {
     @Override
     public void draw(BasicGLScript gls) {
 
-        // draw level
-        gls.useCamera( getActiveCamera() );
-
-        // Block camera movement while drawing the level in order to prevent drawing
-        // artifacts.  I'm not actually sure if we need to do this or if its the
-        // best way to implement it.
-        // TODO: Not yet implemented in input manager or camera controller
         super.draw(gls);
-
-        // draw ui
-        gls.useCamera( getUICamera() );
-        // mUIGroup.draw() or something
-
     }
 
 }

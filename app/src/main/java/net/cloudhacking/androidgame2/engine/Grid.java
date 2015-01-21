@@ -3,7 +3,7 @@ package net.cloudhacking.androidgame2.engine;
 import net.cloudhacking.androidgame2.Assets;
 import net.cloudhacking.androidgame2.TDGame;
 import net.cloudhacking.androidgame2.engine.foundation.Entity;
-import net.cloudhacking.androidgame2.engine.foundation.Scene;
+import net.cloudhacking.androidgame2.engine.foundation.Group;
 import net.cloudhacking.androidgame2.engine.utils.GameTime;
 import net.cloudhacking.androidgame2.engine.utils.InputManager;
 import net.cloudhacking.androidgame2.engine.utils.PointF;
@@ -35,12 +35,12 @@ public class Grid extends Entity {
             mThreshold = THRESHOLD;
         }
 
-        public void startAnimationAt(Scene scene, PointF target) {
+        public void startAnimationAt(Group group, PointF target) {
             setPos(target);
             setActive();
             setVisibility(true);
             mThreshold = THRESHOLD;
-            scene.addToFront(this);
+            group.addToFront(this);
         }
 
         public void hide() {
@@ -110,7 +110,7 @@ public class Grid extends Entity {
 
         @Override
         public boolean onSignal(InputManager.ClickEvent e) {
-            mSelected = nearestCell( getScene().activeCameraToScene(e.getPos()) );
+            mSelected = nearestCell(getScene().activeCameraToScene(e.getPos()));
 
             if (mSelected == null) {
                 return false;
