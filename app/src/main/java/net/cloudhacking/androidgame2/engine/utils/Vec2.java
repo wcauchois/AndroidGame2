@@ -1,5 +1,6 @@
 package net.cloudhacking.androidgame2.engine.utils;
 
+import android.graphics.RectF;
 import android.util.FloatMath;
 
 /**
@@ -89,6 +90,10 @@ public class Vec2 {
 
     public Vec2 copy() {
         return new Vec2(this.x, this.y);
+    }
+
+    public boolean containedBy(RectF rect) {
+        return x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
     }
 
     public String toString() {

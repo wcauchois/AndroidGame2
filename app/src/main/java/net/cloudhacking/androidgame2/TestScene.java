@@ -1,10 +1,14 @@
 package net.cloudhacking.androidgame2;
 
+import android.graphics.RectF;
+
 import net.cloudhacking.androidgame2.engine.BasicGLScript;
 import net.cloudhacking.androidgame2.engine.CameraGroup;
 import net.cloudhacking.androidgame2.engine.Grid;
-import net.cloudhacking.androidgame2.engine.foundation.TileMap;
 import net.cloudhacking.androidgame2.engine.Scene;
+import net.cloudhacking.androidgame2.engine.foundation.TileMap;
+import net.cloudhacking.androidgame2.engine.ui.Button;
+import net.cloudhacking.androidgame2.engine.ui.RootWidget;
 import net.cloudhacking.androidgame2.engine.utils.JsonMap;
 
 /**
@@ -44,7 +48,10 @@ public class TestScene extends Scene {
         });
         mActiveCameraGroup.add(mGrid);
 
-        getCameraController().setBoundaryRect( mTileMap.getRect() );
+        RootWidget rootWidget = new RootWidget(TDGame.getInstance().getInputManager());
+        rootWidget.add(new Button(new RectF(0.0f, 0.0f, 100.0f, 38.0f)));
+        mUICameraGroup.add(rootWidget);
+
         return this;
     }
 

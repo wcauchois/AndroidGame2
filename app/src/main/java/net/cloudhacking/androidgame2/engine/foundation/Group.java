@@ -7,15 +7,15 @@ import java.util.ArrayList;
 /**
  * Created by Andrew on 1/15/2015.
  */
-public class Group extends Entity {
+public class Group<E extends Entity> extends Entity {
     /*
      * This is the most general class that represent a group of in-game entities.
      */
-    protected ArrayList<Entity> mEntities;
+    protected ArrayList<E> mEntities;
     protected int length;
 
     public Group() {
-        mEntities = new ArrayList<Entity>();
+        mEntities = new ArrayList<E>();
         length = 0;
     }
 
@@ -38,7 +38,7 @@ public class Group extends Entity {
     }
 
 
-    public Entity add(Entity e) {
+    public E add(E e) {
         if (e.getParent()==this) {
             return e;
         }
@@ -59,7 +59,7 @@ public class Group extends Entity {
     }
 
     
-    public Entity addToFront(Entity e) {
+    public E addToFront(E e) {
         if (e.getParent()==this) {
             return e;
         }
@@ -73,7 +73,7 @@ public class Group extends Entity {
     }
 
 
-    public Entity fastRemove(Entity e) {
+    public E fastRemove(E e) {
         int index = mEntities.indexOf(e);
         if (index != -1) {
             mEntities.set(index, null);
@@ -84,7 +84,7 @@ public class Group extends Entity {
         }
     }
 
-    public Entity remove(Entity e) {
+    public E remove(E e) {
         if (mEntities.remove(e)) {
             length--;
             e.setParent(null);
@@ -96,7 +96,7 @@ public class Group extends Entity {
 
 
     public void clear() {
-        Entity e;
+        E e;
         for (int i=0; i<length; i++) {
             e = mEntities.get(i);
             if (e != null) {
@@ -108,7 +108,7 @@ public class Group extends Entity {
     }
 
 
-    public Entity bringToFront(Entity e) {
+    public Entity bringToFront(E e) {
         if (mEntities.contains(e)) {
             mEntities.remove(e);
             mEntities.add(e);
@@ -118,7 +118,7 @@ public class Group extends Entity {
         }
     }
 
-    public Entity sentToBack(Entity e) {
+    public Entity sentToBack(E e) {
         if (mEntities.contains(e)) {
             mEntities.remove(e);
             mEntities.add(0, e);
@@ -128,7 +128,7 @@ public class Group extends Entity {
         }
     }
 
-    public ArrayList<Entity> getEntities() {
+    public ArrayList<E> getEntities() {
         return mEntities;
     }
 

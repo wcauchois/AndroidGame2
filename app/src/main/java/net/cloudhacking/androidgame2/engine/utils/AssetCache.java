@@ -41,7 +41,7 @@ public class AssetCache extends Loggable {
     }
 
     private static Texture.TextureOptions sDefaultTextureOptions;
-    static{
+    static {
         sDefaultTextureOptions = new Texture.TextureOptions();
         sDefaultTextureOptions.minMode   = Texture.FilterType.NEAREST;
         sDefaultTextureOptions.magMode   = Texture.FilterType.NEAREST;

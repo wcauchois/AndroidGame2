@@ -35,7 +35,7 @@ public class Camera extends Loggable {
     }
 
 
-    private PointF mFocus;
+    public PointF mFocus; // XXX
     private Renderable mTarget;
 
     private float mZoom;
