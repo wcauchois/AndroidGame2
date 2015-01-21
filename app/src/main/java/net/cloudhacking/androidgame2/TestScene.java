@@ -4,6 +4,7 @@ import android.graphics.RectF;
 
 import net.cloudhacking.androidgame2.engine.BasicGLScript;
 import net.cloudhacking.androidgame2.engine.CameraController;
+import net.cloudhacking.androidgame2.engine.Grid;
 import net.cloudhacking.androidgame2.engine.TileMap;
 import net.cloudhacking.androidgame2.engine.foundation.Scene;
 import net.cloudhacking.androidgame2.engine.utils.JsonMap;
@@ -17,6 +18,7 @@ public class TestScene extends Scene {
     CameraController mCameraController;
 
     TileMap mTileMap;
+    Grid mGrid;
 
     @Override
     public void create() {
@@ -28,7 +30,14 @@ public class TestScene extends Scene {
         );
         add(mTileMap);
 
-
+        mGrid = new Grid(mTileMap);
+        mGrid.addSelectorListener(new Grid.CellSelectorListener() {
+            @Override
+            public void onCellSelect(Grid.Cell selected) {
+                Grid.SELECTOR_ICON.startAnimationAt(getOuter(), selected.getCenter());
+            }
+        });
+        add(mGrid);
 
         mCameraController = instance.getCameraController();
         mCameraController.setBoundaryRect( getMapRect() );
@@ -80,6 +89,11 @@ public class TestScene extends Scene {
         mGLScript.useCamera(mCameraController.getUICamera());
         // mUIGroup.draw() or something
 
+    }
+
+
+    private Scene getOuter() {
+        return this;
     }
 
 }

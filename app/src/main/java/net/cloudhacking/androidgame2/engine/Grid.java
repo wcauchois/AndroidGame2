@@ -1,7 +1,10 @@
 package net.cloudhacking.androidgame2.engine;
 
+import net.cloudhacking.androidgame2.Assets;
 import net.cloudhacking.androidgame2.TDGame;
 import net.cloudhacking.androidgame2.engine.foundation.Entity;
+import net.cloudhacking.androidgame2.engine.foundation.Scene;
+import net.cloudhacking.androidgame2.engine.utils.GameTime;
 import net.cloudhacking.androidgame2.engine.utils.InputManager;
 import net.cloudhacking.androidgame2.engine.utils.PointF;
 import net.cloudhacking.androidgame2.engine.utils.Signal;
@@ -12,6 +15,53 @@ import java.util.ArrayList;
  * Created by Andrew on 1/20/2015.
  */
 public class Grid extends Entity {
+
+    /**
+     * Animated selection icon that appears on the grid when you select a cell
+     */
+    public static final SelectorIcon SELECTOR_ICON = new SelectorIcon();
+
+    public static class SelectorIcon extends Image {
+        private final float BASE_SCALE = 1 + 1f/16;
+        private final float BLINK_SCALE = 1 + 1f/4;
+        private final float THRESHOLD = 1f/3;
+        private float mThreshold;
+
+        public SelectorIcon() {
+            super(Assets.SELECTOR_ICON);
+            setScalable(true);
+            setScale(BASE_SCALE);
+            setVisibility(false);
+            mThreshold = THRESHOLD;
+        }
+
+        public void startAnimationAt(Scene scene, PointF target) {
+            setPos(target);
+            setActive();
+            setVisibility(true);
+            mThreshold = THRESHOLD;
+            scene.addToFront(this);
+        }
+
+        public void hide() {
+            setVisibility(false);
+            setInactive();
+        }
+
+        @Override
+        public void update() {
+            mThreshold -= GameTime.getFrameDelta();
+            if (mThreshold < 0) {
+                float diff = BLINK_SCALE - BASE_SCALE;
+                setScale( BASE_SCALE + (getScale().x - BASE_SCALE + diff) % (2*diff) );
+                mThreshold += THRESHOLD;
+            }
+            super.update();
+        }
+    }
+
+
+    /**********************************************************************************************/
 
     public class Cell {
         public int ix;
@@ -41,6 +91,14 @@ public class Grid extends Entity {
             return new PointF( (ix+0.5f) * mCellWidth, (iy+0.5f) * mCellHeight );
         }
 
+        public PointF getCenter() {
+            return getRelativeCenter().add(mPos.toVec());
+        }
+
+        @Override
+        public String toString() {
+            return "GridCell(ix="+ix+", iy="+iy+", occupied="+mOccupied+")";
+        }
     }
 
 
@@ -49,10 +107,15 @@ public class Grid extends Entity {
     public class CellSelector implements Signal.Listener<InputManager.ClickEvent> {
 
         Cell mSelected;
+        Camera mActiveCam;
+
+        public CellSelector() {
+            mActiveCam = TDGame.getInstance().getCameraController().getActiveCamera();
+        }
 
         @Override
         public boolean onSignal(InputManager.ClickEvent e) {
-            mSelected = nearestCell(e.getPos());
+            mSelected = nearestCell( mActiveCam.cameraToScene(e.getPos()) );
 
             if (mSelected == null) {
                 return false;
@@ -77,6 +140,10 @@ public class Grid extends Entity {
 
     public void addSelectorListener(CellSelectorListener listener) {
         mSelectorListeners.add(listener);
+    }
+
+    public void removeSelectorListener(CellSelectorListener listener) {
+        mSelectorListeners.remove(listener);
     }
 
 
@@ -107,6 +174,12 @@ public class Grid extends Entity {
 
         mPos = new PointF();
         mGrid = new Cell[mColumns * mRows];
+
+        for (int ix=0; ix<cols; ix++) {
+            for (int iy=0; iy<rows; iy++) {
+                mGrid[ coordToIndex(ix, iy) ] = new Cell(ix, iy);
+            }
+        }
 
         TDGame.getInstance().getInputManager().clickUp.connect(new CellSelector());
 
@@ -157,13 +230,11 @@ public class Grid extends Entity {
 
 
     public Cell nearestCell(PointF scenePoint) {
-
         if (scenePoint.x < mPos.x || scenePoint.x > mPos.x + getWidth() ||
             scenePoint.y < mPos.y || scenePoint.y > mPos.y + getHeight() )
         {
             return null;
         }
-
         PointF relativePoint = scenePoint.add(mPos.toVec().negate());
         int ix = (int)relativePoint.x / mCellWidth;
         int iy = (int)relativePoint.y / mCellHeight;

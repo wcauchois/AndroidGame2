@@ -37,7 +37,6 @@ public class Group extends Entity {
 
 
     public Entity add(Entity e) {
-
         if (e.getParent()==this) {
             return e;
         }
@@ -50,6 +49,20 @@ public class Group extends Entity {
                 e.setParent(this);
                 return e;
             }
+        }
+        mEntities.add(e);
+        e.setParent(this);
+        length++;
+        return e;
+    }
+
+    
+    public Entity addToFront(Entity e) {
+        if (e.getParent()==this) {
+            return e;
+        }
+        if (e.getParent()!=null) {
+            e.getParent().remove(e);
         }
         mEntities.add(e);
         e.setParent(this);

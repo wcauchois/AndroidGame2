@@ -86,6 +86,24 @@ public class PointF {
         return new PointF(s.x*x, s.y*y);
     }
 
+    public PointF round() {
+        this.x = Math.round(this.x);
+        this.y = Math.round(this.y);
+        return this;
+    }
+
+    public PointF floor() {
+        this.x = (float)Math.floor(this.x);
+        this.y = (float)Math.floor(this.y);
+        return this;
+    }
+
+    public PointF ceil() {
+        this.x = (float)Math.ceil(this.x);
+        this.y = (float)Math.ceil(this.y);
+        return this;
+    }
+
 
     @Override
     public String toString() {
