@@ -39,7 +39,7 @@ public class Entity extends Loggable {
     }
 
     public boolean isOnScreen() {
-        return false;
+        return true;
     }
 
     public boolean exists() {
