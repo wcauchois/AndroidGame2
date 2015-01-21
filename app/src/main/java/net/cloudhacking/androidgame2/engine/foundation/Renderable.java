@@ -2,6 +2,7 @@ package net.cloudhacking.androidgame2.engine.foundation;
 
 import android.graphics.RectF;
 
+import net.cloudhacking.androidgame2.engine.BasicGLScript;
 import net.cloudhacking.androidgame2.engine.utils.GameTime;
 import net.cloudhacking.androidgame2.engine.utils.MatrixUtils;
 import net.cloudhacking.androidgame2.engine.utils.PointF;
@@ -177,7 +178,7 @@ public class Renderable extends Entity {
 
 
     @Override
-    public void draw() {
+    public void draw(BasicGLScript gls) {
         updateMotion();
     }
 

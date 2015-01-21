@@ -131,18 +131,17 @@ public class TileMap extends Renderable {
         return mCellHeight;
     }
 
-
-    public void draw() {
-        super.draw();
-        BasicGLScript script = BasicGLScript.get();
+    @Override
+    public void draw(BasicGLScript gls) {
+        super.draw(gls);
 
         mTexture.bind();
 
-        script.setLighting(getColorM(), getColorA());
+        gls.setLighting(getColorM(), getColorA());
 
-        script.uModel.setValueM4(getModelMatrix());
+        gls.uModel.setValueM4(getModelMatrix());
 
-        script.drawQuadSet(mVertexBuffer, mQuadCount);
+        gls.drawQuadSet(mVertexBuffer, mQuadCount);
     }
 
 }

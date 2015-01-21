@@ -1,5 +1,6 @@
 package net.cloudhacking.androidgame2.engine.foundation;
 
+import net.cloudhacking.androidgame2.engine.BasicGLScript;
 import net.cloudhacking.androidgame2.engine.utils.Loggable;
 
 /**
@@ -97,5 +98,5 @@ public class Entity extends Loggable {
 
     public void update() {}
 
-    public void draw() {}
+    public void draw(BasicGLScript gls) {}
 }

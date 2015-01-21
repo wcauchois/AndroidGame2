@@ -119,15 +119,14 @@ public class Image extends Renderable {
 
 
     @Override
-    public void draw() {
-        super.draw();
-        BasicGLScript script = BasicGLScript.get();
+    public void draw(BasicGLScript gls) {
+        super.draw(gls);
 
         mTexture.bind();
 
-        script.setLighting(getColorM(), getColorA());
+        gls.setLighting(getColorM(), getColorA());
 
-        script.uModel.setValueM4(getModelMatrix());
+        gls.uModel.setValueM4(getModelMatrix());
 
         if (mNeedBufferUpdate) {
             mVertexBuffer.position(0);
@@ -135,7 +134,7 @@ public class Image extends Renderable {
             mNeedBufferUpdate = false;
         }
 
-        script.drawQuad(mVertexBuffer);
+        gls.drawQuad(mVertexBuffer);
     }
 
 

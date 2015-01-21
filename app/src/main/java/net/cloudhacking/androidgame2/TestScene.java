@@ -14,15 +14,11 @@ import net.cloudhacking.androidgame2.engine.utils.JsonMap;
  */
 public class TestScene extends Scene {
 
-    BasicGLScript mGLScript;
-
     TileMap mTileMap;
     Grid mGrid;
 
     @Override
     public void create() {
-
-        mGLScript = getGLScript();
 
         mTileMap = new TileMap(
                 Assets.TEST_TILESET, new JsonMap(Resources.JSON_MAP_SIMPLE), 32, 32
@@ -70,19 +66,19 @@ public class TestScene extends Scene {
     }
 
     @Override
-    public void draw() {
+    public void draw(BasicGLScript gls) {
 
         // draw level
-        mGLScript.useCamera( getActiveCamera() );
+        gls.useCamera( getActiveCamera() );
 
         // Block camera movement while drawing the level in order to prevent drawing
         // artifacts.  I'm not actually sure if we need to do this or if its the
         // best way to implement it.
         // TODO: Not yet implemented in input manager or camera controller
-        super.draw();
+        super.draw(gls);
 
         // draw ui
-        mGLScript.useCamera( getUICamera() );
+        gls.useCamera( getUICamera() );
         // mUIGroup.draw() or something
 
     }

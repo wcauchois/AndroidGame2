@@ -199,8 +199,6 @@ public abstract class GameSkeleton
 
         } else {    // update and draw
 
-            mScene.setGLScript(mGLScript);
-
             mInputManager.processEvents();
             mCameraController.update();
             mScene.update();
@@ -217,7 +215,7 @@ public abstract class GameSkeleton
             GLES20.glScissor(0, 0, mViewport.width(), mViewport.height());
             GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
-            mScene.draw();
+            mScene.draw(mGLScript);
         }
     }
 

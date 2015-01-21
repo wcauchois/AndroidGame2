@@ -26,12 +26,10 @@ public abstract class Scene extends Group {
     abstract public RectF getMapRect();
 
 
-    private BasicGLScript gls;
     private InputManager im;
     private CameraController cc;
 
     public Scene() {
-        gls = GameSkeleton.getInstance().getGLScript();
         im  = GameSkeleton.getInstance().getInputManager();
         cc  = GameSkeleton.getInstance().getCameraController();
     }
@@ -40,14 +38,6 @@ public abstract class Scene extends Group {
     /**
      * Some convenience functions
      */
-
-    public BasicGLScript getGLScript() {
-        return gls;
-    }
-
-    public void setGLScript(BasicGLScript gls) {
-        this.gls = gls;
-    }
 
     public InputManager getInputManager() {
         return im;

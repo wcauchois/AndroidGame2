@@ -1,5 +1,7 @@
 package net.cloudhacking.androidgame2.engine.foundation;
 
+import net.cloudhacking.androidgame2.engine.BasicGLScript;
+
 import java.util.ArrayList;
 
 /**
@@ -27,10 +29,10 @@ public class Group extends Entity {
     }
 
     @Override
-    public void draw() {
+    public void draw(BasicGLScript gls) {
         for (Entity e : mEntities) {
             if (e.exists() && e.isOnScreen() && e.isVisible()) {
-                e.draw();
+                e.draw(gls);
             }
         }
     }
