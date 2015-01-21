@@ -7,8 +7,6 @@ import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
 
-import net.cloudhacking.androidgame2.engine.foundation.Scene;
-import net.cloudhacking.androidgame2.engine.gl.GLScript;
 import net.cloudhacking.androidgame2.engine.utils.GameTime;
 import net.cloudhacking.androidgame2.engine.utils.InputManager;
 import net.cloudhacking.androidgame2.engine.utils.LoggableActivity;
@@ -27,15 +25,15 @@ public abstract class GameSkeleton
 {
 
     private static GameSkeleton sInstance;  // keep static instance of GameSkeleton
+    private static boolean sInitGame = true;
+
+    private Bundle mSavedInstanceState;
     private GLSurfaceView mView;
     private Rect mViewport;
     private BasicGLScript mGLScript;
     private Scene mScene;
     private InputManager mInputManager;
     private CameraController mCameraController;
-
-    private static boolean sInit = true;
-    private Bundle mSavedInstanceState;
 
 
     public static GameSkeleton getInstance() {
@@ -168,9 +166,8 @@ public abstract class GameSkeleton
             mScene.destroy();
             mScene = null;
         }
-        TextureCache.clear();
         sInstance = null;
-        sInit = true;
+        sInitGame = true;
 
         d("game destroyed");
     }
@@ -180,12 +177,12 @@ public abstract class GameSkeleton
     public void onDrawFrame(GL10 unused) {
         GameTime.tick();
 
-        if (sInit) {
+        if (sInitGame) {
 
             onGameInit(mSavedInstanceState);
             mSavedInstanceState = null;
 
-            sInit = false;
+            sInitGame = false;
 
         } else if (mScene != null) {
 

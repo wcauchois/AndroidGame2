@@ -4,12 +4,15 @@ import net.cloudhacking.androidgame2.Assets;
 import net.cloudhacking.androidgame2.TDGame;
 import net.cloudhacking.androidgame2.engine.foundation.Entity;
 import net.cloudhacking.androidgame2.engine.foundation.Group;
+import net.cloudhacking.androidgame2.engine.foundation.Image;
+import net.cloudhacking.androidgame2.engine.foundation.TileMap;
 import net.cloudhacking.androidgame2.engine.utils.GameTime;
 import net.cloudhacking.androidgame2.engine.utils.InputManager;
 import net.cloudhacking.androidgame2.engine.utils.PointF;
 import net.cloudhacking.androidgame2.engine.utils.Signal;
 
 import java.util.ArrayList;
+import java.util.Stack;
 
 /**
  * Created by Andrew on 1/20/2015.
@@ -68,10 +71,16 @@ public class Grid extends Entity {
         public int iy;
         private boolean mOccupied;
 
+        // pathfinding
+        private Cell mBestNeighbor;
+        private int mDistToSource;
+
         public Cell(int ix, int iy) {
             this.ix = ix;
             this.iy = iy;
             mOccupied = false;
+            mBestNeighbor = null;
+            mDistToSource = -1;
         }
 
         public int getIndex() {
@@ -95,9 +104,25 @@ public class Grid extends Entity {
             return getRelativeCenter().add(mPos.toVec());
         }
 
+        public Cell getBestNeighbor() {
+            return mBestNeighbor;
+        }
+
+        public void setBestNeighbor(Cell cell) {
+            mBestNeighbor = cell;
+        }
+
+        public int getDistToSource() {
+            return mDistToSource;
+        }
+
+        public void setDistToSource(int dist) {
+            mDistToSource = dist;
+        }
+
         @Override
         public String toString() {
-            return "GridCell(ix="+ix+", iy="+iy+", occupied="+mOccupied+")";
+            return "Cell(ix="+ix+", iy="+iy+")";
         }
     }
 
@@ -164,6 +189,8 @@ public class Grid extends Entity {
     public Grid(int cols, int rows, int cellWidth, int cellHeight) {
         mColumns = cols;
         mRows = rows;
+        mReachable = new boolean[mColumns * mRows];
+
         mCellWidth = cellWidth;
         mCellHeight = cellHeight;
 
@@ -238,6 +265,53 @@ public class Grid extends Entity {
 
     public PointF cellToScene(Cell cell) {
         return mPos.add(cell.getRelativeCenter().toVec());
+    }
+
+
+    /**********************************************************************************************/
+    // ref: http://www.redblobgames.com/pathfinding/tower-defense/
+
+    private ArrayList<Cell> neighbors;
+    private boolean[] mReachable;
+
+    private ArrayList<Cell> getCellNeighbors(Cell c) {
+        neighbors = new ArrayList<Cell>(4);
+        neighbors.add( (c.ix-1) >= 0       ? getCell(c.ix-1, c.iy) : null );
+        neighbors.add( (c.iy+1) < mRows    ? getCell(c.ix, c.iy+1) : null );
+        neighbors.add( (c.ix+1) < mColumns ? getCell(c.ix+1, c.iy) : null );
+        neighbors.add( (c.iy-1) >= 0       ? getCell(c.ix, c.iy-1) : null );
+
+        return neighbors;
+    }
+
+    private void emptyReachableArray() {
+        int size = mColumns * mRows;
+        for (int i=0; i<size; i++) mReachable[i] = false;
+    }
+
+    public void generateFloodMap(Cell source) {
+        Stack<Cell> frontier = new Stack<Cell>();
+
+        emptyReachableArray();
+
+        frontier.push(source);
+        mReachable[ source.getIndex() ] = true;
+        source.setBestNeighbor(null);
+        source.setDistToSource(0);
+
+        Cell current;
+        while (!frontier.isEmpty()) {
+            current = frontier.pop();
+
+            for(Cell n : getCellNeighbors(current)) {
+                if ( n != null && !mReachable[n.getIndex()] ) {
+                    frontier.push(n);
+                    mReachable[n.getIndex()] = true;
+                    n.setBestNeighbor( current );
+                    n.setDistToSource( current.getDistToSource() + 1 );
+                }
+            }
+        }
     }
 
 }

@@ -70,6 +70,10 @@ public class PointF {
         return FloatMath.sqrt(dx*dx + dy*dy);
     }
 
+    public float manhattanDistTo(PointF other) {
+        return Math.abs(other.x - x) + Math.abs(other.y - y);
+    }
+
     public Vec2 vecTowards(PointF other) {
         return new Vec2(other.x - x, other.y - y);
     }

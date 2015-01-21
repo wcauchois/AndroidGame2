@@ -21,10 +21,12 @@ public class Signal<T> {
     }
 
     public void dispatch(T t) {
+        // TODO: whats the point of doing all this instead of iterating over the linked list?
         Listener<T>[] listeners = mListeners.toArray(new Listener[0]);
 
+        Listener<T> listener;
         for (int i = 0; i < listeners.length; i++) {
-            Listener<T> listener = listeners[i];
+            listener = listeners[i];
             if (mListeners.contains(listener)) {
                 /**
                  * Instead of having to call back to this signal and cancel, onSignal(t) could

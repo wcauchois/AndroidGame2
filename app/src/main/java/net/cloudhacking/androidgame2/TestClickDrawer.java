@@ -1,7 +1,7 @@
 package net.cloudhacking.androidgame2;
 
-import net.cloudhacking.androidgame2.engine.Image;
-import net.cloudhacking.androidgame2.engine.foundation.Scene;
+import net.cloudhacking.androidgame2.engine.foundation.Image;
+import net.cloudhacking.androidgame2.engine.Scene;
 import net.cloudhacking.androidgame2.engine.utils.InputManager;
 import net.cloudhacking.androidgame2.engine.utils.Loggable;
 import net.cloudhacking.androidgame2.engine.utils.PointF;

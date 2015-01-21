@@ -1,8 +1,8 @@
-package net.cloudhacking.androidgame2.engine;
+package net.cloudhacking.androidgame2.engine.foundation;
 
 import android.graphics.RectF;
 
-import net.cloudhacking.androidgame2.engine.foundation.Renderable;
+import net.cloudhacking.androidgame2.engine.BasicGLScript;
 import net.cloudhacking.androidgame2.engine.gl.Texture;
 import net.cloudhacking.androidgame2.engine.utils.Asset;
 import net.cloudhacking.androidgame2.engine.utils.BufferUtils;

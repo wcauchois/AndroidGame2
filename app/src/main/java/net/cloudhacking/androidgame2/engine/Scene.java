@@ -1,12 +1,8 @@
-package net.cloudhacking.androidgame2.engine.foundation;
+package net.cloudhacking.androidgame2.engine;
 
 import android.graphics.Rect;
-import android.graphics.RectF;
 
-import net.cloudhacking.androidgame2.engine.BasicGLScript;
-import net.cloudhacking.androidgame2.engine.Camera;
-import net.cloudhacking.androidgame2.engine.CameraController;
-import net.cloudhacking.androidgame2.engine.GameSkeleton;
+import net.cloudhacking.androidgame2.engine.foundation.Group;
 import net.cloudhacking.androidgame2.engine.utils.InputManager;
 import net.cloudhacking.androidgame2.engine.utils.PointF;
 
@@ -20,11 +16,6 @@ public abstract class Scene extends Group {
      */
     abstract public Scene create();
     abstract public void destroy();
-
-    abstract public float getMapWidth();
-    abstract public float getMapHeight();
-    abstract public RectF getMapRect();
-
 
     private InputManager im;
     private CameraController cc;

@@ -1,5 +1,7 @@
 package net.cloudhacking.androidgame2.engine;
 
+import net.cloudhacking.androidgame2.engine.foundation.Image;
+
 /**
  * Created by Andrew on 1/20/2015.
  */
