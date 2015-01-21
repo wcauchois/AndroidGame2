@@ -7,10 +7,10 @@ import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
 
+import net.cloudhacking.androidgame2.engine.utils.AssetCache;
 import net.cloudhacking.androidgame2.engine.utils.GameTime;
 import net.cloudhacking.androidgame2.engine.utils.InputManager;
 import net.cloudhacking.androidgame2.engine.utils.LoggableActivity;
-import net.cloudhacking.androidgame2.engine.utils.TextureCache;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -97,7 +97,7 @@ public abstract class GameSkeleton
 
         mScene = null;
 
-        TextureCache.setContext(this);
+        AssetCache.setContext(this);
         GameTime.start();
 
         mInputManager = new InputManager(this);
@@ -123,7 +123,7 @@ public abstract class GameSkeleton
         // GLES20.glBlendFunc( GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA );
         GLES20.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);  // set alpha blending function
 
-        TextureCache.reload();
+        AssetCache.reload();
         mGLScript = new BasicGLScript();
 
         d("surface created");

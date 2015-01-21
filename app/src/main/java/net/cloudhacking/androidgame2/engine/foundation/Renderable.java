@@ -38,7 +38,7 @@ public class Renderable extends Entity {
         mOrigin = new PointF();
         mPos = new PointF(x, y);  // center point
         mWidth = width;           // width and height are unscaled,
-        mHeight = height;         // use getWidth(), getHeight() to get scaled width/height
+        mHeight = height;         // use getScaledWidth(), getScaledHeight() to get scaled width/height
 
         mScale = new PointF(1, 1);
         mScalable = false;
@@ -61,7 +61,7 @@ public class Renderable extends Entity {
     }
 
     public PointF getCenter() {
-        return new PointF(mPos.x + getWidth()/2, mPos.y + getHeight()/2);
+        return new PointF(mPos.x + getScaledWidth()/2, mPos.y + getScaledHeight()/2);
     }
 
     public void setPos(PointF pos) {
@@ -77,6 +77,10 @@ public class Renderable extends Entity {
     }
 
     public float getWidth() {
+        return mWidth;
+    }
+
+    public float getScaledWidth() {
         return mWidth * mScale.y;
     }
 
@@ -85,6 +89,10 @@ public class Renderable extends Entity {
     }
 
     public float getHeight() {
+        return mHeight;
+    }
+
+    public float getScaledHeight() {
         return mHeight * mScale.x;
     }
 
@@ -93,7 +101,7 @@ public class Renderable extends Entity {
     }
 
     public RectF getRect() {
-        return new RectF(mPos.x, mPos.y, mPos.x + getWidth(), mPos.y + getHeight());
+        return new RectF(mPos.x, mPos.y, mPos.x + getScaledWidth(), mPos.y + getScaledHeight());
     }
 
     public PointF getOrigin() {

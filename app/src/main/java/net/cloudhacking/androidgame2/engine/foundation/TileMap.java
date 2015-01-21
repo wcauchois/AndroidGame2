@@ -5,8 +5,8 @@ import android.graphics.RectF;
 import net.cloudhacking.androidgame2.engine.BasicGLScript;
 import net.cloudhacking.androidgame2.engine.gl.Texture;
 import net.cloudhacking.androidgame2.engine.utils.Asset;
+import net.cloudhacking.androidgame2.engine.utils.AssetCache;
 import net.cloudhacking.androidgame2.engine.utils.BufferUtils;
-import net.cloudhacking.androidgame2.engine.utils.TextureCache;
 
 import java.nio.FloatBuffer;
 
@@ -37,7 +37,7 @@ public class TileMap extends Renderable {
 
 
     public TileMap(Asset asset, Map map, int cellWidth, int cellHeight) {
-        this(TextureCache.get(asset), map, cellWidth, cellHeight);
+        this(AssetCache.getTexture(asset), map, cellWidth, cellHeight);
     }
 
     public TileMap(Texture texture, Map map, int cellWidth, int cellHeight) {

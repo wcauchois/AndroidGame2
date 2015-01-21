@@ -14,7 +14,11 @@ import java.util.HashMap;
 /**
  * Created by Andrew on 1/17/2015.
  */
-public class TextureCache extends Loggable {
+public class AssetCache extends Loggable {
+
+    /***********************************************************************************************
+     * TEXTURE CACHE
+     */
 
     private static Context sContext;
 
@@ -22,7 +26,7 @@ public class TextureCache extends Loggable {
         sContext = context;
     }
 
-    private static HashMap<Asset, Texture> sCache = new HashMap<Asset, Texture>();
+    private static HashMap<Asset, Texture> sTextureCache = new HashMap<Asset, Texture>();
 
 
     /**
@@ -50,23 +54,23 @@ public class TextureCache extends Loggable {
      * loaded or the texture options are different, this will create a new texture and put it
      * into the cache.
      */
-    public static Texture get(Asset asset) {
-        return get(asset, sDefaultTextureOptions, true);
+    public static Texture getTexture(Asset asset) {
+        return getTexture(asset, sDefaultTextureOptions, true);
     }
 
-    public static Texture get(Asset asset, Texture.TextureOptions opts) {
-        return get(asset, opts, true);
+    public static Texture getTexture(Asset asset, Texture.TextureOptions opts) {
+        return getTexture(asset, opts, true);
     }
 
-    public static Texture get(Asset asset, Texture.TextureOptions opts, boolean checkOpts) {
+    public static Texture getTexture(Asset asset, Texture.TextureOptions opts, boolean checkOpts) {
 
-        if (!sCache.containsKey(asset)) {
+        if (!sTextureCache.containsKey(asset)) {
             try {
                 InputStream stream = sContext.getAssets().open(asset.getFileName());
                 Bitmap bmp = BitmapFactory.decodeStream(stream, null, sBitmapOptions);
 
                 Texture tex = new Texture(bmp, opts);
-                sCache.put(asset, tex);
+                sTextureCache.put(asset, tex);
 
                 Log.d(TAG, "successfully loaded texture into cache: " + asset.getFileName());
                 return tex;
@@ -76,12 +80,12 @@ public class TextureCache extends Loggable {
             }
 
         } else if (checkOpts) {
-            Texture tex = sCache.get(asset);
+            Texture tex = sTextureCache.get(asset);
 
             // check if the stored textures options equal the requested options
             if (!tex.getOptions().equals(opts)) {
                 tex = new Texture(tex.getBitmap(), opts);
-                sCache.put(asset, tex);
+                sTextureCache.put(asset, tex);
                 return tex;
 
             } else {
@@ -89,22 +93,48 @@ public class TextureCache extends Loggable {
             }
 
         } else {
-            return sCache.get(asset);
+            return sTextureCache.get(asset);
         }
 
     }
 
 
     public static void clear() {
-        for (Texture t : sCache.values()) {
+        for (Texture t : sTextureCache.values()) {
             t.delete();
         }
-        sCache.clear();
+        sTextureCache.clear();
+        sSpriteCache.clear();
     }
 
     public static void reload() {
-        for (Texture t : sCache.values()) {
+        for (Texture t : sTextureCache.values()) {
             t.reload();
+        }
+    }
+
+
+    /***********************************************************************************************
+     * SPRITE CACHE
+     */
+
+    /**
+     * Cache sprite objects in order for l33t optimization, and so that we don't have to
+     * regenerate the same vertex buffers for a hundred different creeps using the same sprite.
+     */
+    private static HashMap<SpriteAsset, Sprite> sSpriteCache
+            = new HashMap<SpriteAsset, Sprite>();
+
+
+    public static Sprite getSprite(SpriteAsset asset) {
+
+        if (!sSpriteCache.containsKey(asset)) {
+            Sprite sprite = new Sprite(asset);
+            sSpriteCache.put(asset, sprite);
+            return sprite;
+
+        } else {
+            return sSpriteCache.get(asset);
         }
     }
 

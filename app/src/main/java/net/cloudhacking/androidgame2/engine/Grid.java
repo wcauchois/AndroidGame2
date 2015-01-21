@@ -30,25 +30,21 @@ public class Grid extends Entity {
      */
     public static final SelectorIcon SELECTOR_ICON = new SelectorIcon();
 
-    public static class SelectorIcon extends Image {
-        private final float BASE_SCALE = 1 + 1f/16;
-        private final float BLINK_SCALE = 1 + 1f/4;
-        private final float THRESHOLD = 1f/3;
-        private float mThreshold;
+    public static class SelectorIcon extends AnimatedSprite {
+
+        private final AnimationSequence ANIM
+                = new AnimationSequence(new int[] {0, 1}, 0, 1);
 
         public SelectorIcon() {
             super(Assets.SELECTOR_ICON);
-            setScalable(true);
-            setScale(BASE_SCALE);
             setVisibility(false);
-            mThreshold = THRESHOLD;
         }
 
         public void startAnimationAt(Group group, PointF target) {
             setPos(target);
             setActive();
             setVisibility(true);
-            mThreshold = THRESHOLD;
+            queueAnimation(ANIM, true, true);
             group.addToFront(this);
         }
 
@@ -57,16 +53,6 @@ public class Grid extends Entity {
             setInactive();
         }
 
-        @Override
-        public void update() {
-            mThreshold -= GameTime.getFrameDelta();
-            if (mThreshold < 0) {
-                float diff = BLINK_SCALE - BASE_SCALE;
-                setScale( BASE_SCALE + (getScale().x - BASE_SCALE + diff) % (2*diff) );
-                mThreshold += THRESHOLD;
-            }
-            super.update();
-        }
     }
 
 
@@ -331,17 +317,17 @@ public class Grid extends Entity {
      * A* implementation
      */
 
-    private static class Sortable implements Comparable<Sortable> {
+    private static class CellSortable implements Comparable<CellSortable> {
         public Cell cell;
         public float cost;
 
-        public Sortable(Cell cell, float cost) {
+        public CellSortable(Cell cell, float cost) {
             this.cell = cell;
             this.cost = cost;
         }
 
         @Override
-        public int compareTo(Sortable other) {
+        public int compareTo(CellSortable other) {
             float diff = this.cost - other.cost;
             if (diff<0) return -1;
             if (diff>0) return +1;
@@ -366,12 +352,12 @@ public class Grid extends Entity {
     }
 
     public LinkedList<Cell> getBestPath(Cell start, Cell goal) {
-        PriorityQueue<Sortable> frontier = new PriorityQueue<Sortable>();
+        PriorityQueue<CellSortable> frontier = new PriorityQueue<CellSortable>();
         HashSet<Integer> visited = new HashSet<Integer>();
         SparseArray<Float> costs = new SparseArray<Float>();
         SparseIntArray history = new SparseIntArray();
 
-        frontier.add(new Sortable(start, 0f));
+        frontier.add(new CellSortable(start, 0f));
         history.put(start.index, -1);
         costs.put(start.index, 0f);
         visited.add(start.index);
@@ -390,7 +376,7 @@ public class Grid extends Entity {
 
                 if ( !visited.contains(n.index) || newCost<costs.get(n.index) ) {
                     costs.put(n.index, newCost);
-                    frontier.add( new Sortable(n, newCost + heuristic(n, goal)) );
+                    frontier.add( new CellSortable(n, newCost + heuristic(n, goal)) );
                     history.put(n.index, current.index);
                     visited.add(n.index);
                 }

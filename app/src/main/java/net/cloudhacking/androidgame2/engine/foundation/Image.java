@@ -3,12 +3,11 @@ package net.cloudhacking.androidgame2.engine.foundation;
 import android.graphics.RectF;
 
 import net.cloudhacking.androidgame2.engine.BasicGLScript;
-import net.cloudhacking.androidgame2.engine.foundation.Renderable;
 import net.cloudhacking.androidgame2.engine.gl.Texture;
 import net.cloudhacking.androidgame2.engine.utils.Asset;
+import net.cloudhacking.androidgame2.engine.utils.AssetCache;
 import net.cloudhacking.androidgame2.engine.utils.BufferUtils;
 import net.cloudhacking.androidgame2.engine.utils.PointF;
-import net.cloudhacking.androidgame2.engine.utils.TextureCache;
 
 import java.nio.FloatBuffer;
 
@@ -45,7 +44,7 @@ public class Image extends Renderable {
 
 
     public void setTexture(Asset asset) {
-        mTexture = TextureCache.get(asset);
+        mTexture = AssetCache.getTexture(asset);
         setFrame(new RectF(0, 0, 1, 1));
     }
 
@@ -64,10 +63,9 @@ public class Image extends Renderable {
 
     public void setFrame(RectF frame) {
         mFrame = frame;
-        PointF scale = getScale();
 
-        setWidth(frame.width() * scale.x * mTexture.getWidth());
-        setHeight(frame.height() * scale.y * mTexture.getHeight());
+        setWidth(frame.width() * mTexture.getWidth());
+        setHeight(frame.height() * mTexture.getHeight());
 
         updateFrame();
         updateVertices();
@@ -140,12 +138,12 @@ public class Image extends Renderable {
 
 
     public boolean overlapsPoint(PointF p) {
-        // this test assumes a square bounding box
-        // where the position point is at its center
+        // This test assumes a square bounding box where the position point
+        // is at its center, which is the case with this class.
         PointF c=getPos();
-        float hw=getWidth()/2, hh=getHeight()/2;
+        float hsw = getScaledWidth()/2, hsh = getScaledHeight()/2;
 
-        return p.x >= c.x-hw && p.x <= c.x+hw &&
-               p.y >= c.y-hh && p.y <= c.y+hh;
+        return p.x >= c.x-hsw && p.x <= c.x+hsw &&
+               p.y >= c.y-hsh && p.y <= c.y+hsh;
     }
 }
