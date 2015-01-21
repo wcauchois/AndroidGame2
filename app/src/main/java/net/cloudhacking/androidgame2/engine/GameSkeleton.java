@@ -26,55 +26,55 @@ public abstract class GameSkeleton
         implements GLSurfaceView.Renderer
 {
 
+    private static GameSkeleton sInstance;  // keep static instance of GameSkeleton
     private GLSurfaceView mView;
-
-    // keep static instance of GameSkeleton
-    private static GameSkeleton sInstance;
-    public static GameSkeleton getInstance() {
-        return sInstance;
-    }
-
-    private BasicGLScript mGLScript;
-    public BasicGLScript getGLScript() {
-        return mGLScript;
-    }
-
     private Rect mViewport;
-    public Rect getViewport() {
-        return mViewport;
-    }
-
-    private Scene mScene = null;
-    public Scene getScene() {
-        return mScene;
-    }
-
-    private Class<? extends Scene> mSceneClass;
-    public <T extends Scene> void setSceneClass(Class<T> cls) {
-        mSceneClass = cls;
-    }
-
+    private BasicGLScript mGLScript;
+    private Scene mScene;
     private InputManager mInputManager;
-    public InputManager getInputManager() {
-        return mInputManager;
-    }
-
     private CameraController mCameraController;
-    public CameraController getCameraController() {
-        return mCameraController;
-    }
-
-
 
     private static boolean sInit = true;
     private Bundle mSavedInstanceState;
 
-    // to implement
+
+    public static GameSkeleton getInstance() {
+        return sInstance;
+    }
+
+    public BasicGLScript getGLScript() {
+        return mGLScript;
+    }
+
+    public Rect getViewport() {
+        return mViewport;
+    }
+
+    public Scene getScene() {
+        return mScene;
+    }
+
+    public void setScene(Scene scene) {
+        mScene = scene;
+    }
+
+    public InputManager getInputManager() {
+        return mInputManager;
+    }
+
+    public CameraController getCameraController() {
+        return mCameraController;
+    }
+
     abstract public void onGameInit(Bundle savedInstanceState);
+
     abstract public void onPauseGame();
+
     abstract public void onResumeGame();
-    //abstract public void onSaveGame(Bundle outState);
+
     abstract public void onDestroyGame();
+
+    //abstract public void onSaveGame(Bundle outState);
 
 
 
@@ -93,10 +93,10 @@ public abstract class GameSkeleton
         setContentView( mView );
 
 
-        // init game assets
-
         sInstance = this;
         mSavedInstanceState = savedInstanceState;
+
+        mScene = null;
 
         TextureCache.setContext(this);
         GameTime.start();
@@ -168,6 +168,7 @@ public abstract class GameSkeleton
             mScene.destroy();
             mScene = null;
         }
+        TextureCache.clear();
         sInstance = null;
         sInit = true;
 
@@ -179,39 +180,20 @@ public abstract class GameSkeleton
     public void onDrawFrame(GL10 unused) {
         GameTime.tick();
 
-        if (sInit) {    // initialize on first frame once all GL resources are prepared
-
-            // TODO: This could probably be reworked.  I have no idea how saved states work on Android
+        if (sInit) {
 
             onGameInit(mSavedInstanceState);
             mSavedInstanceState = null;
 
-            try {
-                mScene = mSceneClass.newInstance();
-                mScene.create();
-
-            } catch(Exception e) {
-                e("error creating new instance of scene: " + mSceneClass.getCanonicalName());
-                e.printStackTrace();
-            }
-
             sInit = false;
 
-        } else {    // update and draw
+        } else if (mScene != null) {
 
             mInputManager.processEvents();
             mCameraController.update();
             mScene.update();
 
-            // Check if there is already an instance of this program, create one if there isn't.
-            // The new instance is available through BasicGLScript.get(), we don't really need to do
-            // this here though because we're only using one program right now, so we just need to
-            // call it in onSurfaceCreated();
-
-            // GLScript.use(BasicGLScript.class);
-
             mGLScript.clearLastCamera();
-
             GLES20.glScissor(0, 0, mViewport.width(), mViewport.height());
             GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 

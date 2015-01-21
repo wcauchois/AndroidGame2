@@ -16,7 +16,7 @@ public class TDGame extends GameSkeleton {
 
     @Override
     public void onGameInit(Bundle savedInstanceState) {
-        setSceneClass(TestScene.class);
+        setScene( new TestScene().create() );
         Camera.setScrollSpeed(SCROLL_SPEED);
     }
 

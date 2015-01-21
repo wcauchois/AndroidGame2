@@ -6,7 +6,6 @@ import net.cloudhacking.androidgame2.engine.BasicGLScript;
 import net.cloudhacking.androidgame2.engine.CameraGroup;
 import net.cloudhacking.androidgame2.engine.Grid;
 import net.cloudhacking.androidgame2.engine.TileMap;
-import net.cloudhacking.androidgame2.engine.foundation.Group;
 import net.cloudhacking.androidgame2.engine.foundation.Scene;
 import net.cloudhacking.androidgame2.engine.utils.JsonMap;
 
@@ -15,36 +14,39 @@ import net.cloudhacking.androidgame2.engine.utils.JsonMap;
  */
 public class TestScene extends Scene {
 
-    CameraGroup mLevelGroup;
-    CameraGroup mUIGroup;
+    CameraGroup mActiveCameraGroup;
+    CameraGroup mUICameraGroup;
 
     TileMap mTileMap;
     Grid mGrid;
 
     @Override
-    public void create() {
+    public TestScene create() {
 
-        mLevelGroup = new CameraGroup( getActiveCamera() );
-        mUIGroup = new CameraGroup( getUICamera() );
+        mActiveCameraGroup = new CameraGroup( getActiveCamera() );
+        mUICameraGroup = new CameraGroup( getUICamera() );
+
 
         mTileMap = new TileMap(
                 Assets.TEST_TILESET, new JsonMap(Resources.JSON_MAP_SIMPLE), 32, 32
         );
-        mLevelGroup.add(mTileMap);
+        mActiveCameraGroup.add(mTileMap);
 
         mGrid = new Grid(mTileMap);
         mGrid.addSelectorListener(new Grid.CellSelectorListener() {
             @Override
             public void onCellSelect(Grid.Cell selected) {
-                Grid.SELECTOR_ICON.startAnimationAt(mLevelGroup, selected.getCenter());
+                Grid.SELECTOR_ICON.startAnimationAt(mActiveCameraGroup, selected.getCenter());
             }
         });
-        mLevelGroup.add(mGrid);
+        mActiveCameraGroup.add(mGrid);
 
-        add(mLevelGroup);
-        add(mUIGroup);
+
+        add(mActiveCameraGroup);
+        add(mUICameraGroup);
 
         getCameraController().setBoundaryRect(getMapRect());
+        return this;
     }
 
     @Override
@@ -72,7 +74,7 @@ public class TestScene extends Scene {
     @Override
     public void update() {
 
-        super.update();  // update all member entities
+        super.update();
     }
 
     @Override

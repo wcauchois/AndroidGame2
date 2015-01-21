@@ -7,6 +7,10 @@ import net.cloudhacking.androidgame2.engine.foundation.Group;
  */
 public class CameraGroup extends Group {
 
+    /**
+     * Can probably eventually replace this class with a level class, ui class etc.
+     */
+
     private Camera mCamera;
 
     public CameraGroup(Camera camera) {
