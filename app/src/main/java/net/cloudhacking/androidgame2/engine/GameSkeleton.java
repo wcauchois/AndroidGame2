@@ -34,6 +34,11 @@ public abstract class GameSkeleton
         return sInstance;
     }
 
+    private BasicGLScript mGLScript;
+    public BasicGLScript getGLScript() {
+        return mGLScript;
+    }
+
     private Rect mViewport;
     public Rect getViewport() {
         return mViewport;
@@ -122,6 +127,8 @@ public abstract class GameSkeleton
         TextureCache.reload();
         GLScript.use(BasicGLScript.class);  // compile GL program for BasicGLScript class
 
+        mGLScript = (BasicGLScript) GLScript.getCurrentScript();
+
         d("surface created");
     }
 
@@ -206,7 +213,7 @@ public abstract class GameSkeleton
 
             // GLScript.use(BasicGLScript.class);
 
-            BasicGLScript.get().clearLastCamera();
+            mGLScript.clearLastCamera();
 
             GLES20.glScissor(0, 0, mViewport.width(), mViewport.height());
             GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);

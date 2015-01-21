@@ -107,15 +107,10 @@ public class Grid extends Entity {
     public class CellSelector implements Signal.Listener<InputManager.ClickEvent> {
 
         Cell mSelected;
-        Camera mActiveCam;
-
-        public CellSelector() {
-            mActiveCam = TDGame.getInstance().getCameraController().getActiveCamera();
-        }
 
         @Override
         public boolean onSignal(InputManager.ClickEvent e) {
-            mSelected = nearestCell( mActiveCam.cameraToScene(e.getPos()) );
+            mSelected = nearestCell( getScene().activeCameraToScene(e.getPos()) );
 
             if (mSelected == null) {
                 return false;

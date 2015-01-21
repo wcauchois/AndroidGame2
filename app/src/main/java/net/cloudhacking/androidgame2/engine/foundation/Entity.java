@@ -73,6 +73,18 @@ public class Entity extends Loggable {
         return mParent;
     }
 
+    public Scene getScene() {
+        // Traverses up the parent tree and returns the top level group
+        // if it's an instance of Scene, otherwise returns null.
+        if (mParent != null) {
+            return mParent.getScene();
+        } else if (this instanceof Scene) {
+            return (Scene)this;
+        } else {
+            return null;
+        }
+    }
+
     public void setParent(Group parent) {
         mParent = parent;
     }

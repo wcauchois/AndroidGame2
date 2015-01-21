@@ -1,7 +1,7 @@
 package net.cloudhacking.androidgame2;
 
-import net.cloudhacking.androidgame2.engine.CameraController;
 import net.cloudhacking.androidgame2.engine.Image;
+import net.cloudhacking.androidgame2.engine.foundation.Scene;
 import net.cloudhacking.androidgame2.engine.utils.InputManager;
 import net.cloudhacking.androidgame2.engine.utils.Loggable;
 import net.cloudhacking.androidgame2.engine.utils.PointF;
@@ -13,24 +13,22 @@ import net.cloudhacking.androidgame2.engine.utils.Signal;
 public class TestClickDrawer extends Loggable {
 
     private Image image;
-    private CameraController mCameraController;
 
-    public TestClickDrawer(InputManager inputManager) {
-        mCameraController = TDGame.getInstance().getCameraController();
+    public TestClickDrawer(final Scene scene) {
 
-        inputManager.clickUp.connect(new Signal.Listener<InputManager.ClickEvent>() {
+        scene.getInputManager().clickUp.connect(new Signal.Listener<InputManager.ClickEvent>() {
             public boolean onSignal(InputManager.ClickEvent e) {
-                handleClickUp(e.getPos());
+                handleClickUp(scene, e.getPos());
                 return true;
             }
         });
     }
 
-    private void handleClickUp(PointF up) {
+    private void handleClickUp(Scene scene, PointF up) {
         image = new Image(Assets.TEST_TILESET);
-        image.setPos( mCameraController.getActiveCamera().cameraToScene(up) );
+        image.setPos( scene.getActiveCamera().cameraToScene(up) );
         image.setRotatable(true);
         image.setRotationSpeed( 360 * (float)Math.random() );
-        TDGame.getInstance().getScene().add(image);
+        scene.add(image);
     }
 }

@@ -15,7 +15,6 @@ import net.cloudhacking.androidgame2.engine.utils.JsonMap;
 public class TestScene extends Scene {
 
     BasicGLScript mGLScript;
-    CameraController mCameraController;
 
     TileMap mTileMap;
     Grid mGrid;
@@ -23,7 +22,7 @@ public class TestScene extends Scene {
     @Override
     public void create() {
 
-        TDGame instance = (TDGame)TDGame.getInstance();
+        mGLScript = getGLScript();
 
         mTileMap = new TileMap(
                 Assets.TEST_TILESET, new JsonMap(Resources.JSON_MAP_SIMPLE), 32, 32
@@ -39,8 +38,7 @@ public class TestScene extends Scene {
         });
         add(mGrid);
 
-        mCameraController = instance.getCameraController();
-        mCameraController.setBoundaryRect( getMapRect() );
+        getCameraController().setBoundaryRect( getMapRect() );
     }
 
     @Override
@@ -74,10 +72,8 @@ public class TestScene extends Scene {
     @Override
     public void draw() {
 
-        mGLScript = BasicGLScript.get();
-
         // draw level
-        mGLScript.useCamera(mCameraController.getActiveCamera());
+        mGLScript.useCamera( getActiveCamera() );
 
         // Block camera movement while drawing the level in order to prevent drawing
         // artifacts.  I'm not actually sure if we need to do this or if its the
@@ -86,7 +82,7 @@ public class TestScene extends Scene {
         super.draw();
 
         // draw ui
-        mGLScript.useCamera(mCameraController.getUICamera());
+        mGLScript.useCamera( getUICamera() );
         // mUIGroup.draw() or something
 
     }
