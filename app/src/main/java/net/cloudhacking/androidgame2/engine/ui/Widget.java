@@ -6,7 +6,6 @@ import net.cloudhacking.androidgame2.engine.BasicGLScript;
 import net.cloudhacking.androidgame2.engine.foundation.Group;
 import net.cloudhacking.androidgame2.engine.foundation.Image;
 import net.cloudhacking.androidgame2.engine.utils.Asset;
-import net.cloudhacking.androidgame2.engine.utils.AssetCache;
 import net.cloudhacking.androidgame2.engine.utils.Vec2;
 
 /**

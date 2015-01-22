@@ -52,7 +52,6 @@ public class Image extends Renderable {
         float w = r.width(), h = r.height();
 
         setPos( new PointF(r.left + w/2, r.top + h/2) );
-        setScalable(true);
         setWidth(w);
         setHeight(h);
     }
@@ -68,13 +67,13 @@ public class Image extends Renderable {
 
     @Override
     public void setWidth(float width) {
-        PointF scale = getScale();
+        setScalable(true);
         setScaleX( width/getWidth() );
     }
 
     @Override
     public void setHeight(float height) {
-        PointF scale = getScale();
+        setScalable(true);
         setScaleY( height/getHeight() );
     }
 

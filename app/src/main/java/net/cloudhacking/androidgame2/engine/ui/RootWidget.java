@@ -2,7 +2,6 @@ package net.cloudhacking.androidgame2.engine.ui;
 
 import android.graphics.RectF;
 
-import net.cloudhacking.androidgame2.engine.BasicGLScript;
 import net.cloudhacking.androidgame2.engine.utils.InputManager;
 
 /**
