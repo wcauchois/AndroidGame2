@@ -20,13 +20,22 @@ import net.cloudhacking.androidgame2.engine.utils.Signal;
  */
 public class TestScene extends Scene {
 
-    CameraGroup mActiveCameraGroup;
-    CameraGroup mUICameraGroup;
+    // essentials
+    private CameraGroup mActiveCameraGroup;
+    private CameraGroup mUICameraGroup;
+    private Grid mGrid;
+    private TileMap mTileMap;
 
-    TileMap mTileMap;
-    Grid mGrid;
-    ExplosionFactory mFXFactory;
-    PokemonFactory mPokeFactory;
+    public Grid getGrid() {
+        return mGrid;
+    }
+
+
+    // for testing
+    private ExplosionFactory mFXFactory;
+    private PokemonFactory mPokeFactory;
+
+
 
     @Override
     public TestScene create() {
@@ -63,21 +72,18 @@ public class TestScene extends Scene {
         getInputManager().clickUp.connect( new Signal.Listener<InputManager.ClickEvent>() {
             @Override
             public boolean onSignal(InputManager.ClickEvent clickEvent) {
-                mActiveCameraGroup.addToFront(
-                    mFXFactory.spawnAt(
-                            getActiveCamera().cameraToScene(clickEvent.getPos())
-                    )
-                );
+                mFXFactory.spawnAt( getActiveCamera().cameraToScene(clickEvent.getPos()) );
                 return false;
             }
         });
         mActiveCameraGroup.add(mFXFactory);
 
 
-        // this is my favorite... test POKEMON FACTORY!!!
+        // this is my favorite... POKEMON FACTORY!!!
         mPokeFactory = new PokemonFactory(mGrid);
         mPokeFactory.start();
         mActiveCameraGroup.add(mPokeFactory);
+
 
         // UI
 
@@ -87,7 +93,8 @@ public class TestScene extends Scene {
         mUICameraGroup.add(rootWidget);
 
 
-        getActiveCamera().setBoundaryRect(mTileMap.getRect());
+
+        //getActiveCamera().setBoundaryRect(mTileMap.getRect());
         return this;
     }
 
@@ -95,6 +102,7 @@ public class TestScene extends Scene {
     public void destroy() {
 
     }
+
 
     @Override
     public void update() {

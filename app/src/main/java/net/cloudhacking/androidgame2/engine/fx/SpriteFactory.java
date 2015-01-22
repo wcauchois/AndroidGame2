@@ -1,7 +1,7 @@
 package net.cloudhacking.androidgame2.engine.fx;
 
 import net.cloudhacking.androidgame2.engine.foundation.Animated;
-import net.cloudhacking.androidgame2.engine.foundation.Entity;
+import net.cloudhacking.androidgame2.engine.foundation.Group;
 import net.cloudhacking.androidgame2.engine.foundation.Sprite;
 import net.cloudhacking.androidgame2.engine.utils.PointF;
 import net.cloudhacking.androidgame2.engine.utils.SpriteAsset;
@@ -9,7 +9,7 @@ import net.cloudhacking.androidgame2.engine.utils.SpriteAsset;
 /**
  * Created by Andrew on 1/21/2015.
  */
-public abstract class SpriteFactory extends Entity {
+public abstract class SpriteFactory extends Group<Animated> {
 
     public abstract static class SpriteSpawn extends Animated {
 
@@ -40,7 +40,6 @@ public abstract class SpriteFactory extends Entity {
             if (!isAnimating()) {
                 onFinish();
                 orphan();
-                setVisibility(false);
             }
         }
     }
@@ -52,6 +51,8 @@ public abstract class SpriteFactory extends Entity {
         SpriteSpawn spawn = constructSpawn();
         spawn.onSpawn();
 
+        addToFront(spawn);
+
         d("spawning sprite : "+spawn.getClass().getSimpleName());
         return spawn;
     }
@@ -59,6 +60,8 @@ public abstract class SpriteFactory extends Entity {
     public SpriteSpawn spawnAt(PointF target) {
         SpriteSpawn spawn = constructSpawn();
         spawn.onSpawnAt(target);
+
+        addToFront(spawn);
 
         d("spawning sprite @"+target+": "+spawn.getClass().getSimpleName());
         return spawn;

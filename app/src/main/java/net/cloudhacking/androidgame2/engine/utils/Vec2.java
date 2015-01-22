@@ -68,6 +68,10 @@ public class Vec2 {
         return new Vec2(s * this.x, s * this.y);
     }
 
+    public Vec2 setNorm(float s) {
+        return scale( s/dist() );
+    }
+
     public Vec2 normalize() {
         return scale( 1/dist() );
     }

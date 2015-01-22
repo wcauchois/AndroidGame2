@@ -2,7 +2,6 @@ package net.cloudhacking.androidgame2.engine.fx;
 
 import net.cloudhacking.androidgame2.Assets;
 import net.cloudhacking.androidgame2.engine.Grid;
-import net.cloudhacking.androidgame2.engine.foundation.Sprite;
 import net.cloudhacking.androidgame2.engine.utils.AssetCache;
 import net.cloudhacking.androidgame2.engine.utils.GameTime;
 import net.cloudhacking.androidgame2.engine.utils.Vec2;
@@ -19,7 +18,7 @@ public class PokemonFactory extends SpriteFactory {
     private static final int MAX_FRAME_INDEX = 492 /* number of pokemon sprites lol! */;
     private static final float TARGET_REACHED_THRESHOLD = 5 /* pixels */ ;
 
-    private static final float SPAWN_FREQUENCY = 4f /* spawns per second */ ;
+    private static final float SPAWN_FREQUENCY = 10f /* spawns per second */ ;
 
 
     public class PokemonSprite extends SpriteSpawn {
@@ -35,7 +34,8 @@ public class PokemonFactory extends SpriteFactory {
             public PokemonAnimation() {
                 mDestinationReached = false;
                 mCurrentlyAnimating = false;
-                mFrameIndex = mRandGen.nextInt(MAX_FRAME_INDEX + 1);
+                mFrameIndex = mRandGen.nextInt(MAX_FRAME_INDEX + 1);  // generate random pokemon
+                setVisibility(false);
             }
 
             @Override
@@ -53,14 +53,9 @@ public class PokemonFactory extends SpriteFactory {
                 );
 
                 setPos( mPath.pollFirst().getCenter() );
+                setVisibility(true);
 
-                Grid.Cell next = mPath.peekFirst();
-                if (next != null) {
-                    setVelocity(getVelocityVecTowards(next, SPEED));
-                } else {
-                    mDestinationReached = true;
-                }
-
+                if (mPath.peekFirst() == null) mDestinationReached = true;
             }
 
             @Override
@@ -72,7 +67,7 @@ public class PokemonFactory extends SpriteFactory {
             }
 
             private Vec2 getVelocityVecTowards(Grid.Cell next, float speed) {
-                return getPos().vecTowards(next.getCenter()).normalize().scale(speed);
+                return getPos().vecTowards(next.getCenter()).setNorm(speed);
             }
 
             @Override
@@ -88,10 +83,12 @@ public class PokemonFactory extends SpriteFactory {
 
                     if (next == null) {
                         mDestinationReached = true;
-                        getParent().queueAdd( mExplosionFactory.spawnAt(getPos()) );
+                        queueAdd( mExplosionFactory.spawnAt(getPos()) );
                     } else {
                         setVelocity(getVelocityVecTowards(next, SPEED));
                     }
+                } else {
+                    setVelocity(getVelocityVecTowards(next, SPEED));
                 }
             }
 
@@ -122,7 +119,6 @@ public class PokemonFactory extends SpriteFactory {
 
     private Grid mGrid;
     private Random mRandGen;
-    private Sprite mSprite;
     private float mSpawnThreshold;
 
     private ExplosionFactory mExplosionFactory;
@@ -132,9 +128,9 @@ public class PokemonFactory extends SpriteFactory {
     public PokemonFactory(Grid grid) {
         mGrid = grid;
         mRandGen = new Random();
-        mSprite = AssetCache.getSprite(Assets.POKEMON);
-        mSprite.setMaxFrameIndex(MAX_FRAME_INDEX);
         mStarted = false;
+
+        AssetCache.getSprite(Assets.POKEMON).setMaxFrameIndex(MAX_FRAME_INDEX);
 
         mExplosionFactory = new ExplosionFactory();
     }
@@ -152,15 +148,14 @@ public class PokemonFactory extends SpriteFactory {
     @Override
     public void update() {
         if (mStarted) {
-            float elapsed = GameTime.getFrameDelta();
-            mSpawnThreshold -= elapsed;
+            mSpawnThreshold -= GameTime.getFrameDelta();
 
             if (mSpawnThreshold < 0) {
-                getParent().queueAdd(spawn());
-
+                spawn();
                 mSpawnThreshold += 1/SPAWN_FREQUENCY;
             }
         }
+        super.update();
     }
 
     @Override

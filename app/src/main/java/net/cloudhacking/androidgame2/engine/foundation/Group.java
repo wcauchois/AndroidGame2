@@ -30,9 +30,8 @@ public class Group<E extends Entity> extends Entity {
         }
 
         // add items queued for add during update
-        for(E e : mAddQueue) {
-            addToFront(e);
-        }
+        for (E e : mAddQueue) add(e);
+
         mAddQueue.clear();
     }
 
