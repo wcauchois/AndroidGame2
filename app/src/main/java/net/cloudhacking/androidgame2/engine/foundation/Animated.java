@@ -1,9 +1,8 @@
-package net.cloudhacking.androidgame2.engine;
+package net.cloudhacking.androidgame2.engine.foundation;
 
-import net.cloudhacking.androidgame2.engine.foundation.Renderable;
+import net.cloudhacking.androidgame2.engine.BasicGLScript;
 import net.cloudhacking.androidgame2.engine.utils.AssetCache;
 import net.cloudhacking.androidgame2.engine.utils.GameTime;
-import net.cloudhacking.androidgame2.engine.foundation.Sprite;
 import net.cloudhacking.androidgame2.engine.utils.SpriteAsset;
 
 import java.util.HashMap;
@@ -11,7 +10,7 @@ import java.util.HashMap;
 /**
  * Created by Andrew on 1/20/2015.
  */
-public class AnimatedSprite extends Renderable {
+public class Animated extends Renderable {
 
     /**
      * This cache can be used to bind animations to strings so that multiple objects
@@ -37,7 +36,7 @@ public class AnimatedSprite extends Renderable {
          * @param anim  Animation object
          * @param <T>  Class extending AnimatedSprite
          */
-        public static <T extends AnimatedSprite> void addAnimation(Class<T> cls,
+        public static <T extends Animated> void addAnimation(Class<T> cls,
                                                                    String handle,
                                                                    Animation anim) {
             String formalHandle = cls.getSimpleName() + "__" + handle;
@@ -67,7 +66,7 @@ public class AnimatedSprite extends Renderable {
         public void update() {}
 
         @Override
-        public boolean isAnimating() { return true; }
+        public boolean isAnimating() { return false; }
 
         @Override
         public int getCurrentFrameIndex() { return 0; }
@@ -148,9 +147,13 @@ public class AnimatedSprite extends Renderable {
     private boolean mLooping;
 
 
-    public AnimatedSprite(SpriteAsset asset) {
+    public Animated(SpriteAsset asset) {
+        this( AssetCache.getSprite(asset) );
+    }
+
+    public Animated(Sprite sprite) {
         super(0, 0, 0, 0);
-        mSprite = AssetCache.getSprite(asset);
+        mSprite = sprite;
         setWidth(mSprite.getWidth());
         setHeight(mSprite.getHeight());
 
@@ -180,6 +183,10 @@ public class AnimatedSprite extends Renderable {
             mNextAnimation = animation;
         }
         mLooping = loop;
+    }
+
+    public boolean isAnimating() {
+        return mAnimation.isAnimating();
     }
 
 

@@ -6,13 +6,13 @@ import net.cloudhacking.androidgame2.engine.BasicGLScript;
 import net.cloudhacking.androidgame2.engine.CameraGroup;
 import net.cloudhacking.androidgame2.engine.Grid;
 import net.cloudhacking.androidgame2.engine.Scene;
-import net.cloudhacking.androidgame2.engine.foundation.Image;
 import net.cloudhacking.androidgame2.engine.foundation.TileMap;
+import net.cloudhacking.androidgame2.engine.fx.ExplosionFactory;
 import net.cloudhacking.androidgame2.engine.ui.Button;
 import net.cloudhacking.androidgame2.engine.ui.RootWidget;
+import net.cloudhacking.androidgame2.engine.utils.InputManager;
 import net.cloudhacking.androidgame2.engine.utils.JsonMap;
-import net.cloudhacking.androidgame2.engine.utils.MatrixUtils;
-import net.cloudhacking.androidgame2.engine.utils.PointF;
+import net.cloudhacking.androidgame2.engine.utils.Signal;
 
 /**
  * Created by Andrew on 1/15/2015.
@@ -24,7 +24,7 @@ public class TestScene extends Scene {
 
     TileMap mTileMap;
     Grid mGrid;
-    TestClickDrawer mTestDrawer;
+    ExplosionFactory mFXFactory;
 
     @Override
     public TestScene create() {
@@ -41,16 +41,34 @@ public class TestScene extends Scene {
         );
         mActiveCameraGroup.add(mTileMap);
 
+
         mGrid = new Grid(mTileMap);
-        // d("best path: " + mGrid.getBestPath(mGrid.getCell(1,1), mGrid.getCell(5,10)) );
 
         mGrid.addSelectorListener(new Grid.CellSelectorListener() {
             @Override
             public void onCellSelect(Grid.Cell selected) {
-                Grid.SELECTOR_ICON.startAnimationAt(mActiveCameraGroup, selected.getCenter());
+                Grid.SELECTOR_ICON.startAnimationAt(selected.getCenter());
+                mActiveCameraGroup.addToFront(Grid.SELECTOR_ICON);
             }
         });
+
         mActiveCameraGroup.add(mGrid);
+
+
+        // test sprite factory
+        mFXFactory = new ExplosionFactory();
+
+        getInputManager().clickUp.connect( new Signal.Listener<InputManager.ClickEvent>() {
+            @Override
+            public boolean onSignal(InputManager.ClickEvent clickEvent) {
+                mActiveCameraGroup.addToFront(
+                        mFXFactory.spawnAt(
+                                getActiveCamera().cameraToScene(clickEvent.getPos())
+                        )
+                );
+                return false;
+            }
+        });
 
 
         // UI
@@ -61,6 +79,7 @@ public class TestScene extends Scene {
         mUICameraGroup.add(rootWidget);
 
 
+        getActiveCamera().setBoundaryRect(mTileMap.getRect());
         return this;
     }
 

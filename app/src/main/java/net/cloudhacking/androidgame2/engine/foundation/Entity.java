@@ -92,8 +92,9 @@ public class Entity extends Loggable {
     }
 
     public void orphan() {
-        mParent.remove(this);
-        mParent = null;
+        // can't use .remove() because it will cause a concurrent
+        // modification exception if called within the update loop.
+        mParent.fastRemove(this);
     }
 
 

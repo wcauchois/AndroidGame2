@@ -4,6 +4,7 @@ import android.graphics.RectF;
 
 import net.cloudhacking.androidgame2.engine.gl.Texture;
 import net.cloudhacking.androidgame2.engine.utils.Loggable;
+import net.cloudhacking.androidgame2.engine.utils.SpriteAsset;
 
 import java.util.HashMap;
 
@@ -31,6 +32,13 @@ public class TextureFrameSet extends Loggable {
     }
 
     public TextureFrameSet(Texture texture, int frameWidth, int frameHeight) {
+        this(texture, frameWidth, frameHeight, 0, 0, 0, 0);
+    }
+
+    public TextureFrameSet(Texture texture, int frameWidth, int frameHeight,
+                                            int hSpacing,   int vSpacing,
+                                            int hOffset,    int vOffset)
+    {
 
         mTextureWidth = texture.getWidth();
         mTextureHeight = texture.getHeight();
@@ -42,10 +50,14 @@ public class TextureFrameSet extends Loggable {
         int rows = mTextureHeight/frameHeight;
         int cols = mTextureWidth/frameWidth;
 
-        for (int i=0; i<rows; i++) {
-            for (int j=0; j<cols; j++) {
-                rect = new RectF(j*du, i*dv, (j+1)*du, (i+1)*dv);
-                mUVFrames.put(i*cols+j, rect);
+        int ho = hOffset,  vo = vOffset;
+
+        for (int iy=0; iy<rows; iy++) {
+            for (int ix=0; ix<cols; ix++) {
+                rect = new RectF(ho+ix*du, vo+iy*dv, ho+(ix+1)*du, vo+(iy+1)*dv);
+                ho += hSpacing;
+                vo += vSpacing;
+                mUVFrames.put(iy*cols+ix, rect);
             }
         }
         mUVFrames.put(-1, FULL);
@@ -54,6 +66,13 @@ public class TextureFrameSet extends Loggable {
         mFrameHeight = frameHeight;
         mColumns = cols;
         mRows = rows;
+    }
+
+    public TextureFrameSet(Texture texture, SpriteAsset a) {
+        this(texture, a.getFrameWidth(), a.getFrameHeight(),
+                      a.getHSpacing(),   a.getVSpacing(),
+                      a.getHOffset(),    a.getVOffset()
+        );
     }
 
 

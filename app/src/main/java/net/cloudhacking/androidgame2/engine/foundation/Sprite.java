@@ -29,9 +29,7 @@ public class Sprite extends Loggable {
 
     public Sprite(SpriteAsset asset) {
         mTexture = AssetCache.getTexture(asset);
-        mFrames = new TextureFrameSet(mTexture,
-                asset.getFrameWidth(), asset.getFrameHeight()
-        );
+        mFrames = new TextureFrameSet(mTexture, asset);
 
         mWidth = asset.getFrameWidth();
         mHeight = asset.getFrameHeight();
@@ -40,6 +38,9 @@ public class Sprite extends Loggable {
         initVertices();
 
         mBufferCache = new HashMap<Integer, FloatBuffer>();
+
+        d("successfully created new sprite sheet from " + asset.getFileName()
+                + ", cols=" + mFrames.getFrameColumns() + ", rows=" + mFrames.getFrameRows());
     }
 
     public Texture getTexture() {

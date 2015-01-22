@@ -5,11 +5,9 @@ import android.util.SparseIntArray;
 
 import net.cloudhacking.androidgame2.Assets;
 import net.cloudhacking.androidgame2.TDGame;
+import net.cloudhacking.androidgame2.engine.foundation.Animated;
 import net.cloudhacking.androidgame2.engine.foundation.Entity;
-import net.cloudhacking.androidgame2.engine.foundation.Group;
-import net.cloudhacking.androidgame2.engine.foundation.Image;
 import net.cloudhacking.androidgame2.engine.foundation.TileMap;
-import net.cloudhacking.androidgame2.engine.utils.GameTime;
 import net.cloudhacking.androidgame2.engine.utils.InputManager;
 import net.cloudhacking.androidgame2.engine.utils.PointF;
 import net.cloudhacking.androidgame2.engine.utils.Signal;
@@ -30,7 +28,7 @@ public class Grid extends Entity {
      */
     public static final SelectorIcon SELECTOR_ICON = new SelectorIcon();
 
-    public static class SelectorIcon extends AnimatedSprite {
+    public static class SelectorIcon extends Animated {
 
         private final AnimationSequence ANIM
                 = new AnimationSequence(new int[] {0, 1}, 0, 2);
@@ -40,12 +38,11 @@ public class Grid extends Entity {
             setVisibility(false);
         }
 
-        public void startAnimationAt(Group group, PointF target) {
+        public void startAnimationAt(PointF target) {
             setPos(target);
             setActive();
             setVisibility(true);
             queueAnimation(ANIM, true, true);
-            group.addToFront(this);
         }
 
         public void hide() {
@@ -64,7 +61,7 @@ public class Grid extends Entity {
         public int index;
         private boolean mOccupied;
 
-        // pathfinding
+        // from flood map
         private Cell mBestNeighbor;
         private int mDistToSource;
 
@@ -134,7 +131,7 @@ public class Grid extends Entity {
                 for (CellSelectorListener l : mSelectorListeners) {
                     l.onCellSelect(mSelected);
                 }
-                return true;
+                return false;  // XXX set to true after testing
             }
         }
 
@@ -273,8 +270,8 @@ public class Grid extends Entity {
     private ArrayList<Cell> getCellNeighbors(Cell c) {
         neighbors = new ArrayList<Cell>(4);
         if ( c.ix-1 >= 0       ) neighbors.add( getCell(c.ix-1, c.iy) );
-        if ( c.iy+1 < mRows    ) neighbors.add( getCell(c.ix, c.iy+1) );
         if ( c.ix+1 < mColumns ) neighbors.add( getCell(c.ix+1, c.iy) );
+        if ( c.iy+1 < mRows    ) neighbors.add( getCell(c.ix, c.iy+1) );
         if ( c.iy-1 >= 0       ) neighbors.add( getCell(c.ix, c.iy-1) );
 
         return neighbors;

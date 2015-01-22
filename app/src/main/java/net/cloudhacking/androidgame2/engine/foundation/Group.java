@@ -22,7 +22,7 @@ public class Group<E extends Entity> extends Entity {
     @Override
     public void update() {
         for (Entity e : mEntities) {
-            if (e.exists() && e.isActive()) {
+            if (e != null && e.exists() && e.isActive()) {
                 e.update();
             }
         }
@@ -31,7 +31,7 @@ public class Group<E extends Entity> extends Entity {
     @Override
     public void draw(BasicGLScript gls) {
         for (Entity e : mEntities) {
-            if (e.exists() && e.isOnScreen() && e.isVisible()) {
+            if (e != null && e.exists() && e.isVisible() && e.isOnScreen()) {
                 e.draw(gls);
             }
         }
