@@ -24,6 +24,14 @@ import java.util.Stack;
 public class Grid extends Entity {
 
     /**
+     * This class represents a grid in the game that can be use for path-finding and
+     * placement of in-game entities.  It also contains a listener interface which will
+     * signal the detection of a Cell.
+     */
+
+
+
+    /**
      * Animated selection icon that appears on the grid when you select a cell
      */
     public static final SelectorIcon SELECTOR_ICON = new SelectorIcon();
@@ -128,9 +136,7 @@ public class Grid extends Entity {
                 return false;
 
             } else {
-                for (CellSelectorListener l : mSelectorListeners) {
-                    l.onCellSelect(mSelected);
-                }
+                cellSelector.dispatch(mSelected);
                 return false;  // XXX set to true after testing
             }
         }
@@ -140,19 +146,7 @@ public class Grid extends Entity {
         }
     }
 
-
-    public interface CellSelectorListener {
-        public void onCellSelect(Cell selected);
-    }
-
-    public void addSelectorListener(CellSelectorListener listener) {
-        mSelectorListeners.add(listener);
-    }
-
-    public void removeSelectorListener(CellSelectorListener listener) {
-        mSelectorListeners.remove(listener);
-    }
-
+    public Signal<Cell> cellSelector = new Signal<Cell>();
 
     /**********************************************************************************************/
 
@@ -169,8 +163,6 @@ public class Grid extends Entity {
 
     private int mCellWidth;
     private int mCellHeight;
-
-    private ArrayList<CellSelectorListener> mSelectorListeners;
 
 
     public Grid(int cols, int rows, int cellWidth, int cellHeight) {
@@ -191,9 +183,7 @@ public class Grid extends Entity {
             }
         }
 
-        TDGame.getInstance().getInputManager().clickUp.connect(new CellSelector());
-
-        mSelectorListeners = new ArrayList<CellSelectorListener>();
+        GameSkeleton.getInstance().getInputManager().clickUp.connect(new CellSelector());
     }
 
     public Grid(TileMap map) {

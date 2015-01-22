@@ -1,6 +1,7 @@
-package net.cloudhacking.androidgame2.engine.factory;
+package net.cloudhacking.androidgame2;
 
 import net.cloudhacking.androidgame2.Assets;
+import net.cloudhacking.androidgame2.engine.factory.SpriteFactory;
 
 import java.util.HashMap;
 import java.util.Random;

@@ -1,7 +1,7 @@
-package net.cloudhacking.androidgame2.engine.factory;
+package net.cloudhacking.androidgame2;
 
-import net.cloudhacking.androidgame2.Assets;
 import net.cloudhacking.androidgame2.engine.Grid;
+import net.cloudhacking.androidgame2.engine.factory.SpriteFactory;
 import net.cloudhacking.androidgame2.engine.utils.AssetCache;
 import net.cloudhacking.androidgame2.engine.utils.GameTime;
 import net.cloudhacking.androidgame2.engine.utils.Vec2;

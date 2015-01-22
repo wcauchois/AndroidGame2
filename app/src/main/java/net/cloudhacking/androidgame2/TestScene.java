@@ -7,8 +7,6 @@ import net.cloudhacking.androidgame2.engine.CameraGroup;
 import net.cloudhacking.androidgame2.engine.Grid;
 import net.cloudhacking.androidgame2.engine.Scene;
 import net.cloudhacking.androidgame2.engine.foundation.TileMap;
-import net.cloudhacking.androidgame2.engine.factory.ExplosionFactory;
-import net.cloudhacking.androidgame2.engine.factory.PokemonFactory;
 import net.cloudhacking.androidgame2.engine.ui.Button;
 import net.cloudhacking.androidgame2.engine.ui.RootWidget;
 import net.cloudhacking.androidgame2.engine.utils.InputManager;
@@ -51,21 +49,25 @@ public class TestScene extends Scene {
         mActiveCameraGroup.add(mTileMap);
 
 
+        // set up game grid from tile map
         mGrid = new Grid(mTileMap);
+        mActiveCameraGroup.add(mGrid);
 
-        mGrid.addSelectorListener(new Grid.CellSelectorListener() {
+        mGrid.cellSelector.connect( new Signal.Listener<Grid.Cell>() {
             @Override
-            public void onCellSelect(Grid.Cell selected) {
-                Grid.SELECTOR_ICON.startAnimationAt(selected.getCenter());
+            public boolean onSignal(Grid.Cell cell) {
+                Grid.SELECTOR_ICON.startAnimationAt(cell.getCenter());
                 mActiveCameraGroup.addToFront(Grid.SELECTOR_ICON);
+                return false;
             }
         });
 
-        mActiveCameraGroup.add(mGrid);
 
 
-        // test explosion factory
+        // test explosion factory...
+        // spawn an explosion animation on mouse click
         mFXFactory = new ExplosionFactory();
+        mActiveCameraGroup.add(mFXFactory);
 
         getInputManager().clickUp.connect( new Signal.Listener<InputManager.ClickEvent>() {
             @Override
@@ -74,7 +76,7 @@ public class TestScene extends Scene {
                 return false;
             }
         });
-        mActiveCameraGroup.add(mFXFactory);
+
 
 
         // this is my favorite... POKEMON FACTORY!!!
