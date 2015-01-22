@@ -118,18 +118,22 @@ public class Renderable extends Entity {
 
     public void setScale(float scale) {
         mScale = new PointF(scale, scale);
+        mScalable = true;
     }
 
     public void setScale(PointF scale) {
         mScale = scale;
+        mScalable = true;
     }
 
     public void setScaleX(float scaleX) {
         mScale.x = scaleX;
+        mScalable = true;
     }
 
     public void setScaleY(float scaleY) {
         mScale.y = scaleY;
+        mScalable = true;
     }
 
     public void setScalable(boolean bool) {
@@ -158,6 +162,7 @@ public class Renderable extends Entity {
 
     public void setRotation(float rotation) {
         mRotation = rotation;
+        mRotatable = true;
     }
 
     public float getRotationSpeed() {
@@ -166,6 +171,7 @@ public class Renderable extends Entity {
 
     public void setRotationSpeed(float rotationSpeed) {
         mRotationSpeed = rotationSpeed;
+        mRotatable = true;
     }
 
     public void setRotatable(boolean bool) {

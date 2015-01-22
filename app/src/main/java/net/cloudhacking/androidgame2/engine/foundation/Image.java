@@ -67,13 +67,11 @@ public class Image extends Renderable {
 
     @Override
     public void setWidth(float width) {
-        setScalable(true);
         setScaleX( width/getWidth() );
     }
 
     @Override
     public void setHeight(float height) {
-        setScalable(true);
         setScaleY( height/getHeight() );
     }
 
