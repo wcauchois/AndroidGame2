@@ -162,6 +162,4 @@ public class BasicGLScript extends GLScript {
         setVertexAttribPointers(vertices);
         QuadDrawer.drawQuadSet(quadCount);
     }
-
-
 }

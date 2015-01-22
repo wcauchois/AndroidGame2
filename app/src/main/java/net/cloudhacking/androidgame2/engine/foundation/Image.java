@@ -7,7 +7,6 @@ import net.cloudhacking.androidgame2.engine.gl.Texture;
 import net.cloudhacking.androidgame2.engine.utils.Asset;
 import net.cloudhacking.androidgame2.engine.utils.AssetCache;
 import net.cloudhacking.androidgame2.engine.utils.BufferUtils;
-import net.cloudhacking.androidgame2.engine.utils.MatrixUtils;
 import net.cloudhacking.androidgame2.engine.utils.PointF;
 
 import java.nio.FloatBuffer;
@@ -43,6 +42,11 @@ public class Image extends Renderable {
         mVertices = new float[16];
         mVertexBuffer = BufferUtils.makeEmptyFloatBuffer();
         mNeedBufferUpdate = false;
+    }
+
+    public Image(Texture tex) {
+        this();
+        setTexture(tex);
     }
 
     public Image(Asset asset) {

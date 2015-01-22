@@ -1,5 +1,6 @@
 package net.cloudhacking.androidgame2;
 
+import android.graphics.Color;
 import android.graphics.RectF;
 
 import net.cloudhacking.androidgame2.engine.BasicGLScript;
@@ -7,11 +8,17 @@ import net.cloudhacking.androidgame2.engine.CameraGroup;
 import net.cloudhacking.androidgame2.engine.Grid;
 import net.cloudhacking.androidgame2.engine.Scene;
 import net.cloudhacking.androidgame2.engine.foundation.TileMap;
+import net.cloudhacking.androidgame2.engine.gl.TextRenderer;
 import net.cloudhacking.androidgame2.engine.ui.Button;
+import net.cloudhacking.androidgame2.engine.ui.Label;
 import net.cloudhacking.androidgame2.engine.ui.RootWidget;
+import net.cloudhacking.androidgame2.engine.utils.CommonUtils;
 import net.cloudhacking.androidgame2.engine.utils.InputManager;
 import net.cloudhacking.androidgame2.engine.utils.JsonMap;
+import net.cloudhacking.androidgame2.engine.utils.PointF;
 import net.cloudhacking.androidgame2.engine.utils.Signal;
+
+import java.util.Random;
 
 /**
  * Created by Andrew on 1/15/2015.
@@ -89,7 +96,20 @@ public class TestScene extends Scene {
 
         RootWidget rootWidget = new RootWidget( getInputManager() );
         // example of stretching with rect
-        rootWidget.addToFront(new Button(new RectF(0.0f, 0.0f, 500.0f, 200.0f), Assets.OK_BUTTON));
+        rootWidget.addToFront(new Button(new RectF(0.0f, 0.0f, 300.0f, 100.0f), Assets.OK_BUTTON));
+
+        // lol i sure got u
+        String[] strings = new String[] { "such game", "very wow", "much defence", "amaze", "many towers" };
+        Integer[] colors = new Integer[] { Color.BLUE, Color.RED, Color.YELLOW, Color.GREEN, Color.LTGRAY };
+        Random rand = CommonUtils.getRandom();
+        for (int i = 0; i < rand.nextInt(3) + 5; i++) {
+            rootWidget.addToFront(Label.create(
+                    new PointF(rand.nextFloat() * 400.0f, rand.nextFloat() * 500.0f),
+                    CommonUtils.randomChoice(strings),
+                    TextRenderer.newProps().textColor(CommonUtils.randomChoice(colors))
+            ));
+        }
+
         mUICameraGroup.add(rootWidget);
 
 

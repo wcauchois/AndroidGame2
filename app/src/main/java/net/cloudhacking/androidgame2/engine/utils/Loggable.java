@@ -38,4 +38,8 @@ public class Loggable {
     public void e(String msg) {
         Log.e(_TAG, msg);
     }
+
+    public void e(String msg, Throwable t) {
+        Log.e(_TAG, msg, t);
+    }
 }
