@@ -21,8 +21,8 @@ public class PointF {
     }
 
     public PointF(Vec2 v) {
-        this.x = v.getX();
-        this.y = v.getY();
+        x = v.getX();
+        y = v.getY();
     }
 
 
@@ -49,17 +49,17 @@ public class PointF {
     }
 
     public void move(Vec2 dir) {
-        this.x += dir.x;
-        this.y += dir.y;
+        x += dir.x;
+        y += dir.y;
     }
 
 
     public PointF copy() {
-        return new PointF(this.x, this.y);
+        return new PointF(x, y);
     }
 
     public PointF add(Vec2 v) {
-        return new PointF(this.x + v.x, this.y + v.y);
+        return new PointF(x + v.x, y + v.y);
     }
 
 
@@ -68,6 +68,10 @@ public class PointF {
         float dx = other.x - x;
         float dy = other.y - y;
         return FloatMath.sqrt(dx*dx + dy*dy);
+    }
+
+    public float distFromOrigin() {
+        return FloatMath.sqrt(x * x + y * y);
     }
 
     public float manhattanDistTo(PointF other) {
@@ -91,26 +95,26 @@ public class PointF {
     }
 
     public PointF round() {
-        this.x = Math.round(this.x);
-        this.y = Math.round(this.y);
+        x = Math.round(x);
+        y = Math.round(y);
         return this;
     }
 
     public PointF floor() {
-        this.x = (float)Math.floor(this.x);
-        this.y = (float)Math.floor(this.y);
+        x = (float)Math.floor(x);
+        y = (float)Math.floor(y);
         return this;
     }
 
     public PointF ceil() {
-        this.x = (float)Math.ceil(this.x);
-        this.y = (float)Math.ceil(this.y);
+        x = (float)Math.ceil(x);
+        y = (float)Math.ceil(y);
         return this;
     }
 
 
     @Override
     public String toString() {
-        return "PointF(" + this.x + ", " + this.y + ")";
+        return "PointF(" + x + ", " + y + ")";
     }
 }

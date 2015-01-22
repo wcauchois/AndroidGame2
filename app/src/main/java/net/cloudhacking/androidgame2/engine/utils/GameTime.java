@@ -5,6 +5,11 @@ package net.cloudhacking.androidgame2.engine.utils;
  */
 public class GameTime {
 
+    /**
+     * Can access this in a static context.  Get the elapsed time during a frame by
+     * calling getFrameDelta() which returns the elapsed time in seconds.
+     */
+
     private static float sTimeScale = 1f;
 
     private static long sTimeNow;

@@ -1,6 +1,5 @@
 package net.cloudhacking.androidgame2.engine.utils;
 
-import android.graphics.RectF;
 import android.util.FloatMath;
 
 /**
@@ -25,11 +24,11 @@ public class Vec2 {
     }
 
     public float getX() {
-        return this.x;
+        return x;
     }
 
     public float getY() {
-        return this.y;
+        return y;
     }
 
     public void setX(float x) {
@@ -55,8 +54,8 @@ public class Vec2 {
     }
 
     public Vec2 increment(Vec2 other) {
-        this.x += other.x;
-        this.y += other.y;
+        x += other.x;
+        y += other.y;
         return this;
     }
 
@@ -65,40 +64,59 @@ public class Vec2 {
     }
 
     public Vec2 scale(float s) {
-        return new Vec2(s * this.x, s * this.y);
+        return new Vec2(s * x, s * y);
     }
 
     public Vec2 setNorm(float s) {
-        return scale( s/dist() );
+        return scale( s / norm() );
     }
 
     public Vec2 normalize() {
-        return scale( 1/dist() );
+        return scale( 1 / norm() );
     }
 
-    public float dist() {
-        return FloatMath.sqrt(this.x * this.x + this.y * this.y);
+    public float norm() {
+        return FloatMath.sqrt(x * x + y * y);
     }
 
-    public float sqDist() {
-        return (this.x * this.x + this.y * this.y);
+    public float sqNorm() {
+        return (x * x + y * y);
+    }
+
+    public float manhattanNorm() {
+        return Math.abs(x) + Math.abs(y);
     }
 
     public float dot(Vec2 other) {
-        return (this.x * other.x + this.y * other.y);
+        return (x * other.x + y * other.y);
     }
 
     public float cross(Vec2 other) {
-        return (this.x * other.y - this.y * other.x);
+        return (x * other.y - y * other.x);
     }
 
     public Vec2 copy() {
-        return new Vec2(this.x, this.y);
+        return new Vec2(x, y);
     }
 
-    public boolean containedBy(RectF rect) {
-        return x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
+    public Vec2 round() {
+        x = Math.round(x);
+        y = Math.round(y);
+        return this;
     }
+
+    public Vec2 floor() {
+        x = (float)Math.floor(x);
+        y = (float)Math.floor(y);
+        return this;
+    }
+
+    public Vec2 ceil() {
+        x = (float)Math.ceil(x);
+        y = (float)Math.ceil(y);
+        return this;
+    }
+
 
     public String toString() {
         return "Vec2(" + x + ", " + y + ")";

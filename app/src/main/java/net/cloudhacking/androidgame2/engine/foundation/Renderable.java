@@ -13,6 +13,12 @@ import net.cloudhacking.androidgame2.engine.utils.Vec2;
  */
 public class Renderable extends Entity {
 
+    /**
+     * This class represents any renderable entity.  It controls the entire model matrix and
+     * movement via velocity and acceleration vectors.  It also contains Vec4's representing the
+     * two color uniforms.
+     */
+
     private PointF mOrigin;
     private PointF mPos;
     private float mWidth;

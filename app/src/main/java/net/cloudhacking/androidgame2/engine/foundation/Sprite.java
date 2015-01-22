@@ -17,6 +17,18 @@ import java.util.HashMap;
  */
 public class Sprite extends Loggable {
 
+    /**
+     * This class represents an animated sprite with all its frames laid out on a texture
+     * (A.K.A. a sprite sheet). This class is not meant to be extended, but rather gotten from
+     * the AssetCache and then used to call drawSpriteFrame(gls, frameIndex).  This is because
+     * we only really need one instance of Sprite for each sprite sheet, since the vertex buffers
+     * for the frames can be shared.  The vertex buffer for each frame is also cached so that if
+     * we have 100 sprites using a single sprite sheet, with several of each drawing the
+     * same frame, they can each just use the same vertex buffer.
+     *
+     * See Animated for the basic implementation of this.
+     */
+
     private Texture mTexture;
     private TextureFrameSet mFrames;
 
@@ -45,6 +57,10 @@ public class Sprite extends Loggable {
 
     public Texture getTexture() {
         return mTexture;
+    }
+
+    public TextureFrameSet getFrames() {
+        return mFrames;
     }
 
     public int getWidth() {

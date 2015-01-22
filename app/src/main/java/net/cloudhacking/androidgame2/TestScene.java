@@ -7,8 +7,8 @@ import net.cloudhacking.androidgame2.engine.CameraGroup;
 import net.cloudhacking.androidgame2.engine.Grid;
 import net.cloudhacking.androidgame2.engine.Scene;
 import net.cloudhacking.androidgame2.engine.foundation.TileMap;
-import net.cloudhacking.androidgame2.engine.fx.ExplosionFactory;
-import net.cloudhacking.androidgame2.engine.fx.PokemonFactory;
+import net.cloudhacking.androidgame2.engine.factory.ExplosionFactory;
+import net.cloudhacking.androidgame2.engine.factory.PokemonFactory;
 import net.cloudhacking.androidgame2.engine.ui.Button;
 import net.cloudhacking.androidgame2.engine.ui.RootWidget;
 import net.cloudhacking.androidgame2.engine.utils.InputManager;
@@ -47,9 +47,7 @@ public class TestScene extends Scene {
         add(mUICameraGroup);
 
 
-        mTileMap = new TileMap(
-                Assets.TEST_TILESET, new JsonMap(Resources.JSON_MAP_SIMPLE), 32, 32
-        );
+        mTileMap = new TileMap( Assets.TEST_TILESET, new JsonMap(Resources.JSON_MAP_SIMPLE) );
         mActiveCameraGroup.add(mTileMap);
 
 
@@ -72,7 +70,7 @@ public class TestScene extends Scene {
         getInputManager().clickUp.connect( new Signal.Listener<InputManager.ClickEvent>() {
             @Override
             public boolean onSignal(InputManager.ClickEvent clickEvent) {
-                mFXFactory.spawnAt( getActiveCamera().cameraToScene(clickEvent.getPos()) );
+                mFXFactory.spawnAt(getActiveCamera().cameraToScene(clickEvent.getPos()));
                 return false;
             }
         });

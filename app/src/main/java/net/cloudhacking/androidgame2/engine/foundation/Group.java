@@ -8,12 +8,19 @@ import java.util.ArrayList;
  * Created by Andrew on 1/15/2015.
  */
 public class Group<E extends Entity> extends Entity {
+
     /*
-     * This is the most general class that represent a group of in-game entities.
+     * This is the most general class that represents a group of in-game entities.
      */
+
     protected ArrayList<E> mEntities;
-    protected ArrayList<E> mAddQueue;
     protected int length;
+
+    protected ArrayList<E> mAddQueue;  // If an entity which is an existing member of this group
+                                       // needs to add a new entity to this group during it's
+                                       // update, then it will need to queue the add using
+                                       // queueAdd(E e) in order to prevent a concurrent
+                                       // modification exception.
 
     public Group() {
         mEntities = new ArrayList<E>();
@@ -81,7 +88,7 @@ public class Group<E extends Entity> extends Entity {
 
 
     // use this if trying to add an element to a group
-    // within the update loop
+    // within the update loop (see above for more info)
     public E queueAdd(E e) {
         mAddQueue.add(e);
         return e;

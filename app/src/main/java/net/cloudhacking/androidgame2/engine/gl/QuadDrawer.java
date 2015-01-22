@@ -12,7 +12,12 @@ import java.nio.ShortBuffer;
  */
 public class QuadDrawer extends Loggable {
 
-    /*
+    /**
+     * This class is a helper for drawing quads using GLES20.  drawQuad() and drawQuadSet(n) both
+     * assume that all relevant uniforms and vertex buffers have been set already.  Since the index
+     * ShortBuffer will be the same for all quads, it is cached here.
+     *
+     *
      * [0]--[1]
      *  |    |
      * [3]--[2]
@@ -21,8 +26,8 @@ public class QuadDrawer extends Loggable {
 
     private static final int SIZE = QUAD_VERTEX_ORDER.length;  // number of vertices per quad
 
-    private static ShortBuffer sCachedBuffer;    // use this when drawing sets of quads
-    private static int sCachedBufferSize;        // number of sets of quad indices in cached buffer
+    private static ShortBuffer sCachedBuffer;  // vertex index buffer to use for drawing quads
+    private static int sCachedBufferSize;  // current number of sets of quad indices in cached buffer
 
 
     public static ShortBuffer getIndexBuffer(int quadCount) {
@@ -53,12 +58,13 @@ public class QuadDrawer extends Loggable {
         return sCachedBuffer;
     }
 
-
+    // draw a single quad
     public static void drawQuad() {
         GLES20.glDrawElements(GLES20.GL_TRIANGLES, SIZE,
                 GLES20.GL_UNSIGNED_SHORT, getIndexBuffer(1));
     }
 
+    // draw multiple quads
     public static void drawQuadSet(int quadCount) {
         GLES20.glDrawElements(GLES20.GL_TRIANGLES, SIZE * quadCount,
                 GLES20.GL_UNSIGNED_SHORT, getIndexBuffer(quadCount));

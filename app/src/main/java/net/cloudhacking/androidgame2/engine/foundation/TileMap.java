@@ -7,6 +7,7 @@ import net.cloudhacking.androidgame2.engine.gl.Texture;
 import net.cloudhacking.androidgame2.engine.utils.Asset;
 import net.cloudhacking.androidgame2.engine.utils.AssetCache;
 import net.cloudhacking.androidgame2.engine.utils.BufferUtils;
+import net.cloudhacking.androidgame2.engine.utils.SpriteAsset;
 
 import java.nio.FloatBuffer;
 
@@ -14,6 +15,15 @@ import java.nio.FloatBuffer;
  * Created by Andrew on 1/17/2015.
  */
 public class TileMap extends Renderable {
+
+    /**
+     * This class represents a tiled texture (like our tiled background).  It loads the
+     * tile-set from the given texture or pre-existing sprite sheet.  Its vertex buffer is only
+     * generated once (or if a new mapping is set).
+     *
+     * Note: The top-left vertex of the TileMap should be (0,0) to correspond with
+     *       the games' grid.
+     */
 
     public static interface Map {
         public int getTile(int ix, int iy);
@@ -47,6 +57,16 @@ public class TileMap extends Renderable {
         mCellHeight = cellHeight;
 
         mFrames = new TextureFrameSet(texture, cellWidth, cellHeight);
+        setMap(map);
+    }
+
+    public TileMap(SpriteAsset asset, Map map) {
+        super(0, 0, 0, 0);
+        Sprite tileset = AssetCache.getSprite(asset);
+        mTexture = tileset.getTexture();
+        mCellWidth = tileset.getWidth();
+        mCellHeight = tileset.getHeight();
+        mFrames = tileset.getFrames();
         setMap(map);
     }
 

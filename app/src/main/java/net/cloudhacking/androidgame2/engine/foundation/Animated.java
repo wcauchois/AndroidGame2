@@ -12,6 +12,22 @@ import java.util.HashMap;
  */
 public class Animated extends Renderable {
 
+    /**
+     * This is the basic animated game object class.  It draws itself by first setting the
+     * model matrix and other shader uniforms, then passing the current frame index to the
+     * associated Sprite (see Sprite).
+     *
+     * An animated object is controlled by an implementation of the Animation interface.  An
+     * animation can be queued or forced to start, and can also optionally be looped.  If there
+     * is no animation or the current animation runs out and there is no queued animation, then
+     * the DEFAULT_ANIMATION will be set, which will just always render sprite frame zero.
+     *
+     * The Animation interface is versatile if it is an inner class to an extension of Animated,
+     * because then it has access to all the movement variables from Renderable and so it can then
+     * animate pretty much anything.  See PokemonFactory for a wacky implementation of this,
+     * or AnimationSequence below for a simple implementation.
+     */
+
 
     public static interface Animation {
         public void start();
@@ -37,8 +53,6 @@ public class Animated extends Renderable {
 
     /**********************************************************************************************/
 
-    private String mHandlePrefix;
-
     private Sprite mSprite;
     private Animation mAnimation;
     private Animation mNextAnimation;
@@ -56,23 +70,8 @@ public class Animated extends Renderable {
         setHeight(mSprite.getHeight());
 
         mAnimation = DEFAULT_ANIMATION;
-
-        mHandlePrefix = this.getClass().getSimpleName() + "__";
     }
 
-
-    public void addAnimation(String handle, Animation animation) {
-        AnimationCache.addAnimation(this.getClass(), handle, animation);
-    }
-
-    public void queueAnimation(String handle, boolean loop, boolean force) {
-        if (force) {
-            mAnimation = AnimationCache.get(mHandlePrefix + handle);
-        } else {
-            mNextAnimation = AnimationCache.get(mHandlePrefix + handle);
-        }
-        mLooping = loop;
-    }
 
     public void queueAnimation(Animation animation, boolean loop, boolean force) {
         if (force) {
@@ -128,7 +127,7 @@ public class Animated extends Renderable {
     /**
      * Simple implementation of Animation
      */
-    public class AnimationSequence implements Animation {
+    public static class AnimationSequence implements Animation {
 
         private int[] mAnimationSeq;
         private int mDefaultFrameIndex;
@@ -188,45 +187,6 @@ public class Animated extends Renderable {
                 return mDefaultFrameIndex;
             }
             return mAnimationSeq[mCurrentFrame];
-        }
-    }
-
-
-    /**********************************************************************************************/
-
-    /**
-     * This cache can be used to bind animations to strings so that multiple objects
-     * have access to the same animation.
-     */
-    public static class AnimationCache {
-        /**
-         * This maps a handle that describes an animation to an animation object itself. The
-         * handle's prefix is the name of the class, so different classes can have animations
-         * stored in this cache with the same handle.
-         */
-        private static HashMap<String, Animation> sCache = new HashMap<String, Animation>();
-
-        public static Animation get(String formalHandle) {
-            return sCache.get(formalHandle);
-        }
-
-        /**
-         * Add an animation sequence to the animation cache.
-         *
-         * @param cls  Class to which this animation will be attached
-         * @param handle  String describing this animation (used for lookup)
-         * @param anim  Animation object
-         * @param <T>  Class extending AnimatedSprite
-         */
-        public static <T extends Animated> void addAnimation(Class<T> cls,
-                                                             String handle,
-                                                             Animation anim) {
-            String formalHandle = cls.getSimpleName() + "__" + handle;
-            sCache.put(formalHandle, anim);
-        }
-
-        public static void addAnimation(String handle, Animation anim) {
-            sCache.put(handle, anim);
         }
     }
 

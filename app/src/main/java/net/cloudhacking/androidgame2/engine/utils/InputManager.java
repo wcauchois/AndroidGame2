@@ -20,6 +20,10 @@ public class InputManager
                    ScaleGestureDetector.OnScaleGestureListener
 {
 
+    /**
+     * This class is the interface between android's touch screen and our Signal triggers.
+     */
+
     public Signal<ClickEvent> clickUp = new Signal<ClickEvent>();
     public Signal<StartDragEvent> startDrag = new Signal<StartDragEvent>();
     public Signal<DragEvent> drag = new Signal<DragEvent>();

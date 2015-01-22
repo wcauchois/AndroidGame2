@@ -11,10 +11,12 @@ import net.cloudhacking.androidgame2.engine.utils.PointF;
  * Created by Andrew on 1/15/2015.
  */
 public abstract class Scene extends Group<Entity> {
+
     /**
      * This class represents the most encompassing group of in-game entities and other groups. Its
-     * draw() and update() methods will be called from the main game thread.
+     * draw() and update() methods will be called directly from the main game thread.
      */
+
     abstract public Scene create();
     abstract public void destroy();
 
@@ -30,6 +32,7 @@ public abstract class Scene extends Group<Entity> {
         mCreated = false;
     }
 
+    // called from main game thread
     public void start() {
         create();
         mCreated = true;

@@ -8,6 +8,7 @@ import net.cloudhacking.androidgame2.engine.utils.Loggable;
  * Created by Andrew on 1/15/2015.
  */
 public class Entity extends Loggable {
+
     /**
      * This is the most general class that represents an in-game item.
      */

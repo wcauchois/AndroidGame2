@@ -6,6 +6,15 @@ import java.util.LinkedList;
  * Created by wcauchois on 1/20/15.
  */
 public class Signal<T> {
+
+    /**
+     * This class represents a generic event messenger.  On a signal from the input manager,
+     * this will call onSignal(T t) for each listener.  If a listener wishes to handle this
+     * signal and cancel the iteration then it can return true.
+     *
+     * @param <T> Class of event.
+     */
+
     public static interface Listener<T> {
         public boolean onSignal(T t);
     }
@@ -21,7 +30,6 @@ public class Signal<T> {
     }
 
     public void dispatch(T t) {
-        // TODO: whats the point of doing all this instead of iterating over the linked list?
         Listener<T>[] listeners = mListeners.toArray(new Listener[0]);
 
         Listener<T> listener;
@@ -29,9 +37,9 @@ public class Signal<T> {
             listener = listeners[i];
             if (mListeners.contains(listener)) {
                 /**
-                 * Instead of having to call back to this signal and cancel, onSignal(t) could
-                 * just return true if you want to handle the signal and cancel, or false if
-                 * you don't.  TODO: LMK if you like this idea Bill because I think its way easier.
+                 * Instead of having to call back to this signal and cancel, return true for
+                 * onSignal(t) if you want to handle the signal and cancel the search, or false if
+                 * you don't.
                  */
                 if (listener.onSignal(t)) {
                     break;

@@ -14,6 +14,12 @@ import java.util.HashMap;
 public abstract class GLScript extends Loggable {
 
     /**
+     * This class is mainly a wrapper for an openGL program.
+     *
+     */
+
+
+    /**
      * Alias for two different openGL shader types
      */
     public static enum ShaderType {

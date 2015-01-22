@@ -11,6 +11,12 @@ import android.opengl.GLUtils;
 public class Texture {
 
     /**
+     * This class is basically a wrapper for an openGL texture.  Texture objects are meant to be
+     * stored in and retrieved from the AssetCache.
+     */
+
+
+    /**
      * Alias for different texture filter modes (that we need to use)
      */
     public static enum FilterType {

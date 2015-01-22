@@ -1,7 +1,5 @@
 package net.cloudhacking.androidgame2.engine;
 
-import android.content.Context;
-
 import net.cloudhacking.androidgame2.engine.gl.*;
 
 import java.nio.FloatBuffer;
@@ -10,6 +8,22 @@ import java.nio.FloatBuffer;
  * Created by Andrew on 1/15/2015.
  */
 public class BasicGLScript extends GLScript {
+
+    /**
+     * This is the basic openGL program that we will use, shamelessly stolen from Pixel Dungeon.
+     * Since its only meant for 2D application its vertex shader is simple with just a camera
+     * matrix and a model matrix to transform the vertices.  The fragment shader is versatile with
+     * a multiplicative color and an additive color.  For example if you just wanted to set the
+     * whole texture to a certain color, you would assign that color to uColorA and then set
+     * uColorM to {0, 0, 0, 0}.
+     *
+     * Note: This class assumes that the scene coordinates and texture coordinates are packaged
+     *       into a single vertex buffer (see the Image class for how this is set up).
+     *
+     * Call drawQuad(vertexBuffer) or drawQuadSet(vertexBuffer, quadCount) in order to actually
+     * draw quads on the screen, but make sure all the proper uniforms are set first.
+     *
+     */
 
     private Camera mLastCamera;
 

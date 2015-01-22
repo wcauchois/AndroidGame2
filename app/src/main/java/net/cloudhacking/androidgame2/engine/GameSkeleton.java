@@ -23,6 +23,14 @@ public abstract class GameSkeleton
         extends LoggableActivity
         implements GLSurfaceView.Renderer
 {
+    /**
+     * This is the basic game renderer loop.  This is meant to contain an instance of
+     * CameraController, and instance of InputManager, and an instance of the GLScript which
+     * can all be accessed through the scene.
+     *
+     * Once the scene is set, using setScene(scene) in onInitGame(), it will automatically be
+     * created and the render loop will be started.
+     */
 
     private static GameSkeleton sInstance;  // keep static instance of GameSkeleton
     private static boolean sInitGame = true;
@@ -64,7 +72,7 @@ public abstract class GameSkeleton
         return mCameraController;
     }
 
-    abstract public void onGameInit(Bundle savedInstanceState);
+    abstract public void onInitGame(Bundle savedInstanceState);
 
     abstract public void onPauseGame();
 
@@ -182,15 +190,15 @@ public abstract class GameSkeleton
 
         if (sInitGame) {
 
-            onGameInit(mSavedInstanceState);
+            onInitGame(mSavedInstanceState);
             mSavedInstanceState = null;
 
             sInitGame = false;
         }
 
-        if (mScene != null && !mScene.isCreated()) mScene.start();
+        if (mScene != null) {
 
-        if (mScene != null && mScene.isCreated()) {
+            if (!mScene.isCreated()) mScene.start();
 
             mInputManager.processEvents();
             mCameraController.update();
@@ -201,7 +209,6 @@ public abstract class GameSkeleton
             GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
             mScene.draw(mGLScript);
-            return;
         }
     }
 

@@ -13,6 +13,14 @@ import java.util.HashMap;
  */
 public class TextureFrameSet extends Loggable {
 
+    /**
+     * This class is intended to use with a sprite sheet or tile set.  It will automatically
+     * generate and cache UV coordinates for all the frames on the texture given the frame size,
+     * spacing, and offset.  There only really needs to be one instance of this per texture.
+     *
+     * See TileMap and Sprite for usage of this.
+     */
+
     private static final RectF FULL = new RectF( 0, 0, 1, 1 );
 
     private int mTextureWidth;

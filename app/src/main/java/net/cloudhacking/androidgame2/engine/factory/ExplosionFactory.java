@@ -1,4 +1,4 @@
-package net.cloudhacking.androidgame2.engine.fx;
+package net.cloudhacking.androidgame2.engine.factory;
 
 import net.cloudhacking.androidgame2.Assets;
 

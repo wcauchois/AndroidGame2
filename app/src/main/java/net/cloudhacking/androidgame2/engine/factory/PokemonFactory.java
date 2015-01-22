@@ -1,4 +1,4 @@
-package net.cloudhacking.androidgame2.engine.fx;
+package net.cloudhacking.androidgame2.engine.factory;
 
 import net.cloudhacking.androidgame2.Assets;
 import net.cloudhacking.androidgame2.engine.Grid;
@@ -21,7 +21,7 @@ public class PokemonFactory extends SpriteFactory {
     private static final float SPAWN_FREQUENCY = 10f /* spawns per second */ ;
 
 
-    public class PokemonSprite extends SpriteSpawn {
+    private class PokemonSprite extends SpriteSpawn {
 
         private class PokemonAnimation implements Animation {
 
@@ -42,12 +42,14 @@ public class PokemonFactory extends SpriteFactory {
             public void start() {
                 mCurrentlyAnimating = true;
 
+                // generate random starting and ending locations
                 int startIX, startIY, goalIX, goalIY;
                 startIX = mRandGen.nextInt(mGrid.getColumns());
                 startIY = mRandGen.nextInt(mGrid.getRows());
                 goalIX = mRandGen.nextInt(mGrid.getColumns());
                 goalIY = mRandGen.nextInt(mGrid.getRows());
 
+                // calculate best path
                 mPath = mGrid.getBestPath( mGrid.getCell(startIX, startIY),
                                            mGrid.getCell(goalIX,  goalIY)
                 );

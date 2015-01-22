@@ -78,7 +78,7 @@ public class Grid extends Entity {
             mOccupied = bool;
         }
 
-        public boolean checkOccupation() {
+        public boolean isOccupied() {
             return mOccupied;
         }
 
@@ -230,12 +230,12 @@ public class Grid extends Entity {
         return mGrid[ index ];
     }
 
-    public boolean checkOccupation(int ix, int iy) {
-        return checkOccupation( coordToIndex(ix, iy) );
+    public boolean isOccupied(int ix, int iy) {
+        return isOccupied(coordToIndex(ix, iy));
     }
 
-    public boolean checkOccupation(int index) {
-        return mGrid[ index ].checkOccupation();
+    public boolean isOccupied(int index) {
+        return mGrid[ index ].isOccupied();
     }
 
     public void setOccupation(int ix, int iy, boolean bool) {
@@ -277,10 +277,10 @@ public class Grid extends Entity {
 
     private ArrayList<Cell> getCellNeighbors(Cell c) {
         neighbors = new ArrayList<Cell>(4);
-        if ( c.ix-1 >= 0       ) neighbors.add( getCell(c.ix-1, c.iy) );
-        if ( c.ix+1 < mColumns ) neighbors.add( getCell(c.ix+1, c.iy) );
-        if ( c.iy+1 < mRows    ) neighbors.add( getCell(c.ix, c.iy+1) );
-        if ( c.iy-1 >= 0       ) neighbors.add( getCell(c.ix, c.iy-1) );
+        if ( c.ix-1 >= 0       && !c.isOccupied() ) neighbors.add( getCell(c.ix-1, c.iy) );
+        if ( c.ix+1 < mColumns && !c.isOccupied() ) neighbors.add( getCell(c.ix+1, c.iy) );
+        if ( c.iy+1 < mRows    && !c.isOccupied() ) neighbors.add( getCell(c.ix, c.iy+1) );
+        if ( c.iy-1 >= 0       && !c.isOccupied() ) neighbors.add( getCell(c.ix, c.iy-1) );
 
         return neighbors;
     }

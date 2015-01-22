@@ -17,6 +17,17 @@ import java.nio.FloatBuffer;
  */
 public class Image extends Renderable {
 
+    /**
+     * This class represents a static texture. It's size will be the same size as the bitmap of the
+     * associated texture.  You can still move it around the scene using setPos(), setScale(),
+     * setVelocity(), etc, however the vertices and UV coordinates won't change, only the
+     * model matrix.  This way we can recycle the vertex buffer! Yey.
+     *
+     * If you reset the frame, though, the vertex buffer will be regenerated.
+     *
+     * Note: the point defined by setPos() is meant to be the center point of the image.
+     */
+
     private Asset mAsset;
     private Texture mTexture = null;
     private RectF mFrame;
@@ -51,7 +62,7 @@ public class Image extends Renderable {
     public void setToRect(RectF r) {
         float w = r.width(), h = r.height();
 
-        setPos( new PointF(r.left + w/2, r.top + h/2) );
+        setPos(new PointF(r.left + w / 2, r.top + h / 2));
         setWidth(w);
         setHeight(h);
     }
@@ -110,7 +121,7 @@ public class Image extends Renderable {
     }
 
 
-    private void updateFrame() {
+    private void updateFrame() {  // UV coordinates
 
         mVertices[2]  = mFrame.left;
         mVertices[3]  = mFrame.top;
@@ -127,7 +138,7 @@ public class Image extends Renderable {
         mNeedBufferUpdate = true;
     }
 
-    private void updateVertices() {
+    private void updateVertices() {  // scene coordinates
 
         float halfWidth = getWidth()/2, halfHeight = getHeight()/2;
 
@@ -160,6 +171,7 @@ public class Image extends Renderable {
 
         gls.uModel.setValueM4(getModelMatrix());
 
+        // only regenerate the vertex buffer if vertices have been changed
         if (mNeedBufferUpdate) {
             mVertexBuffer.position(0);
             mVertexBuffer.put(mVertices);

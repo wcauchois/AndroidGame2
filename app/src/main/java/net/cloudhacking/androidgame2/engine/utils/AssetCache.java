@@ -17,6 +17,11 @@ import java.util.HashMap;
  */
 public class AssetCache extends Loggable {
 
+    /**
+     * Use this cache in order to get Textures and Sprites.  These are cached because the vertex
+     * buffers don't really change and we wouldn't want to store multiple copies of any bitmaps.
+     */
+
     private static Context sContext;
 
     public static void setContext(Context context) {
