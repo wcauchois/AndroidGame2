@@ -60,10 +60,6 @@ public class Renderable extends Entity {
         return mPos;
     }
 
-    public PointF getCenter() {
-        return new PointF(mPos.x + getScaledWidth()/2, mPos.y + getScaledHeight()/2);
-    }
-
     public void setPos(PointF pos) {
         mPos = pos;
     }

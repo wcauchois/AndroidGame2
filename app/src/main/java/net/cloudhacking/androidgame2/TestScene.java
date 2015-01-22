@@ -8,6 +8,7 @@ import net.cloudhacking.androidgame2.engine.Grid;
 import net.cloudhacking.androidgame2.engine.Scene;
 import net.cloudhacking.androidgame2.engine.foundation.TileMap;
 import net.cloudhacking.androidgame2.engine.fx.ExplosionFactory;
+import net.cloudhacking.androidgame2.engine.fx.PokemonFactory;
 import net.cloudhacking.androidgame2.engine.ui.Button;
 import net.cloudhacking.androidgame2.engine.ui.RootWidget;
 import net.cloudhacking.androidgame2.engine.utils.InputManager;
@@ -25,6 +26,7 @@ public class TestScene extends Scene {
     TileMap mTileMap;
     Grid mGrid;
     ExplosionFactory mFXFactory;
+    PokemonFactory mPokeFactory;
 
     @Override
     public TestScene create() {
@@ -55,21 +57,27 @@ public class TestScene extends Scene {
         mActiveCameraGroup.add(mGrid);
 
 
-        // test sprite factory
+        // test explosion factory
         mFXFactory = new ExplosionFactory();
 
         getInputManager().clickUp.connect( new Signal.Listener<InputManager.ClickEvent>() {
             @Override
             public boolean onSignal(InputManager.ClickEvent clickEvent) {
                 mActiveCameraGroup.addToFront(
-                        mFXFactory.spawnAt(
-                                getActiveCamera().cameraToScene(clickEvent.getPos())
-                        )
+                    mFXFactory.spawnAt(
+                            getActiveCamera().cameraToScene(clickEvent.getPos())
+                    )
                 );
                 return false;
             }
         });
+        mActiveCameraGroup.add(mFXFactory);
 
+
+        // this is my favorite... test POKEMON FACTORY!!!
+        mPokeFactory = new PokemonFactory(mGrid);
+        mPokeFactory.start();
+        mActiveCameraGroup.add(mPokeFactory);
 
         // UI
 

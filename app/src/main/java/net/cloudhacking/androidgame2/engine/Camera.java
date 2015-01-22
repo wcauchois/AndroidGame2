@@ -129,7 +129,7 @@ public class Camera extends Loggable {
     }
 
     public void focusOn(Renderable target) {
-        focusOn(target.getCenter());
+        focusOn(target.getPos());
     }
 
     public void focusOn(PointF focus) {

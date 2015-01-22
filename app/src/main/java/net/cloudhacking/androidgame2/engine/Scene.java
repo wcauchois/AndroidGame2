@@ -18,12 +18,25 @@ public abstract class Scene extends Group<Entity> {
     abstract public Scene create();
     abstract public void destroy();
 
+
     private InputManager im;
     private CameraController cc;
+
+    private boolean mCreated;
 
     public Scene() {
         im  = GameSkeleton.getInstance().getInputManager();
         cc  = GameSkeleton.getInstance().getCameraController();
+        mCreated = false;
+    }
+
+    public void start() {
+        create();
+        mCreated = true;
+    }
+
+    public boolean isCreated() {
+        return mCreated;
     }
 
 

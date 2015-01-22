@@ -1,7 +1,6 @@
 package net.cloudhacking.androidgame2.engine.fx;
 
 import net.cloudhacking.androidgame2.Assets;
-import net.cloudhacking.androidgame2.engine.foundation.Animated;
 
 import java.util.HashMap;
 import java.util.Random;
@@ -9,9 +8,9 @@ import java.util.Random;
 /**
  * Created by Andrew on 1/21/2015.
  */
-public class ExplosionFactory extends FXSpriteFactory {
+public class ExplosionFactory extends SpriteFactory {
 
-    private class ExplosionSprite extends FXSprite {
+    private class ExplosionSprite extends SpriteSpawn {
 
         public ExplosionSprite() {
             super(Assets.EXPLOSIONS);
@@ -19,9 +18,12 @@ public class ExplosionFactory extends FXSpriteFactory {
         }
 
         @Override
+        public void onFinish() {}
+
+        @Override
         public Animation constructAnimation() {
-            int row = mGenerator.nextInt(8);
-            return new AnimationSequence(mSequenceCache.get(row), 0, SPEED);
+            int row = mRandGen.nextInt(8);
+            return new AnimationSequence(sSequenceCache.get(row), 0, SPEED);
         }
 
     }
@@ -30,24 +32,27 @@ public class ExplosionFactory extends FXSpriteFactory {
     private final float SPEED = 10;
     private final float SCALE = 4;
 
-    private Random mGenerator;
-    private HashMap<Integer, int[]> mSequenceCache;
-
-    public ExplosionFactory() {
-        mGenerator = new Random();
-        mSequenceCache = new HashMap<Integer, int[]>();
+    private Random mRandGen;
+    private static HashMap<Integer, int[]> sSequenceCache;
+    static {
+        sSequenceCache = new HashMap<Integer, int[]>();
 
         for (int i=0; i<8; i++) {
             int[] seq = new int[16];
             for (int j=0; j<16; j++) {
-                seq[j] = i+j;
+                seq[j] = i*16 + j;
             }
-            mSequenceCache.put(i, seq);
+            sSequenceCache.put(i, seq);
         }
     }
 
+
+    public ExplosionFactory() {
+        mRandGen = new Random();
+    }
+
     @Override
-    public FXSprite constructFXSprite() {
+    public SpriteSpawn constructSpawn() {
         return new ExplosionSprite();
     }
 

@@ -186,8 +186,11 @@ public abstract class GameSkeleton
             mSavedInstanceState = null;
 
             sInitGame = false;
+        }
 
-        } else if (mScene != null) {
+        if (mScene != null && !mScene.isCreated()) mScene.start();
+
+        if (mScene != null && mScene.isCreated()) {
 
             mInputManager.processEvents();
             mCameraController.update();
@@ -198,6 +201,7 @@ public abstract class GameSkeleton
             GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
             mScene.draw(mGLScript);
+            return;
         }
     }
 

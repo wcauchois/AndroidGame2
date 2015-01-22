@@ -24,6 +24,8 @@ public class TextureFrameSet extends Loggable {
     private int mColumns;
     private int mRows;
 
+    private int mMaxFrameIndex;
+
     private HashMap<Integer, RectF> mUVFrames = new HashMap<Integer, RectF>();
 
 
@@ -75,6 +77,14 @@ public class TextureFrameSet extends Loggable {
         );
     }
 
+
+    public void setMaxFrameIndex(int maxFrameIdx) {
+        mMaxFrameIndex = maxFrameIdx;
+    }
+
+    public int getMaxFrameIndex() {
+        return mMaxFrameIndex;
+    }
 
     public int getFrameWidth() {    // in texture pixels
         return mFrameWidth;

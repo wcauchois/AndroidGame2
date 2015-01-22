@@ -209,8 +209,16 @@ public class Grid extends Entity {
         return mColumns * mCellWidth;
     }
 
+    public int getColumns() {
+        return mColumns;
+    }
+
     public int getHeight() {
         return mRows * mCellHeight;
+    }
+
+    public int getRows() {
+        return mRows;
     }
 
 

@@ -87,6 +87,19 @@ public class Entity extends Loggable {
         }
     }
 
+    public <T extends Group> T getParentGroupOfClass(Class<T> groupCls) {
+        // Traverses up the parent tree to get the first group of the given class
+        // which contains this element.  (sorry for the reflection Bill, but it might
+        // be a useful function)
+        if (groupCls.isInstance(mParent)) {
+            return (T)mParent;
+        } else if (mParent == null) {
+            return null;
+        } else {
+            return mParent.getParentGroupOfClass(groupCls);
+        }
+    }
+
     public void setParent(Group parent) {
         mParent = parent;
     }
@@ -101,4 +114,11 @@ public class Entity extends Loggable {
     public void update() {}
 
     public void draw(BasicGLScript gls) {}
+
+
+    // test to make sure orphaned entities really get garbage-collected
+    @Override
+    public void finalize() {
+        //d("Entity being deleted : " + this);
+    }
 }

@@ -55,6 +55,22 @@ public class Sprite extends Loggable {
         return mHeight;
     }
 
+    public int getFrameColumns() {
+        return mFrames.getFrameColumns();
+    }
+
+    public int getFrameRows() {
+        return mFrames.getFrameRows();
+    }
+
+    public int getMaxFrameIndex() {
+        return mFrames.getMaxFrameIndex();
+    }
+
+    public void setMaxFrameIndex(int maxFrameIndex) {
+        mFrames.setMaxFrameIndex(maxFrameIndex);
+    }
+
 
     private void initVertices() {
 

@@ -12,10 +12,12 @@ public class Group<E extends Entity> extends Entity {
      * This is the most general class that represent a group of in-game entities.
      */
     protected ArrayList<E> mEntities;
+    protected ArrayList<E> mAddQueue;
     protected int length;
 
     public Group() {
         mEntities = new ArrayList<E>();
+        mAddQueue = new ArrayList<E>();
         length = 0;
     }
 
@@ -26,6 +28,12 @@ public class Group<E extends Entity> extends Entity {
                 e.update();
             }
         }
+
+        // add items queued for add during update
+        for(E e : mAddQueue) {
+            addToFront(e);
+        }
+        mAddQueue.clear();
     }
 
     @Override
@@ -69,6 +77,14 @@ public class Group<E extends Entity> extends Entity {
         mEntities.add(e);
         e.setParent(this);
         length++;
+        return e;
+    }
+
+
+    // use this if trying to add an element to a group
+    // within the update loop
+    public E queueAdd(E e) {
+        mAddQueue.add(e);
         return e;
     }
 
