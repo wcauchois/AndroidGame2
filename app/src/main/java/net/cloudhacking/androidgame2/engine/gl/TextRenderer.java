@@ -15,6 +15,7 @@ import com.google.common.cache.RemovalNotification;
 
 import net.cloudhacking.androidgame2.engine.utils.Loggable;
 
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
@@ -35,6 +36,8 @@ public class TextRenderer extends Loggable {
     }
 
     public static class TextProps {
+        // may need to do text size in device independent units (dp) instead of pixels
+        // so that scaling isn't weird on other screens? http://stackoverflow.com/a/3062023
         private float mTextSize = DEFAULT_TEXT_SIZE;
         private int mTextColor = DEFAULT_TEXT_COLOR;
         private Typeface mTypeface = DEFAULT_TYPEFACE;
@@ -125,26 +128,17 @@ public class TextRenderer extends Loggable {
             paint.setTypeface(props.mTypeface);
             paint.setColor(props.mTextColor);
 
-            // Figuring out how wide/high the string actually is is really annoying
-            // TODO(wcauchois): Something about either this measurement code or the y coordinate in drawText
-            // is broken and its causing text to clip
-            //
-            // (from Andrew) see this:
-            //      http://stackoverflow.com/questions/7549182/android-paint-measuretext-vs-gettextbounds
-
-            float measured = paint.measureText(s);
-            Rect bounds = new Rect();
-            paint.getTextBounds(s, 0, s.length(), bounds);
-            Bitmap bitmap = Bitmap.createBitmap((int) Math.ceil(measured), bounds.height(), Bitmap.Config.ARGB_4444);
+            Rect textBounds = new Rect();
+            paint.getTextBounds(s, 0, s.length(), textBounds);
+            Bitmap bitmap = Bitmap.createBitmap(
+                    textBounds.width(), textBounds.height(), Bitmap.Config.ARGB_4444);
             Canvas canvas = new Canvas(bitmap);
             bitmap.eraseColor(0);
-            canvas.drawText(s, 0.0f, bounds.height() - (float) Math.ceil(paint.descent()), paint);
+            canvas.drawText(s, -textBounds.left, -textBounds.top, paint);
 
-            TextRenderer.this.i(String.format("generated %dx%d texture for \"%s\"",
+            TextRenderer.this.d(String.format("generated %dx%d texture for \"%s\"",
                     bitmap.getWidth(), bitmap.getHeight(), s));
 
-            // TODO(wcauchois): Apparently Texture "owns" the passed-in bitmap and will recycle it
-            // later. However it doesn't really need to hold on to it, should refactor that code.
             return new Texture(bitmap);
         }
     }
@@ -166,9 +160,17 @@ public class TextRenderer extends Loggable {
         }
     }
 
+    public static void reloadTextures() {
+        if (sInstance != null) {
+            ConcurrentMap<StringAndProps, Texture> textureMap = sInstance.mTextureCache.asMap();
+            for (Texture tex : textureMap.values()) {
+                tex.reload();
+            }
+        }
+    }
+
     private static TextRenderer sInstance = null;
     public static TextRenderer getInstance() {
-        // TODO(wcauchois): I'm a hypocrite and I should probly pass this thru instead of singletonning
         if (sInstance == null) {
             sInstance = new TextRenderer();
         }

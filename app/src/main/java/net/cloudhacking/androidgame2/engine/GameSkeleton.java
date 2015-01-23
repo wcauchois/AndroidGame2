@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
 
+import net.cloudhacking.androidgame2.engine.gl.TextRenderer;
 import net.cloudhacking.androidgame2.engine.utils.AssetCache;
 import net.cloudhacking.androidgame2.engine.utils.GameTime;
 import net.cloudhacking.androidgame2.engine.utils.InputManager;
@@ -133,6 +134,7 @@ public abstract class GameSkeleton
 
         mGLScript = new BasicGLScript();
         AssetCache.reloadTextures();
+        TextRenderer.reloadTextures();
 
         d("surface created");
     }
