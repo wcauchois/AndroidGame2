@@ -91,7 +91,7 @@ public class FrameBufferObject extends Loggable {
         // bind the texture to be drawn to the frame buffer
         tex.bind();
 
-        GLES20.glClearColor(0, 0, 0, 1);
+        GLES20.glClearColor(0, 0, 0, 0);
         GLES20.glClear( GLES20.GL_COLOR_BUFFER_BIT );
 
         // store the touch screen's viewport and temporarily set the gl viewport
@@ -108,7 +108,7 @@ public class FrameBufferObject extends Loggable {
             cam = new float[]{2f/w,    0, 0, 0,
                                  0, 2f/h, 0, 0,
                                  0,    0, 1, 0,
-                              -1f,   -1f, 0, 1};
+                                -1,   -1, 0, 1};
         } else {
             cam = new float[]{2f/w,    0, 0, 0,
                                  0, 2f/h, 0, 0,
@@ -132,7 +132,5 @@ public class FrameBufferObject extends Loggable {
 
         return fboTexture;
     }
-
-
 
 }
