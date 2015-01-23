@@ -4,10 +4,9 @@ import android.util.SparseArray;
 import android.util.SparseIntArray;
 
 import net.cloudhacking.androidgame2.Assets;
-import net.cloudhacking.androidgame2.TDGame;
-import net.cloudhacking.androidgame2.engine.foundation.Animated;
-import net.cloudhacking.androidgame2.engine.foundation.Entity;
-import net.cloudhacking.androidgame2.engine.foundation.TileMap;
+import net.cloudhacking.androidgame2.engine.element.Animated;
+import net.cloudhacking.androidgame2.engine.element.Entity;
+import net.cloudhacking.androidgame2.engine.element.TileMap;
 import net.cloudhacking.androidgame2.engine.utils.InputManager;
 import net.cloudhacking.androidgame2.engine.utils.PointF;
 import net.cloudhacking.androidgame2.engine.utils.Signal;
@@ -27,6 +26,19 @@ public class Grid extends Entity {
      * This class represents a grid in the game that can be use for path-finding and
      * placement of in-game entities.  It also contains a listener interface which will
      * signal the detection of a Cell.
+     *
+     * Pathfinding Functionality:
+     *      -generateFloodMap(Cell source); will find all reachable cells from
+     *       the given source.  It returns a boolean array the size of the grid
+     *       where the i-th index indicates whether or not that cell index is
+     *       reachable.  In addition each cell has a distanceToSource member variable
+     *       which is set to -1 is that cell is unreachable (since the last time
+     *       generateFloodMap() was run).
+     *
+     *      -getBestPath(Cell start, Cell goal); will find the optimal path from a
+     *       specific start and finish point.  It returns a CellPath object which
+     *       provides utility for iteration and for checking if a given Cell is on
+     *       the path or not.
      */
 
 
@@ -70,15 +82,15 @@ public class Grid extends Entity {
         private boolean mOccupied;
 
         // from flood map
-        private Cell mBestNeighbor;
-        private int mDistToSource;
+        private Cell mReachableNeighbor;  // towards the flood source
+        private int mDistToSource;  // -1 is this Cell is unreachable
 
         public Cell(int ix, int iy) {
             this.ix = ix;
             this.iy = iy;
             this.index = ix + iy * mColumns;
             mOccupied = false;
-            mBestNeighbor = null;
+            mReachableNeighbor = null;
             mDistToSource = -1;
         }
 
@@ -99,12 +111,12 @@ public class Grid extends Entity {
             return getRelativeCenter().add(mPos.toVec());
         }
 
-        public Cell getBestNeighbor() {
-            return mBestNeighbor;
+        public Cell getReachableNeighbor() {
+            return mReachableNeighbor;
         }
 
-        public void setBestNeighbor(Cell cell) {
-            mBestNeighbor = cell;
+        public void setReachableNeighbor(Cell cell) {
+            mReachableNeighbor = cell;
         }
 
         public int getDistToSource() {
@@ -141,7 +153,7 @@ public class Grid extends Entity {
             }
         }
 
-        public Cell getLastSelectedCell() {
+        public Cell getLastSelected() {
             return mSelected;
         }
     }
@@ -284,7 +296,7 @@ public class Grid extends Entity {
 
         frontier.push(source);
         mReachable[source.index] = true;
-        source.setBestNeighbor(null);
+        source.setReachableNeighbor(null);
         source.setDistToSource(0);
 
         Cell current;
@@ -295,22 +307,112 @@ public class Grid extends Entity {
                 if ( !mReachable[n.index] ) {
                     frontier.push(n);
                     mReachable[n.index] = true;
-                    n.setBestNeighbor( current );
+                    n.setReachableNeighbor(current);
                     n.setDistToSource( current.getDistToSource() + 1 );
                 }
             }
         }
         // set unreachable cells
         for (int i=0; i<size; i++) {
-            if (!mReachable[i]) getCell(i).setDistToSource(-1);
+            if (!mReachable[i]) {
+                getCell(i).setDistToSource(-1);
+                getCell(i).setReachableNeighbor(null);
+            }
         }
         return mReachable;
     }
 
 
+
     /**
      * A* implementation
      */
+
+    public class CellPath {
+
+        private LinkedList<Cell> mPath;
+        private HashSet<Integer> mMembers;  // by cell index
+
+        public CellPath(LinkedList<Cell> path, HashSet<Integer> members) {
+            mPath = path;
+            mMembers = members;
+        }
+
+        public boolean containsCell(Cell cell) {
+            return mMembers.contains( cell.index );
+        }
+
+        public boolean containsCell(int ix, int iy) {
+            return mMembers.contains( coordToIndex(ix, iy) );
+        }
+
+        public boolean isEmpty() {
+            return mPath.isEmpty();
+        }
+
+        public Cell pop() {
+            Cell popped = mPath.pollFirst();
+            mMembers.remove(popped.index);
+            return popped;
+        }
+
+        public Cell peek() {
+            return mPath.peek();
+        }
+
+        public Cell getDestination() {
+            return mPath.getLast();
+        }
+
+        public int length() {
+            return mPath.size();
+        }
+
+    }
+
+
+    public CellPath getBestPath(Cell start, Cell goal) {
+        return buildCellPath(findPath(start, goal), goal.index);
+    }
+
+    // This works the same as getBestPath() except instead returns a linked list of PointF's which
+    // are the centers of the cells on the path.
+    public LinkedList<PointF> getBestPathAsPoints(Cell start, Cell goal) {
+        return buildPointPath(findPath(start, goal), goal.index);
+    }
+
+    private CellPath buildCellPath(SparseIntArray history, int goalIndex) {
+        if (history == null) return null;
+
+        LinkedList<Cell> path = new LinkedList<Cell>();
+        HashSet<Integer> members = new HashSet<Integer>();
+        path.add(getCell(goalIndex));
+        members.add(goalIndex);
+
+        int nextIndex = history.get(goalIndex);
+        while (nextIndex != -1) {
+            path.addFirst(getCell(nextIndex));
+            members.add(nextIndex);
+            nextIndex = history.get(nextIndex);
+        }
+
+        return new CellPath(path, members);
+    }
+
+    private LinkedList<PointF> buildPointPath(SparseIntArray history, int goalIndex) {
+        if (history == null) return null;
+
+        LinkedList<PointF> path = new LinkedList<PointF>();
+        path.add(getCell(goalIndex).getCenter());
+
+        int nextIndex = history.get(goalIndex);
+        while (nextIndex != -1) {
+            path.addFirst(getCell(nextIndex).getCenter());
+            nextIndex = history.get(nextIndex);
+        }
+        return path;
+    }
+
 
     private static class CellSortable implements Comparable<CellSortable> {
         public Cell cell;
@@ -330,23 +432,17 @@ public class Grid extends Entity {
         }
     }
 
+
+    // this fudge factor is supposed to break cost ties:
+    //    http://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html#breaking-ties
+    private final float EXPECTED_MAX_PATH_LENGTH = 200;
+    private final float FUDGE = 1 + 1/EXPECTED_MAX_PATH_LENGTH;
+
     private float heuristic(Cell c1, Cell c2) {
-        return c1.getCenter().manhattanDistTo(c2.getCenter());
+        return FUDGE * c1.getCenter().manhattanDistTo(c2.getCenter());
     }
 
-    private LinkedList<Cell> buildPath(SparseIntArray history, int goalIndex) {
-        LinkedList<Cell> path = new LinkedList<Cell>();
-        path.add(getCell(goalIndex));
-
-        int nextIndex = history.get(goalIndex);
-        while (nextIndex != -1) {
-            path.addFirst(getCell(nextIndex));
-            nextIndex = history.get(nextIndex);
-        }
-        return path;
-    }
-
-    public LinkedList<Cell> getBestPath(Cell start, Cell goal) {
+    private SparseIntArray findPath(Cell start, Cell goal) {
         PriorityQueue<CellSortable> frontier = new PriorityQueue<CellSortable>();
         HashSet<Integer> visited = new HashSet<Integer>();
         SparseArray<Float> costs = new SparseArray<Float>();
@@ -363,11 +459,11 @@ public class Grid extends Entity {
             current = frontier.poll().cell;
 
             if (current.equals(goal)) {
-                return buildPath(history, goal.index);
+                return history;
             }
 
             for (Cell n : getCellNeighbors(current)) {
-                newCost = costs.get(current.index) + /* weight to next cell = */ 1 ;
+                newCost = costs.get(current.index) + /* cost to next cell = */ 1 ;
 
                 if ( !visited.contains(n.index) || newCost<costs.get(n.index) ) {
                     costs.put(n.index, newCost);

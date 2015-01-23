@@ -6,7 +6,6 @@ import net.cloudhacking.androidgame2.engine.utils.AssetCache;
 import net.cloudhacking.androidgame2.engine.utils.GameTime;
 import net.cloudhacking.androidgame2.engine.utils.Vec2;
 
-import java.util.LinkedList;
 import java.util.Random;
 
 /**
@@ -25,7 +24,7 @@ public class PokemonFactory extends SpriteFactory {
 
         private class PokemonAnimation implements Animation {
 
-            private LinkedList<Grid.Cell> mPath;
+            private Grid.CellPath mPath;
             private boolean mDestinationReached;
             private boolean mCurrentlyAnimating;
 
@@ -54,10 +53,10 @@ public class PokemonFactory extends SpriteFactory {
                                            mGrid.getCell(goalIX,  goalIY)
                 );
 
-                setPos( mPath.pollFirst().getCenter() );
+                setPos(mPath.pop().getCenter());
                 setVisibility(true);
 
-                if (mPath.peekFirst() == null) mDestinationReached = true;
+                if (mPath.peek() == null) mDestinationReached = true;
             }
 
             @Override
@@ -78,10 +77,10 @@ public class PokemonFactory extends SpriteFactory {
                     mCurrentlyAnimating = false;
                     return;
                 }
-                Grid.Cell next = mPath.peekFirst();
+                Grid.Cell next = mPath.peek();
                 if (getPos().distTo(next.getCenter()) < TARGET_REACHED_THRESHOLD) {
-                    mPath.removeFirst();
-                    next = mPath.peekFirst();
+                    mPath.pop();
+                    next = mPath.peek();
 
                     if (next == null) {
                         mDestinationReached = true;

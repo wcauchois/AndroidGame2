@@ -7,7 +7,7 @@ import net.cloudhacking.androidgame2.engine.BasicGLScript;
 import net.cloudhacking.androidgame2.engine.CameraGroup;
 import net.cloudhacking.androidgame2.engine.Grid;
 import net.cloudhacking.androidgame2.engine.Scene;
-import net.cloudhacking.androidgame2.engine.foundation.TileMap;
+import net.cloudhacking.androidgame2.engine.element.TileMap;
 import net.cloudhacking.androidgame2.engine.gl.TextRenderer;
 import net.cloudhacking.androidgame2.engine.ui.Button;
 import net.cloudhacking.androidgame2.engine.ui.Label;

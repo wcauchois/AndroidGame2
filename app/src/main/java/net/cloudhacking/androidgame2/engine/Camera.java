@@ -2,7 +2,7 @@ package net.cloudhacking.androidgame2.engine;
 
 import android.graphics.RectF;
 
-import net.cloudhacking.androidgame2.engine.foundation.Renderable;
+import net.cloudhacking.androidgame2.engine.element.Renderable;
 import net.cloudhacking.androidgame2.engine.utils.Loggable;
 import net.cloudhacking.androidgame2.engine.utils.MatrixUtils;
 import net.cloudhacking.androidgame2.engine.utils.PointF;

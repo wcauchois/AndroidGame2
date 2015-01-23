@@ -3,8 +3,8 @@ package net.cloudhacking.androidgame2.engine.ui;
 import android.graphics.RectF;
 
 import net.cloudhacking.androidgame2.engine.BasicGLScript;
-import net.cloudhacking.androidgame2.engine.foundation.Group;
-import net.cloudhacking.androidgame2.engine.foundation.Image;
+import net.cloudhacking.androidgame2.engine.element.Group;
+import net.cloudhacking.androidgame2.engine.element.Image;
 import net.cloudhacking.androidgame2.engine.utils.Asset;
 import net.cloudhacking.androidgame2.engine.utils.Vec2;
 

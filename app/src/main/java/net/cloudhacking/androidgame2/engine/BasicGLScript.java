@@ -11,7 +11,7 @@ public class BasicGLScript extends GLScript {
 
     /**
      * This is the basic openGL program that we will use, shamelessly stolen from Pixel Dungeon.
-     * Since its only meant for 2D application its vertex shader is simple with just a camera
+     * Since its only meant for 2D applications its vertex shader is simple with just a camera
      * matrix and a model matrix to transform the vertices.  The fragment shader is versatile with
      * a multiplicative color and an additive color.  For example if you just wanted to set the
      * whole texture to a certain color, you would assign that color to uColorA and then set

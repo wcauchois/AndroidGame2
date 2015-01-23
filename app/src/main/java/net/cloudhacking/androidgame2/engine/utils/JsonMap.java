@@ -1,6 +1,6 @@
 package net.cloudhacking.androidgame2.engine.utils;
 
-import net.cloudhacking.androidgame2.engine.foundation.TileMap;
+import net.cloudhacking.androidgame2.engine.element.TileMap;
 
 import org.json.JSONArray;
 import org.json.JSONException;

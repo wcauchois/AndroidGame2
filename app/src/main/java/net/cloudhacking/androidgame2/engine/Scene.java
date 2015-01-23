@@ -2,8 +2,8 @@ package net.cloudhacking.androidgame2.engine;
 
 import android.graphics.Rect;
 
-import net.cloudhacking.androidgame2.engine.foundation.Entity;
-import net.cloudhacking.androidgame2.engine.foundation.Group;
+import net.cloudhacking.androidgame2.engine.element.Entity;
+import net.cloudhacking.androidgame2.engine.element.Group;
 import net.cloudhacking.androidgame2.engine.utils.InputManager;
 import net.cloudhacking.androidgame2.engine.utils.PointF;
 

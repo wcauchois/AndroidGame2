@@ -25,11 +25,11 @@ public abstract class GameSkeleton
 {
     /**
      * This is the basic game renderer loop.  This is meant to contain an instance of
-     * CameraController, and instance of InputManager, and an instance of the GLScript which
-     * can all be accessed through the scene.
+     * CameraController, an instance of InputManager, and an instance of the GLScript; all of which
+     * can all be accessed through the scene instance.
      *
-     * Once the scene is set, using setScene(scene) in onInitGame(), it will automatically be
-     * created and the render loop will be started.
+     * Once the scene is set, using setScene(scene), it will automatically be created and
+     * the render loop will be started.
      */
 
     private static GameSkeleton sInstance;  // keep static instance of GameSkeleton

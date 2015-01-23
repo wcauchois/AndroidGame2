@@ -1,7 +1,7 @@
 package net.cloudhacking.androidgame2.engine;
 
-import net.cloudhacking.androidgame2.engine.foundation.Entity;
-import net.cloudhacking.androidgame2.engine.foundation.Group;
+import net.cloudhacking.androidgame2.engine.element.Entity;
+import net.cloudhacking.androidgame2.engine.element.Group;
 
 /**
  * Created by Andrew on 1/20/2015.

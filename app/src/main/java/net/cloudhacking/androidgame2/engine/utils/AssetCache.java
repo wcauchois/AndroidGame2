@@ -5,7 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 
-import net.cloudhacking.androidgame2.engine.foundation.Sprite;
+import net.cloudhacking.androidgame2.engine.element.Sprite;
 import net.cloudhacking.androidgame2.engine.gl.Texture;
 
 import java.io.IOException;

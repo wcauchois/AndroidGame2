@@ -1,4 +1,4 @@
-package net.cloudhacking.androidgame2.engine.foundation;
+package net.cloudhacking.androidgame2.engine.element;
 
 import android.graphics.RectF;
 
@@ -8,6 +8,7 @@ import net.cloudhacking.androidgame2.engine.utils.AssetCache;
 import net.cloudhacking.androidgame2.engine.utils.BufferUtils;
 import net.cloudhacking.androidgame2.engine.utils.Loggable;
 import net.cloudhacking.androidgame2.engine.utils.SpriteAsset;
+import net.cloudhacking.androidgame2.engine.utils.TextureFrameSet;
 
 import java.nio.FloatBuffer;
 import java.util.HashMap;

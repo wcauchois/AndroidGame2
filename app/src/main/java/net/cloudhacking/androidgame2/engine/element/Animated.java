@@ -1,11 +1,9 @@
-package net.cloudhacking.androidgame2.engine.foundation;
+package net.cloudhacking.androidgame2.engine.element;
 
 import net.cloudhacking.androidgame2.engine.BasicGLScript;
 import net.cloudhacking.androidgame2.engine.utils.AssetCache;
 import net.cloudhacking.androidgame2.engine.utils.GameTime;
 import net.cloudhacking.androidgame2.engine.utils.SpriteAsset;
-
-import java.util.HashMap;
 
 /**
  * Created by Andrew on 1/20/2015.
