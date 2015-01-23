@@ -79,8 +79,8 @@ public class Texture extends Loggable {
     private boolean mPreMultiplied=false;
     // whether or not alpha value has been pre-multiplied (I think...)
 
-    protected int mWidth;
-    protected int mHeight;
+    private int mWidth;
+    private int mHeight;
 
     private FilterType mMinMode;
     private FilterType mMagMode;

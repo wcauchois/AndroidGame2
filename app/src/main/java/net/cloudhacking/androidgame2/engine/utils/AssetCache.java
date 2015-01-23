@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import net.cloudhacking.androidgame2.engine.element.Sprite;
+import net.cloudhacking.androidgame2.engine.gl.PreRenderedTexture;
 import net.cloudhacking.androidgame2.engine.gl.Texture;
 
 import java.io.IOException;
@@ -34,6 +35,9 @@ public class AssetCache extends Loggable {
      */
 
     private static HashMap<Asset, Texture> sTextureCache = new HashMap<Asset, Texture>();
+
+    private static HashMap<Integer, PreRenderedTexture> sPreRenderedCache
+            = new HashMap<Integer, PreRenderedTexture>();
 
 
     /**
@@ -105,13 +109,20 @@ public class AssetCache extends Loggable {
 
     }
 
-    public static void addTexture(Asset asset, Texture tex) {
-        sTextureCache.put(asset, tex);
+    public static void addPreRendered(PreRenderedTexture pre) {
+        sPreRenderedCache.put(pre.getId(), pre);
+    }
+
+    public static PreRenderedTexture getPreRendered(int id) {
+        return sPreRenderedCache.get(id);
     }
 
     public static void reloadTextures() {
         for (Texture t : sTextureCache.values()) {
             t.reload();
+        }
+        for (PreRenderedTexture p : sPreRenderedCache.values()) {
+            p.reload();
         }
     }
 

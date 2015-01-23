@@ -56,7 +56,7 @@ public class FrameBufferObject extends Loggable {
      * @param w             -width of new texture corresponding to vertices
      * @param h             -height of new texture corresponding to vertices
      * @param centered      -whether or not the vertices are centered around the origin,
-     *                       or if the top-left vertex is on the origin
+     *                       as opposed to if the top-left vertex is on the origin
      * @param tex           -texture to be used for rendering
      * @param vbo           -vertex buffer containing screen vertices and uv vertices
      * @param quadCount     -number of quads in vertex buffer
