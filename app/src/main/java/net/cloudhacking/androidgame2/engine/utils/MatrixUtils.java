@@ -10,6 +10,12 @@ public class MatrixUtils {
 
     public static final float G2RAD = 0.01745329251994329576923690768489f;
 
+    public static final float[] IDENTITY = new float[] {1, 0, 0, 0,
+                                                        0, 1, 0, 0,
+                                                        0, 0, 1, 0,
+                                                        0, 0, 0, 1};
+
+
     public static float[] clone(float[] m) {
 
         int n = m.length;

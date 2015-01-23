@@ -9,7 +9,7 @@ import net.cloudhacking.androidgame2.engine.utils.SpriteAsset;
 /**
  * Created by Andrew on 1/21/2015.
  */
-public abstract class SpriteFactory extends Group<Animated> {
+public abstract class SpriteFactory extends Group<SpriteFactory.SpriteSpawn> {
 
     /**
      * This is a framework for creating a lot of sprites systematically (like a creep wave).

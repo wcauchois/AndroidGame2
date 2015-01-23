@@ -13,40 +13,50 @@ public class BufferUtils extends Loggable {
 
     private static final int FLOATS_PER_QUAD = 16;
 
+    public static FloatBuffer makeQuadFloatBuffer() {
+        return makeQuadFloatBuffer(1);
+    }
+
+    public static FloatBuffer makeQuadFloatBuffer(int quadCount) {
+        return makeEmptyFloatBuffer(quadCount * FLOATS_PER_QUAD);
+    }
+
     public static FloatBuffer makeFloatBuffer(float[] array) {
-        ByteBuffer bb = ByteBuffer.allocateDirect(array.length * (Float.SIZE/8) );
-        bb.order(ByteOrder.nativeOrder());
-        FloatBuffer fb = bb.asFloatBuffer();
+        FloatBuffer fb = makeEmptyFloatBuffer(array.length);
         fb.put(array).position(0);
         return fb;
     }
 
-    public static FloatBuffer makeEmptyFloatBuffer() {
-        return makeEmptyFloatBuffer(1);
-    }
-
-    public static FloatBuffer makeEmptyFloatBuffer(int quadCount) {
-        ByteBuffer bb = ByteBuffer.allocateDirect(quadCount * FLOATS_PER_QUAD * (Float.SIZE/8) );
+    public static FloatBuffer makeEmptyFloatBuffer(int size) {
+        ByteBuffer bb = ByteBuffer.allocateDirect(size * (Float.SIZE/8) );
         bb.order(ByteOrder.nativeOrder());
-        FloatBuffer fb = bb.asFloatBuffer();
-        return fb;
+        return bb.asFloatBuffer();
     }
 
 
     public static IntBuffer makeIntBuffer(int[] array) {
-        ByteBuffer bb = ByteBuffer.allocateDirect(array.length * (Integer.SIZE/8) );
-        bb.order(ByteOrder.nativeOrder());
-        IntBuffer ib = bb.asIntBuffer();
+        IntBuffer ib = makeEmptyIntBuffer(array.length);
         ib.put(array).position(0);
         return ib;
     }
 
-    public static ShortBuffer makeShortBuffer(short[] array) {
-        ByteBuffer bb = ByteBuffer.allocateDirect(array.length * (Short.SIZE/2) );
+    public static IntBuffer makeEmptyIntBuffer(int size) {
+        ByteBuffer bb = ByteBuffer.allocateDirect(size * (Integer.SIZE/8) );
         bb.order(ByteOrder.nativeOrder());
-        ShortBuffer sb = bb.asShortBuffer();
+        return bb.asIntBuffer();
+    }
+
+
+    public static ShortBuffer makeShortBuffer(short[] array) {
+        ShortBuffer sb = makeEmptyShortBuffer(array.length);
         sb.put(array).position(0);
         return sb;
+    }
+
+    public static ShortBuffer makeEmptyShortBuffer(int size) {
+        ByteBuffer bb = ByteBuffer.allocateDirect(size * (Short.SIZE/2) );
+        bb.order(ByteOrder.nativeOrder());
+        return bb.asShortBuffer();
     }
 
 }

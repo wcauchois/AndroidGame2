@@ -5,10 +5,12 @@ import android.graphics.RectF;
 import android.opengl.GLES20;
 import android.opengl.GLUtils;
 
+import net.cloudhacking.androidgame2.engine.utils.Loggable;
+
 /**
  * Created by Andrew on 1/16/2015.
  */
-public class Texture {
+public class Texture extends Loggable {
 
     /**
      * This class is basically a wrapper for an openGL texture.  Texture objects are meant to be
@@ -57,6 +59,8 @@ public class Texture {
 
         @Override
         public boolean equals(Object o) {
+            if (this == o) return true;
+
             if (!(o instanceof TextureOptions)) {
                 return false;
             } else {
@@ -71,11 +75,12 @@ public class Texture {
     }
 
 
-    private int mHandle;
-    private boolean mPreMultiplied=false;  // whether or not alpha value has been premultiplied (I think...)
+    protected int mHandle;
+    private boolean mPreMultiplied=false;
+    // whether or not alpha value has been pre-multiplied (I think...)
 
-    private int mWidth;
-    private int mHeight;
+    protected int mWidth;
+    protected int mHeight;
 
     private FilterType mMinMode;
     private FilterType mMagMode;
@@ -86,8 +91,11 @@ public class Texture {
     private Bitmap mBitmap;
 
 
-    public Texture() {
+    public Texture(int w, int h) {
         mHandle = genNewHandle();
+        mWidth = w;
+        mHeight = h;
+        mBitmap = null;
         bind();
     }
 
@@ -114,7 +122,7 @@ public class Texture {
     }
 
 
-    private int genNewHandle() {
+    public static int genNewHandle() {
         int[] handles = new int[1];
         GLES20.glGenTextures(1, handles, 0);
         return handles[0];

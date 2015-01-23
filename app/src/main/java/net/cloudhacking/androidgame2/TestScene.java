@@ -7,17 +7,25 @@ import net.cloudhacking.androidgame2.engine.BasicGLScript;
 import net.cloudhacking.androidgame2.engine.CameraGroup;
 import net.cloudhacking.androidgame2.engine.Grid;
 import net.cloudhacking.androidgame2.engine.Scene;
+import net.cloudhacking.androidgame2.engine.element.Image;
 import net.cloudhacking.androidgame2.engine.element.TileMap;
+import net.cloudhacking.androidgame2.engine.gl.FrameBufferObject;
+import net.cloudhacking.androidgame2.engine.gl.PreRenderedTexture;
 import net.cloudhacking.androidgame2.engine.gl.TextRenderer;
+import net.cloudhacking.androidgame2.engine.gl.Texture;
 import net.cloudhacking.androidgame2.engine.ui.Button;
 import net.cloudhacking.androidgame2.engine.ui.Label;
 import net.cloudhacking.androidgame2.engine.ui.RootWidget;
+import net.cloudhacking.androidgame2.engine.utils.AssetCache;
+import net.cloudhacking.androidgame2.engine.utils.BufferUtils;
 import net.cloudhacking.androidgame2.engine.utils.CommonUtils;
 import net.cloudhacking.androidgame2.engine.utils.InputManager;
 import net.cloudhacking.androidgame2.engine.utils.JsonMap;
+import net.cloudhacking.androidgame2.engine.utils.MatrixUtils;
 import net.cloudhacking.androidgame2.engine.utils.PointF;
 import net.cloudhacking.androidgame2.engine.utils.Signal;
 
+import java.nio.FloatBuffer;
 import java.util.Random;
 
 /**
@@ -41,7 +49,6 @@ public class TestScene extends Scene {
     private PokemonFactory mPokeFactory;
 
 
-
     @Override
     public TestScene create() {
 
@@ -53,7 +60,10 @@ public class TestScene extends Scene {
 
 
         mTileMap = new TileMap( Assets.TEST_TILESET, new JsonMap(Resources.JSON_MAP_SIMPLE) );
-        mActiveCameraGroup.add(mTileMap);
+
+        Image tilemap = new Image( mTileMap.getPreRendered() );
+        tilemap.movePos(tilemap.getWidth()/2, tilemap.getHeight()/2);
+        mActiveCameraGroup.add( tilemap );
 
 
         // set up game grid from tile map
@@ -111,6 +121,8 @@ public class TestScene extends Scene {
         }
 
         mUICameraGroup.add(rootWidget);
+
+
 
 
 

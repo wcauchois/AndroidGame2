@@ -49,9 +49,7 @@ public class PokemonFactory extends SpriteFactory {
                 goalIY = mRandGen.nextInt(mGrid.getRows());
 
                 // calculate best path
-                mPath = mGrid.getBestPath( mGrid.getCell(startIX, startIY),
-                                           mGrid.getCell(goalIX,  goalIY)
-                );
+                mPath = mGrid.getBestPath(startIX, startIY, goalIX, goalIY);
 
                 setPos(mPath.pop().getCenter());
                 setVisibility(true);

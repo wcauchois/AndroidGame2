@@ -105,6 +105,10 @@ public class AssetCache extends Loggable {
 
     }
 
+    public static void addTexture(Asset asset, Texture tex) {
+        sTextureCache.put(asset, tex);
+    }
+
     public static void reloadTextures() {
         for (Texture t : sTextureCache.values()) {
             t.reload();

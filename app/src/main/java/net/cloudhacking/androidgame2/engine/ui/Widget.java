@@ -28,6 +28,7 @@ public abstract class Widget extends Group<Widget> {
         mWidgetBackgroundImage = null;
     }
 
+    // use Signal here?
     public void onClick(Vec2 pos) {
         /*for (Widget child : mEntities) {
             if (pos.containedBy(child.getBounds())) {

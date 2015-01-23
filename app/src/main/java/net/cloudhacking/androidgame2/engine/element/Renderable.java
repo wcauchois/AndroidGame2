@@ -70,6 +70,10 @@ public class Renderable extends Entity {
         mPos = pos;
     }
 
+    public void setPos(int x, int y) {
+        mPos.set(x, y);
+    }
+
     public void movePos(Vec2 dir) {
         mPos.move(dir);
     }

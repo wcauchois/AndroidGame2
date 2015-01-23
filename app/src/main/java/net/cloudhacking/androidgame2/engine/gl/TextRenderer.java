@@ -16,12 +16,14 @@ import com.google.common.cache.RemovalNotification;
 import net.cloudhacking.androidgame2.engine.utils.Loggable;
 
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by wcauchois on 1/22/15.
  */
 public class TextRenderer extends Loggable {
     public static final int MAX_CACHE_SIZE = 200;
+    public static final long EXPIRATION_TIME_SEC = 30;
 
     public static final float DEFAULT_TEXT_SIZE = 60.0f;
     // Color is stored as a hex value, e.g. 0xFFFFFFFF (4 bytes = rgba)
@@ -126,6 +128,10 @@ public class TextRenderer extends Loggable {
             // Figuring out how wide/high the string actually is is really annoying
             // TODO(wcauchois): Something about either this measurement code or the y coordinate in drawText
             // is broken and its causing text to clip
+            //
+            // (from Andrew) see this:
+            //      http://stackoverflow.com/questions/7549182/android-paint-measuretext-vs-gettextbounds
+
             float measured = paint.measureText(s);
             Rect bounds = new Rect();
             paint.getTextBounds(s, 0, s.length(), bounds);
@@ -146,6 +152,7 @@ public class TextRenderer extends Loggable {
     public TextRenderer() {
         mTextureCache = CacheBuilder.newBuilder()
                 .maximumSize(MAX_CACHE_SIZE)
+                .expireAfterAccess(EXPIRATION_TIME_SEC, TimeUnit.SECONDS)
                 .removalListener(new TextRemovalListener())
                 .build(new TextLoader());
     }

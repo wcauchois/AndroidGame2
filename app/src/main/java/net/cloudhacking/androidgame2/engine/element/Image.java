@@ -40,7 +40,7 @@ public class Image extends Renderable {
     public Image() {
         super(0, 0, 0, 0);
         mVertices = new float[16];
-        mVertexBuffer = BufferUtils.makeEmptyFloatBuffer();
+        mVertexBuffer = BufferUtils.makeQuadFloatBuffer();
         mNeedBufferUpdate = false;
     }
 

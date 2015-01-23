@@ -3,14 +3,19 @@ package net.cloudhacking.androidgame2.engine.element;
 import android.graphics.RectF;
 
 import net.cloudhacking.androidgame2.engine.BasicGLScript;
+import net.cloudhacking.androidgame2.engine.GameSkeleton;
+import net.cloudhacking.androidgame2.engine.gl.FrameBufferObject;
+import net.cloudhacking.androidgame2.engine.gl.PreRenderedTexture;
 import net.cloudhacking.androidgame2.engine.gl.Texture;
 import net.cloudhacking.androidgame2.engine.utils.Asset;
 import net.cloudhacking.androidgame2.engine.utils.AssetCache;
 import net.cloudhacking.androidgame2.engine.utils.BufferUtils;
 import net.cloudhacking.androidgame2.engine.utils.SpriteAsset;
 import net.cloudhacking.androidgame2.engine.utils.TextureFrameSet;
+import net.cloudhacking.androidgame2.engine.utils.Vec2;
 
 import java.nio.FloatBuffer;
+import java.util.concurrent.Callable;
 
 /**
  * Created by Andrew on 1/17/2015.
@@ -76,7 +81,7 @@ public class TileMap extends Renderable {
         mColumns = map.getWidth();
         mRows = map.getHeight();
         mQuadCount = mRows * mColumns;
-        mVertexBuffer = BufferUtils.makeEmptyFloatBuffer(mQuadCount);
+        mVertexBuffer = BufferUtils.makeQuadFloatBuffer(mQuadCount);
 
         setWidth(mCellWidth * mColumns);
         setHeight(mCellHeight * mRows);
@@ -152,6 +157,21 @@ public class TileMap extends Renderable {
         return mCellHeight;
     }
 
+
+    // for setting up frame buffer
+    public Texture getTexture() {
+        return mTexture;
+    }
+
+    public FloatBuffer getVertexBuffer() {
+        return mVertexBuffer;
+    }
+
+    public int getQuadCount() {
+        return mQuadCount;
+    }
+
+
     @Override
     public void draw(BasicGLScript gls) {
         super.draw(gls);
@@ -163,6 +183,42 @@ public class TileMap extends Renderable {
         gls.uModel.setValueM4(getModelMatrix());
 
         gls.drawQuadSet(mVertexBuffer, mQuadCount);
+    }
+
+
+
+    public PreRenderedTexture getPreRendered() {
+
+        PreRenderedTexture result = preRender();
+
+        result.setReloader( new Callable<PreRenderedTexture>() {
+            @Override
+            public PreRenderedTexture call() throws Exception {
+                return preRender();
+            }
+        });
+
+        // add to asset cache so that this can reload when gl context is lost
+        Asset tmp = new Asset("" + this.hashCode());
+
+        AssetCache.addTexture(tmp, result);
+
+        return result;
+    }
+
+
+    private PreRenderedTexture preRender() {
+
+        FrameBufferObject fbo = new FrameBufferObject();
+        BasicGLScript gls = GameSkeleton.getInstance().getGLScript();
+
+        int w = (int)getWidth();
+        int h = (int)getHeight();
+
+        PreRenderedTexture result
+                = fbo.renderToTexture(gls, w, h, true, mTexture, mVertexBuffer, mQuadCount);
+
+        return result;
     }
 
 }

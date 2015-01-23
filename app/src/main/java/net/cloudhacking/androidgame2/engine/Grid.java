@@ -23,9 +23,9 @@ import java.util.Stack;
 public class Grid extends Entity {
 
     /**
-     * This class represents a grid in the game that can be use for path-finding and
-     * placement of in-game entities.  It also contains a listener interface which will
-     * signal the detection of a Cell.
+     * This class represents a grid in the game that can be used for path-finding and
+     * placement of in-game entities.  It also contains a signal that will dispatch upon
+     * the detected selection of a Cell.
      *
      * Pathfinding Functionality:
      *      -generateFloodMap(Cell source); will find all reachable cells from
@@ -50,8 +50,10 @@ public class Grid extends Entity {
 
     public static class SelectorIcon extends Animated {
 
+        private final float BLINK_FREQ = 2;
+
         private final AnimationSequence ANIM
-                = new AnimationSequence(new int[] {0, 1}, 0, 2);
+                = new AnimationSequence(new int[] {0, 1}, 0, BLINK_FREQ);
 
         public SelectorIcon() {
             super(Assets.SELECTOR_ICON);
@@ -371,12 +373,18 @@ public class Grid extends Entity {
     }
 
 
+    public CellPath getBestPath(int startX, int startY, int goalX, int goalY) {
+        return getBestPath( getCell(startX, startY), getCell(goalX, goalY) );
+    }
+
     public CellPath getBestPath(Cell start, Cell goal) {
         return buildCellPath(findPath(start, goal), goal.index);
     }
 
-    // This works the same as getBestPath() except instead returns a linked list of PointF's which
-    // are the centers of the cells on the path.
+    public LinkedList<PointF> getBestPathAsPoints(int startX, int startY, int goalX, int goalY) {
+        return getBestPathAsPoints( getCell(startX, startY), getCell(goalX, goalY) );
+    }
+
     public LinkedList<PointF> getBestPathAsPoints(Cell start, Cell goal) {
         return buildPointPath(findPath(start, goal), goal.index);
     }
@@ -415,11 +423,11 @@ public class Grid extends Entity {
 
 
     private static class CellSortable implements Comparable<CellSortable> {
-        public Cell cell;
+        public int cellIndex;
         public float cost;
 
-        public CellSortable(Cell cell, float cost) {
-            this.cell = cell;
+        public CellSortable(int cellIndex, float cost) {
+            this.cellIndex = cellIndex;
             this.cost = cost;
         }
 
@@ -432,10 +440,9 @@ public class Grid extends Entity {
         }
     }
 
-
     // this fudge factor is supposed to break cost ties:
     //    http://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html#breaking-ties
-    private final float EXPECTED_MAX_PATH_LENGTH = 200;
+    private final float EXPECTED_MAX_PATH_LENGTH = 100;
     private final float FUDGE = 1 + 1/EXPECTED_MAX_PATH_LENGTH;
 
     private float heuristic(Cell c1, Cell c2) {
@@ -448,7 +455,7 @@ public class Grid extends Entity {
         SparseArray<Float> costs = new SparseArray<Float>();
         SparseIntArray history = new SparseIntArray();
 
-        frontier.add(new CellSortable(start, 0f));
+        frontier.add(new CellSortable(start.index, 0f));
         history.put(start.index, -1);
         costs.put(start.index, 0f);
         visited.add(start.index);
@@ -456,7 +463,7 @@ public class Grid extends Entity {
         Cell current;
         float newCost;
         while (!frontier.isEmpty()) {
-            current = frontier.poll().cell;
+            current = getCell( frontier.poll().cellIndex );
 
             if (current.equals(goal)) {
                 return history;
@@ -467,7 +474,7 @@ public class Grid extends Entity {
 
                 if ( !visited.contains(n.index) || newCost<costs.get(n.index) ) {
                     costs.put(n.index, newCost);
-                    frontier.add( new CellSortable(n, newCost + heuristic(n, goal)) );
+                    frontier.add( new CellSortable(n.index, newCost + heuristic(n, goal)) );
                     history.put(n.index, current.index);
                     visited.add(n.index);
                 }
