@@ -98,8 +98,9 @@ public class TestScene extends Scene {
         // UI
 
         RootWidget rootWidget = new RootWidget( getInputManager() );
-        // example of stretching with rect
-        rootWidget.addToFront(new Button(new RectF(0.0f, 0.0f, 300.0f, 100.0f), Assets.OK_BUTTON));
+
+        rootWidget.addToFront(new Button(Assets.OK_BUTTON, 5));
+
 
         // lol i sure got u
         String[] strings = new String[] { "such game", "very wow", "much defence", "amaze", "many towers" };
@@ -107,7 +108,7 @@ public class TestScene extends Scene {
         Random rand = CommonUtils.getRandom();
         for (int i = 0; i < rand.nextInt(3) + 5; i++) {
             rootWidget.addToFront(Label.create(
-                    new PointF(rand.nextFloat() * 400.0f, rand.nextFloat() * 500.0f),
+                    new PointF(rand.nextFloat(), rand.nextFloat()),
                     CommonUtils.randomChoice(strings),
                     TextRenderer.newProps().textColor(CommonUtils.randomChoice(colors))
             ));

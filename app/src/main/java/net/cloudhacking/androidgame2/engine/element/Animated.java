@@ -70,6 +70,10 @@ public class Animated extends Renderable {
         mAnimation = DEFAULT_ANIMATION;
     }
 
+    public Sprite getSprite() {
+        return mSprite;
+    }
+
 
     public void queueAnimation(Animation animation, boolean loop, boolean force) {
         if (force) {

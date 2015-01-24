@@ -14,7 +14,7 @@ import java.util.Random;
 public class PokemonFactory extends SpriteFactory {
 
     private static final float SPEED = 180 /* pixels per second */ ;
-    private static final int MAX_FRAME_INDEX = 492 /* number of pokemon sprites lol! */;
+    private static final int MAX_FRAME_INDEX = 492 /* number of pokemon sprites lol! */ ;
     private static final float TARGET_REACHED_THRESHOLD = 5 /* pixels */ ;
 
     private static final float SPAWN_FREQUENCY = 10f /* spawns per second */ ;
@@ -33,7 +33,9 @@ public class PokemonFactory extends SpriteFactory {
             public PokemonAnimation() {
                 mDestinationReached = false;
                 mCurrentlyAnimating = false;
-                mFrameIndex = mRandGen.nextInt(MAX_FRAME_INDEX + 1);  // generate random pokemon
+                mFrameIndex = mRandGen.nextInt(
+                        PokemonSprite.this.getSprite().getMaxFrameIndex() + 1
+                );
                 setVisibility(false);
             }
 

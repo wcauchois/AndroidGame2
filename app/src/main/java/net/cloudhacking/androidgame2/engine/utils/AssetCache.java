@@ -81,6 +81,7 @@ public class AssetCache extends Loggable {
                 Bitmap bmp = BitmapFactory.decodeStream(stream, null, sBitmapOptions);
 
                 Texture tex = new Texture(bmp, opts);
+                tex.setAsset(asset);
                 sTextureCache.put(asset, tex);
 
                 Log.d(TAG, "successfully loaded texture into cache: " + asset.getFileName());
@@ -96,6 +97,7 @@ public class AssetCache extends Loggable {
             // check if the stored textures options equal the requested options
             if (!tex.getOptions().equals(opts)) {
                 tex = new Texture(tex.getBitmap(), opts);
+                tex.setAsset(asset);
                 sTextureCache.put(asset, tex);
                 return tex;
 
@@ -158,7 +160,11 @@ public class AssetCache extends Loggable {
         for (Texture t : sTextureCache.values()) {
             t.delete();
         }
+        for (PreRenderedTexture p : sPreRenderedCache.values()) {
+            p.delete();
+        }
         sTextureCache.clear();
+        sPreRenderedCache.clear();
         sSpriteCache.clear();
     }
 

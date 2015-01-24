@@ -13,7 +13,11 @@ import net.cloudhacking.androidgame2.engine.utils.PointF;
 public class Label extends Widget {
     public static Label create(PointF topLeft, String msg, TextRenderer.TextProps textProps) {
         Texture tex = TextRenderer.getInstance().getTexture(msg, textProps);
-        RectF bounds = new RectF(topLeft.x, topLeft.y, topLeft.x + tex.getWidth(), topLeft.y + tex.getHeight());
+
+        float relativeWidth = (float)tex.getWidth() / Widget.getRootWidth();
+        float relativeHeight = (float)tex.getHeight() / Widget.getRootHeight();
+
+        RectF bounds = new RectF(topLeft.x, topLeft.y, topLeft.x + relativeWidth, topLeft.y + relativeHeight);
         return new Label(tex, bounds);
     }
 
@@ -22,7 +26,7 @@ public class Label extends Widget {
     }
 
     public Label(Texture tex, RectF bounds) {
-        super(bounds);
+        super(bounds, Utils.BindLocation.NULL);
         setBackgroundImage(new Image(tex));
     }
 }

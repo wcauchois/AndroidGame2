@@ -91,17 +91,17 @@ public class FrameBufferObject extends Loggable {
         // bind the texture to be drawn to the frame buffer
         tex.bind();
 
+        // set clear color to be completely transparent
         GLES20.glClearColor(0, 0, 0, 0);
         GLES20.glClear( GLES20.GL_COLOR_BUFFER_BIT );
 
         // store the touch screen's viewport and temporarily set the gl viewport
-        // to the given width and height
+        // to the width and height of the new texture
         Rect oldViewport = GameSkeleton.getInstance().getViewport();
         GLES20.glViewport(0, 0, w, h);
 
-        // set camera matrix to scale vertices to the [-1,1] range.
+        // set camera matrix to scale vertices to the [-1,1]X[-1,1] range.
         // (This matrix actually looks transposed because GL matrices are column major.)
-
         float[] cam;
 
         if (centered) {

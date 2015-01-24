@@ -143,7 +143,9 @@ public abstract class GameSkeleton
     public void onSurfaceChanged(GL10 unused, int width, int height) {
         GLES20.glViewport(0, 0, width, height);
         Camera.setView(width, height);
-        mCameraController.getUICamera().update();  // update UI camera matrix for new viewport
+
+        // update UI camera matrix for new viewport
+        mCameraController.getUICamera().onSurfaceChange(width, height);
 
         mViewport = new Rect(0, 0, width, height);
 

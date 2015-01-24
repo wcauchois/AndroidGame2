@@ -10,7 +10,8 @@ import net.cloudhacking.androidgame2.engine.utils.InputManager;
 public class RootWidget extends Widget {
 
     public RootWidget(InputManager inputManager) {
-        super(new RectF(0, 0, 0, 0));
+        // set rect to be 100% width and 100% height
+        super(new RectF(0, 0, Widget.getRootWidth(), Widget.getRootHeight()));
     }
 
 }

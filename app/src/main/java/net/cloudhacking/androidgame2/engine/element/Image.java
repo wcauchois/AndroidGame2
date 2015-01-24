@@ -27,7 +27,6 @@ public class Image extends Renderable {
      * Note: the point defined by setPos() is meant to be the center point of the image.
      */
 
-    private Asset mAsset;
     private Texture mTexture = null;
     private RectF mFrame;
 
@@ -92,7 +91,6 @@ public class Image extends Renderable {
 
 
     public void setTexture(Asset asset) {
-        mAsset = asset;
         mTexture = AssetCache.getTexture(asset);
         setFrame(new RectF(0, 0, 1, 1));
     }

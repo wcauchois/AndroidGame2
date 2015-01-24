@@ -5,6 +5,7 @@ import android.graphics.RectF;
 import android.opengl.GLES20;
 import android.opengl.GLUtils;
 
+import net.cloudhacking.androidgame2.engine.utils.Asset;
 import net.cloudhacking.androidgame2.engine.utils.Loggable;
 
 /**
@@ -75,6 +76,7 @@ public class Texture extends Loggable {
     }
 
 
+    private Asset mAsset;
     protected int mHandle;
     private boolean mPreMultiplied=false;
     // whether or not alpha value has been pre-multiplied (I think...)
@@ -92,6 +94,7 @@ public class Texture extends Loggable {
 
 
     public Texture(int w, int h) {
+        mAsset = null;
         mHandle = genNewHandle();
         mWidth = w;
         mHeight = h;
@@ -126,6 +129,14 @@ public class Texture extends Loggable {
         int[] handles = new int[1];
         GLES20.glGenTextures(1, handles, 0);
         return handles[0];
+    }
+
+    public void setAsset(Asset asset) {
+        mAsset = asset;
+    }
+
+    public Asset getAsset() {
+        return mAsset;
     }
 
     public int getHandle() {
