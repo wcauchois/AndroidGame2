@@ -70,7 +70,7 @@ public class Renderable extends Entity {
         mPos = pos;
     }
 
-    public void setPos(int x, int y) {
+    public void setPos(float x, float y) {
         mPos.set(x, y);
     }
 

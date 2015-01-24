@@ -56,7 +56,7 @@ public class TestScene extends Scene {
         mTileMap = new TileMap( Assets.TEST_TILESET, new JsonMap(Resources.JSON_MAP_SIMPLE) );
 
         Image tilemap = new Image( mTileMap.getPreRendered() );
-        tilemap.movePos(tilemap.getWidth()/2, tilemap.getHeight()/2);
+        tilemap.moveToOrigin();
         mActiveCameraGroup.add( tilemap );
 
 

@@ -89,6 +89,10 @@ public class Image extends Renderable {
         setScaleY( height/getHeight() );
     }
 
+    public void moveToOrigin() {
+        setPos( getScaledWidth()/2 , getScaledHeight()/2 );
+    }
+
 
     public void setTexture(Asset asset) {
         mTexture = AssetCache.getTexture(asset);

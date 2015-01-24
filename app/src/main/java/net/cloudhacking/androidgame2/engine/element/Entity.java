@@ -111,6 +111,9 @@ public class Entity extends Loggable {
         mParent.fastRemove(this);
     }
 
+    public void onAdd() {}
+
+    public void onRemove() {}
 
     public void update() {}
 

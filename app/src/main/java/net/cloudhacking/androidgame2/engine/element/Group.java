@@ -63,12 +63,16 @@ public class Group<E extends Entity> extends Entity {
             if (mEntities.get(i)==null) {
                 mEntities.set(i, e);
                 e.setParent(this);
+
+                e.onAdd();
                 return e;
             }
         }
         mEntities.add(e);
         e.setParent(this);
         length++;
+
+        e.onAdd();
         return e;
     }
 
@@ -83,6 +87,8 @@ public class Group<E extends Entity> extends Entity {
         mEntities.add(e);
         e.setParent(this);
         length++;
+
+        e.onAdd();
         return e;
     }
 
@@ -99,6 +105,8 @@ public class Group<E extends Entity> extends Entity {
         int index = mEntities.indexOf(e);
         if (index != -1) {
             mEntities.set(index, null);
+
+            e.onRemove();
             e.setParent(null);
             return e;
         } else {
@@ -109,6 +117,8 @@ public class Group<E extends Entity> extends Entity {
     public E remove(E e) {
         if (mEntities.remove(e)) {
             length--;
+
+            e.onRemove();
             e.setParent(null);
             return e;
         } else {
@@ -122,6 +132,8 @@ public class Group<E extends Entity> extends Entity {
         for (int i=0; i<length; i++) {
             e = mEntities.get(i);
             if (e != null) {
+
+                e.onRemove();
                 e.setParent(null);
             }
         }

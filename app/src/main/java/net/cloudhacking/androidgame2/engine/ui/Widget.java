@@ -69,7 +69,7 @@ public abstract class Widget extends Group<Widget> {
     }
 
     public Widget(RectF bounds) {
-        this(bounds, BindLocation.TOP_LEFT);
+        this(bounds, BindLocation.NULL);
     }
 
     public Widget() {
