@@ -1,5 +1,6 @@
 package net.cloudhacking.androidgame2.engine.gl;
 
+import android.graphics.RectF;
 import android.opengl.GLES20;
 
 import net.cloudhacking.androidgame2.engine.utils.BufferUtils;
@@ -68,5 +69,46 @@ public class QuadDrawer extends Loggable {
     public static void drawQuadSet(int quadCount) {
         GLES20.glDrawElements(GLES20.GL_TRIANGLES, SIZE * quadCount,
                 GLES20.GL_UNSIGNED_SHORT, getIndexBuffer(quadCount));
+    }
+
+
+    public static void fillVertices(float[] v, RectF r) {
+        fillVertices(v, r.left, r.top, r.right, r.bottom);
+    }
+
+    public static void fillVertices(float[] v, float lt, float tp, float rt, float bm) {
+
+        v[0] 	= lt;
+        v[1] 	= tp;
+
+        v[4] 	= rt;
+        v[5] 	= tp;
+
+        v[8] 	= rt;
+        v[9] 	= bm;
+
+        v[12]	= lt;
+        v[13]	= bm;
+
+    }
+
+    public static void fillUVCoords(float[] v, RectF r) {
+        fillUVCoords(v, r.left, r.top, r.right, r.bottom);
+    }
+
+    public static void fillUVCoords(float[] v, float lt, float tp, float rt, float bm) {
+
+        v[2]  = lt;
+        v[3]  = tp;
+
+        v[6]  = rt;
+        v[7]  = tp;
+
+        v[10] = rt;
+        v[11] = bm;
+
+        v[14] = lt;
+        v[15] = bm;
+
     }
 }

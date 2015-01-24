@@ -4,8 +4,6 @@ import android.graphics.RectF;
 
 import net.cloudhacking.androidgame2.engine.BasicGLScript;
 import net.cloudhacking.androidgame2.engine.element.Group;
-import net.cloudhacking.androidgame2.engine.element.Image;
-import net.cloudhacking.androidgame2.engine.utils.Asset;
 import net.cloudhacking.androidgame2.engine.utils.PointF;
 import net.cloudhacking.androidgame2.engine.utils.Vec2;
 
@@ -40,7 +38,7 @@ public abstract class Widget extends Group<Widget> {
         return sRootHeight;
     }
 
-
+    // bind widget to location within parent's bounding box
     public static enum BindLocation {
         TOP_LEFT,
         TOP_RIGHT,
@@ -58,14 +56,15 @@ public abstract class Widget extends Group<Widget> {
     /**********************************************************************************************/
 
     protected RectF mBounds;
-    private Image mWidgetBackgroundImage;
+    private WidgetBackground mBackground;
+    private boolean mNeedBGUpdate;
     private BindLocation mBindLocation;
 
     public Widget(RectF bounds, BindLocation loc) {
-        mWidgetBackgroundImage = null;
+        mBackground = null;
+        mNeedBGUpdate = false;
         mBindLocation = loc;
-        mBounds = bounds;
-        setBindLocation(loc);
+        setBounds(bounds);
     }
 
     public Widget(RectF bounds) {
@@ -83,6 +82,8 @@ public abstract class Widget extends Group<Widget> {
 
     public void setBounds(RectF bounds) {
         mBounds = bounds;
+        setBindLocation(mBindLocation);
+        mNeedBGUpdate = true;
     }
 
     public PointF getTopLeft() {
@@ -162,12 +163,9 @@ public abstract class Widget extends Group<Widget> {
         }
     }
 
-    public void setBackgroundImage(Image image) {
-        mWidgetBackgroundImage = image;
-    }
-
-    public void setBackgroundImage(Asset imgAsset) {
-        setBackgroundImage( new Image(imgAsset) );
+    public void setBackgroundImage(WidgetBackground bg) {
+        mBackground = bg;
+        mNeedBGUpdate = true;
     }
 
 
@@ -186,16 +184,17 @@ public abstract class Widget extends Group<Widget> {
 
     @Override
     public void update() {
-        if (mWidgetBackgroundImage != null) {
-            mWidgetBackgroundImage.setToRect(getAbsoluteBounds());
-            mWidgetBackgroundImage.update();
+        if (mBackground != null && mNeedBGUpdate)
+        {
+            mBackground.setToRect(getAbsoluteBounds());
+            mBackground.update();
         }
         super.update();
     }
 
     @Override
     public void draw(BasicGLScript gls) {
-        if (mWidgetBackgroundImage != null) mWidgetBackgroundImage.draw(gls);
+        if (mBackground != null) mBackground.draw(gls);
         super.draw(gls);
     }
 

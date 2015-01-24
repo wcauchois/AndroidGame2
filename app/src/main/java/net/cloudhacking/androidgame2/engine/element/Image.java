@@ -3,7 +3,9 @@ package net.cloudhacking.androidgame2.engine.element;
 import android.graphics.RectF;
 
 import net.cloudhacking.androidgame2.engine.BasicGLScript;
+import net.cloudhacking.androidgame2.engine.gl.QuadDrawer;
 import net.cloudhacking.androidgame2.engine.gl.Texture;
+import net.cloudhacking.androidgame2.engine.ui.WidgetBackground;
 import net.cloudhacking.androidgame2.engine.utils.Asset;
 import net.cloudhacking.androidgame2.engine.utils.AssetCache;
 import net.cloudhacking.androidgame2.engine.utils.BufferUtils;
@@ -14,7 +16,7 @@ import java.nio.FloatBuffer;
 /**
  * Created by Andrew on 1/18/2015.
  */
-public class Image extends Renderable {
+public class Image extends Renderable implements WidgetBackground {
 
     /**
      * This class represents a static texture. It's size will be the same size as the bitmap of the
@@ -128,23 +130,11 @@ public class Image extends Renderable {
 
 
     private void updateFrame() {  // UV coordinates
-
-        mVertices[2]  = mFrame.left;
-        mVertices[3]  = mFrame.top;
-
-        mVertices[6]  = mFrame.right;
-        mVertices[7]  = mFrame.top;
-
-        mVertices[10] = mFrame.right;
-        mVertices[11] = mFrame.bottom;
-
-        mVertices[14] = mFrame.left;
-        mVertices[15] = mFrame.bottom;
-
+        QuadDrawer.fillUVCoords(mVertices, mFrame);
         mNeedBufferUpdate = true;
     }
 
-    private void updateVertices() {  // scene coordinates
+    private void updateVertices() {  // scene coordinates, centered on position
 
         float halfWidth = getWidth()/2, halfHeight = getHeight()/2;
 
@@ -172,10 +162,6 @@ public class Image extends Renderable {
     public void draw(BasicGLScript gls) {
         super.draw(gls);
         mTexture.bind();
-
-        gls.setLighting(getColorM(), getColorA());
-
-        gls.uModel.setValueM4(getModelMatrix());
 
         // only regenerate the vertex buffer if vertices have been changed
         if (mNeedBufferUpdate) {

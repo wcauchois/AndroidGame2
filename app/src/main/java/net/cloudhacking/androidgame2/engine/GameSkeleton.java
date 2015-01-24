@@ -4,6 +4,7 @@ import android.graphics.Rect;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -38,6 +39,7 @@ public abstract class GameSkeleton
 
     private Bundle mSavedInstanceState;
     private GLSurfaceView mView;
+    private float mScreenDensity;
     private Rect mViewport;
     private BasicGLScript mGLScript;
     private Scene mScene;
@@ -55,6 +57,10 @@ public abstract class GameSkeleton
 
     public Rect getViewport() {
         return mViewport;
+    }
+
+    public float getScreenDensity() {
+        return mScreenDensity;
     }
 
     public Scene getScene() {
@@ -93,11 +99,15 @@ public abstract class GameSkeleton
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        mView = new GLSurfaceView( this );
+        DisplayMetrics m = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(m);
+        mScreenDensity = m.density;
+
+        mView = new GLSurfaceView(this);
         mView.setEGLContextClientVersion(2);
         mView.setEGLConfigChooser(false);
         mView.setRenderer(this);
-        setContentView( mView );
+        setContentView(mView);
 
         mGLScript = null;
 

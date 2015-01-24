@@ -83,7 +83,7 @@ public class TestScene extends Scene {
         getInputManager().clickUp.connect( new Signal.Listener<InputManager.ClickEvent>() {
             @Override
             public boolean onSignal(InputManager.ClickEvent clickEvent) {
-                mFXFactory.spawnAt(getActiveCamera().cameraToScene(clickEvent.getPos()));
+                mFXFactory.spawnAt(activeCameraToScene( clickEvent.getPos() ));
                 return false;
             }
         });
@@ -100,9 +100,8 @@ public class TestScene extends Scene {
 
         RootWidget rootWidget = new RootWidget( getInputManager() );
 
-        float buttonScale = 5;
-        Widget.BindLocation buttonLoc = Widget.BindLocation.CENTER_TOP;
-        rootWidget.addToFront(new Button(Assets.OK_BUTTON, buttonLoc, buttonScale));
+        Widget.BindLocation buttonLoc = Widget.BindLocation.CENTER;
+        //rootWidget.addToFront(new Button(Assets.UI_SIMPLE, .1f, .1f, buttonLoc));
 
 
         // lol i sure got u
@@ -123,7 +122,7 @@ public class TestScene extends Scene {
 
 
 
-        //getActiveCamera().setBoundaryRect(mTileMap.getRect());
+        getActiveCamera().setBoundaryRect(mTileMap.getRect());
         return this;
     }
 

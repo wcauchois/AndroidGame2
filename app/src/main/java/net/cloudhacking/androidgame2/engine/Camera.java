@@ -39,7 +39,7 @@ public class Camera extends Loggable {
     }
 
 
-    public PointF mFocus; // XXX
+    private PointF mFocus;
     private Renderable mTarget;
 
     private float mZoom;
@@ -70,6 +70,10 @@ public class Camera extends Loggable {
         mFocus = new PointF(br.centerX(), br.centerY());
         mMinZoom = Math.max(sViewWidth/br.right, sViewHeight/br.bottom);
         setZoom( mMinZoom );
+    }
+
+    public void setBoundary(int sceneX, int sceneY) {
+        setBoundaryRect( new RectF(0, 0, sceneX, sceneY) );
     }
 
 
@@ -105,11 +109,12 @@ public class Camera extends Loggable {
     }
 
 
-    float hwz, hhz, lb, tb, rb, bb;
     private void enforceBounds() {
         if (mCheckBounds) {
-            hwz = sViewWidth / (2 * mZoom);
-            hhz = sViewHeight / (2 * mZoom);
+            float hwz, hhz, lb, tb, rb, bb;
+
+            hwz = sViewWidth / (2 * mZoom);     // half of the zoomed width
+            hhz = sViewHeight / (2 * mZoom);    // half of the zoomed height
 
             lb = mFocus.x;
             tb = mFocus.y;

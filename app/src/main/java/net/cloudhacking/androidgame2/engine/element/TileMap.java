@@ -160,13 +160,7 @@ public class TileMap extends PreRenderable {
     @Override
     public void draw(BasicGLScript gls) {
         super.draw(gls);
-
         mTexture.bind();
-
-        gls.setLighting(getColorM(), getColorA());
-
-        gls.uModel.setValueM4(getModelMatrix());
-
         gls.drawQuadSet(mVertexBuffer, mQuadCount);
     }
 
