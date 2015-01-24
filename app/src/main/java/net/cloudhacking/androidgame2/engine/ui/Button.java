@@ -26,4 +26,9 @@ public class Button extends Widget {
         setBackgroundImage( new Image(background) );
     }
 
+    public Button(Asset buttonTex, BindLocation loc, float scale) {
+        this(buttonTex, scale);
+        setBindLocation(loc);
+    }
+
 }

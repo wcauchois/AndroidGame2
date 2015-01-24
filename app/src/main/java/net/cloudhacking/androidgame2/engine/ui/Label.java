@@ -26,7 +26,7 @@ public class Label extends Widget {
     }
 
     public Label(Texture tex, RectF bounds) {
-        super(bounds, Utils.BindLocation.NULL);
+        super(bounds, BindLocation.NULL);
         setBackgroundImage(new Image(tex));
     }
 }

@@ -2,7 +2,7 @@ package net.cloudhacking.androidgame2.engine;
 
 import android.graphics.RectF;
 
-import net.cloudhacking.androidgame2.engine.ui.Utils;
+import net.cloudhacking.androidgame2.engine.ui.UICamera;
 import net.cloudhacking.androidgame2.engine.utils.InputManager;
 import net.cloudhacking.androidgame2.engine.utils.Loggable;
 import net.cloudhacking.androidgame2.engine.utils.Signal;
@@ -13,7 +13,7 @@ import net.cloudhacking.androidgame2.engine.utils.Signal;
 public class CameraController extends Loggable {
 
     private Camera mActiveCamera;
-    private Utils.UICamera mUICamera;
+    private UICamera mUICamera;
     private boolean mDisabled;
 
     private float mRelativeScaleSpan;
@@ -23,7 +23,7 @@ public class CameraController extends Loggable {
 
     public CameraController(InputManager inputManager) {
         mActiveCamera = new Camera();
-        mUICamera = new Utils.UICamera();
+        mUICamera = new UICamera();
         mDisabled = false;
 
         inputManager.drag.connect(new Signal.Listener<InputManager.DragEvent>() {
@@ -71,7 +71,7 @@ public class CameraController extends Loggable {
         return mActiveCamera;
     }
 
-    public Utils.UICamera getUICamera() {
+    public UICamera getUICamera() {
         return mUICamera;
     }
 

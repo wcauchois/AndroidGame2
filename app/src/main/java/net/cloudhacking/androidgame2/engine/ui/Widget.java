@@ -5,7 +5,6 @@ import android.graphics.RectF;
 import net.cloudhacking.androidgame2.engine.BasicGLScript;
 import net.cloudhacking.androidgame2.engine.element.Group;
 import net.cloudhacking.androidgame2.engine.element.Image;
-import net.cloudhacking.androidgame2.engine.ui.Utils.BindLocation;
 import net.cloudhacking.androidgame2.engine.utils.Asset;
 import net.cloudhacking.androidgame2.engine.utils.PointF;
 import net.cloudhacking.androidgame2.engine.utils.Vec2;
@@ -39,6 +38,20 @@ public abstract class Widget extends Group<Widget> {
 
     public static int getRootHeight() {
         return sRootHeight;
+    }
+
+
+    public static enum BindLocation {
+        TOP_LEFT,
+        TOP_RIGHT,
+        BOTTOM_LEFT,
+        BOTTOM_RIGHT,
+        CENTER_LEFT,
+        CENTER_TOP,
+        CENTER_RIGHT,
+        CENTER_BOTTOM,
+        CENTER,
+        NULL  // don't bind
     }
 
 
@@ -185,4 +198,6 @@ public abstract class Widget extends Group<Widget> {
         if (mWidgetBackgroundImage != null) mWidgetBackgroundImage.draw(gls);
         super.draw(gls);
     }
+
+
 }

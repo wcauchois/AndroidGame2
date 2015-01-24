@@ -13,6 +13,7 @@ import net.cloudhacking.androidgame2.engine.gl.TextRenderer;
 import net.cloudhacking.androidgame2.engine.ui.Button;
 import net.cloudhacking.androidgame2.engine.ui.Label;
 import net.cloudhacking.androidgame2.engine.ui.RootWidget;
+import net.cloudhacking.androidgame2.engine.ui.Widget;
 import net.cloudhacking.androidgame2.engine.utils.CommonUtils;
 import net.cloudhacking.androidgame2.engine.utils.InputManager;
 import net.cloudhacking.androidgame2.engine.utils.JsonMap;
@@ -99,7 +100,9 @@ public class TestScene extends Scene {
 
         RootWidget rootWidget = new RootWidget( getInputManager() );
 
-        rootWidget.addToFront(new Button(Assets.OK_BUTTON, 5));
+        float buttonScale = 5;
+        Widget.BindLocation buttonLoc = Widget.BindLocation.CENTER_TOP;
+        rootWidget.addToFront(new Button(Assets.OK_BUTTON, buttonLoc, buttonScale));
 
 
         // lol i sure got u
