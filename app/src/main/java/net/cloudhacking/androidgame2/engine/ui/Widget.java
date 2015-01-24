@@ -52,6 +52,7 @@ public abstract class Widget extends Group<Widget> {
         mWidgetBackgroundImage = null;
         mBindLocation = loc;
         mBounds = bounds;
+        setBindLocation(loc);
     }
 
     public Widget(RectF bounds) {
@@ -60,26 +61,6 @@ public abstract class Widget extends Group<Widget> {
 
     public Widget() {
         this( new RectF(0, 0, 1, 1) );
-    }
-
-
-    // override these so this widget has access to root widget when setting up bounds
-    @Override
-    public Widget add(Widget w) {
-        super.add(w);
-        w.onAdd();
-        return w;
-    }
-
-    @Override
-    public Widget addToFront(Widget w) {
-        super.addToFront(w);
-        w.onAdd();
-        return w;
-    }
-
-    public void onAdd() {
-        updateBounds();
     }
 
 
@@ -93,13 +74,6 @@ public abstract class Widget extends Group<Widget> {
 
     public PointF getTopLeft() {
         return new PointF(mBounds.left, mBounds.top);
-    }
-
-    public void updateBounds() {
-        setBindLocation(mBindLocation);
-        if (mWidgetBackgroundImage != null) {
-            mWidgetBackgroundImage.setToRect(getAbsoluteBounds());
-        }
     }
 
     public RectF getAbsoluteBounds() {
@@ -128,6 +102,7 @@ public abstract class Widget extends Group<Widget> {
     }
 
     public void setBindLocation(BindLocation loc) {
+        // this function assumes that bounding rect coords are between 0 and 1
         mBindLocation = loc;
         float w = mBounds.width();
         float h = mBounds.height();
@@ -198,7 +173,10 @@ public abstract class Widget extends Group<Widget> {
 
     @Override
     public void update() {
-        if (mWidgetBackgroundImage != null) mWidgetBackgroundImage.update();
+        if (mWidgetBackgroundImage != null) {
+            mWidgetBackgroundImage.setToRect(getAbsoluteBounds());
+            mWidgetBackgroundImage.update();
+        }
         super.update();
     }
 
