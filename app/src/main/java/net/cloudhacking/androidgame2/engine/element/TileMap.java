@@ -165,9 +165,6 @@ public class TileMap extends PreRenderable {
     }
 
 
-    /**********************************************************************************************/
-    // pre-rendering
-
     @Override
     public PreRenderedTexture preRender() {
 
@@ -177,10 +174,7 @@ public class TileMap extends PreRenderable {
         int w = (int)getWidth();
         int h = (int)getHeight();
 
-        PreRenderedTexture result
-                = fbo.renderToTexture(gls, w, h, true, mTexture, mVertexBuffer, mQuadCount);
-
-        return result;
+        return fbo.renderToTexture(gls, w, h, true, mTexture, mVertexBuffer, mQuadCount);
     }
 
 }

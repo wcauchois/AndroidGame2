@@ -208,8 +208,8 @@ public class Renderable extends Entity {
     @Override
     public void draw(BasicGLScript gls) {
         updateMotion();
-        gls.setLighting(getColorM(), getColorA());
-        gls.uModel.setValueM4(getModelMatrix());
+        gls.setLighting(mColorM, mColorA);
+        gls.uModel.setValueM4(mModelMatrix);
     }
 
     @Override

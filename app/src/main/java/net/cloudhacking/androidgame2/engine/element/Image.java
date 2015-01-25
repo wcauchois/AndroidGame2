@@ -61,9 +61,8 @@ public class Image extends Renderable implements WidgetBackground {
     }
 
 
-    /**
-     * Move and scale this image to the size of the given rectangle
-     */
+
+    @Override
     public void setToRect(RectF r) {
         float w = r.width(), h = r.height();
 

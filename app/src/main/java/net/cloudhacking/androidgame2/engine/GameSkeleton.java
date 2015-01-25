@@ -26,9 +26,7 @@ public abstract class GameSkeleton
         implements GLSurfaceView.Renderer
 {
     /**
-     * This is the basic game renderer loop.  This is meant to contain an instance of
-     * CameraController, an instance of InputManager, and an instance of the GLScript; all of which
-     * can all be accessed through the scene instance.
+     * This is the basic game renderer loop.
      *
      * Once the scene is set, using setScene(scene), it will automatically be created and
      * the render loop will be started.
@@ -220,7 +218,7 @@ public abstract class GameSkeleton
 
             mGLScript.clearLastCamera();
             GLES20.glScissor(0, 0, mViewport.width(), mViewport.height());
-            GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
+            GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
 
             mScene.draw(mGLScript);
         }

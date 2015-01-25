@@ -12,10 +12,10 @@ import net.cloudhacking.androidgame2.engine.utils.NinePatchAsset;
 /**
  * Created by wcauchois on 1/21/15.
  */
-public class Button extends Widget {
+public class Button extends TouchWidget {
 
     public Button(RectF bounds, Asset asset) {
-        super(bounds);
+        super(bounds, BindLocation.NULL);
         setBackgroundImage( new Image(asset) );
     }
 
@@ -47,6 +47,12 @@ public class Button extends Widget {
         float sw = w * Widget.getRootWidth();
         float sh = h * Widget.getRootHeight();
         setBackgroundImage( new NinePatch(npa, sw, sh) );
+    }
+
+
+    @Override
+    public void onClick() {
+        Widget.widgetSelector.dispatch(this);
     }
 
 }

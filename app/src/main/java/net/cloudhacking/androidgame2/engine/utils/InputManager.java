@@ -24,7 +24,7 @@ public class InputManager
      * This class is the interface between android's touch screen and our Signal triggers.
      */
 
-    public Signal<ClickEvent> clickUp = new Signal<ClickEvent>();
+    public Signal<ClickEvent> click = new Signal<ClickEvent>();
     public Signal<StartDragEvent> startDrag = new Signal<StartDragEvent>();
     public Signal<DragEvent> drag = new Signal<DragEvent>();
     public Signal<ScaleEvent> startScale = new Signal<ScaleEvent>();
@@ -267,7 +267,7 @@ public class InputManager
         protected void doDispatch() {
             switch (mEventType) {
                 case CLICK_UP:
-                    clickUp.dispatch(this);
+                    click.dispatch(this);
                     break;
                 case CLICK_DOWN:
                     // Currently no click down signal.

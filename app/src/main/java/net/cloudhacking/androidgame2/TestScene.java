@@ -1,14 +1,12 @@
 package net.cloudhacking.androidgame2;
 
 import android.graphics.Color;
-import android.graphics.RectF;
 
 import net.cloudhacking.androidgame2.engine.BasicGLScript;
 import net.cloudhacking.androidgame2.engine.CameraGroup;
 import net.cloudhacking.androidgame2.engine.Grid;
 import net.cloudhacking.androidgame2.engine.Scene;
 import net.cloudhacking.androidgame2.engine.element.Image;
-import net.cloudhacking.androidgame2.engine.element.NinePatch;
 import net.cloudhacking.androidgame2.engine.element.TileMap;
 import net.cloudhacking.androidgame2.engine.gl.TextRenderer;
 import net.cloudhacking.androidgame2.engine.ui.Button;
@@ -40,7 +38,6 @@ public class TestScene extends Scene {
 
 
     // for testing
-    private ExplosionFactory mFXFactory;
     private PokemonFactory mPokeFactory;
 
 
@@ -76,21 +73,6 @@ public class TestScene extends Scene {
 
 
 
-        // test explosion factory...
-        // spawn an explosion animation on mouse click
-        mFXFactory = new ExplosionFactory();
-        mActiveCameraGroup.add(mFXFactory);
-
-        getInputManager().clickUp.connect( new Signal.Listener<InputManager.ClickEvent>() {
-            @Override
-            public boolean onSignal(InputManager.ClickEvent clickEvent) {
-                mFXFactory.spawnAt(activeCameraToScene(clickEvent.getPos()));
-                return false;
-            }
-        });
-
-
-
         // this is my favorite... POKEMON FACTORY!!!
         mPokeFactory = new PokemonFactory(mGrid);
         mPokeFactory.start();
@@ -101,8 +83,8 @@ public class TestScene extends Scene {
 
         RootWidget rootWidget = new RootWidget( getInputManager() );
 
-        Widget.BindLocation buttonLoc = Widget.BindLocation.CENTER;
-        rootWidget.addToFront(new Button(Assets.UI_SIMPLE, .1f, .1f, buttonLoc));
+
+        rootWidget.addToFront(new Button(Assets.UI_SIMPLE, 1, .07f, Widget.BindLocation.CENTER_TOP));
 
 
         // lol i sure got u
@@ -120,7 +102,7 @@ public class TestScene extends Scene {
         mUICameraGroup.add(rootWidget);
 
 
-        //getActiveCamera().setBoundaryRect(mTileMap.getRect());
+        getActiveCamera().setBoundaryRect(mTileMap.getRect());
         return this;
     }
 

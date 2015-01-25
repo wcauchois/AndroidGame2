@@ -197,7 +197,7 @@ public class Grid extends Entity {
             }
         }
 
-        GameSkeleton.getInstance().getInputManager().clickUp.connect(new CellSelector());
+        GameSkeleton.getInstance().getInputManager().click.connect(new CellSelector());
     }
 
     public Grid(TileMap map) {

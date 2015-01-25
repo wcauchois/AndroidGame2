@@ -114,11 +114,6 @@ public class Animated extends Renderable {
     @Override
     public void draw(BasicGLScript gls) {
         super.draw(gls);
-
-        // set other uniforms before drawing sprite
-        gls.setLighting(getColorM(), getColorA());
-        gls.uModel.setValueM4(getModelMatrix());
-
         mSprite.drawSpriteFrame(gls, mAnimation.getCurrentFrameIndex());
     }
 
@@ -141,7 +136,7 @@ public class Animated extends Renderable {
         public AnimationSequence(int[] seq, int defaultIndex, float fps) {
             mAnimationSeq = seq;
             mDefaultFrameIndex = defaultIndex;
-            mCurrentFrame = 0;
+            mCurrentFrame = defaultIndex;
             mFrameSwitchTime = 1/fps;
             mThreshold = 0;
 
@@ -151,13 +146,13 @@ public class Animated extends Renderable {
         @Override
         public void start() {
             mCurrentlyAnimating = true;
+            mCurrentFrame = 0;
             mThreshold = 0;
         }
 
         @Override
         public void reset() {
-            mThreshold = 0;
-            mCurrentFrame = 0;
+            mCurrentFrame = mDefaultFrameIndex;
             mCurrentlyAnimating = false;
         }
 

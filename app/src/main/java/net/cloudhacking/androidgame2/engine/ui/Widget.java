@@ -5,6 +5,7 @@ import android.graphics.RectF;
 import net.cloudhacking.androidgame2.engine.BasicGLScript;
 import net.cloudhacking.androidgame2.engine.element.Group;
 import net.cloudhacking.androidgame2.engine.utils.PointF;
+import net.cloudhacking.androidgame2.engine.utils.Signal;
 import net.cloudhacking.androidgame2.engine.utils.Vec2;
 
 /**
@@ -51,6 +52,10 @@ public abstract class Widget extends Group<Widget> {
         CENTER,
         NULL  // don't bind
     }
+
+
+    // connect listeners to this for widget touch events
+    public static Signal<TouchWidget> widgetSelector = new Signal<TouchWidget>();
 
 
     /**********************************************************************************************/
@@ -169,23 +174,9 @@ public abstract class Widget extends Group<Widget> {
     }
 
 
-
-
-    // use Signal here?
-    public void onClick(Vec2 pos) {
-        /*for (Widget child : mEntities) {
-            if (pos.containedBy(child.getBounds())) {
-                child.onClick(pos.subtract(child.getTopLeft()));
-            }
-        }*/
-    }
-
-
-
     @Override
     public void update() {
-        if (mBackground != null && mNeedBGUpdate)
-        {
+        if (mBackground != null && mNeedBGUpdate) {
             mBackground.setToRect(getAbsoluteBounds());
             mBackground.update();
             mNeedBGUpdate = false;

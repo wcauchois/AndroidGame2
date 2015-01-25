@@ -79,20 +79,13 @@ public class NinePatch extends Renderable implements WidgetBackground {
         float cr = (float)mCenterPatch.right;
         float cb = (float)mCenterPatch.bottom;
 
-        float scaleH = (w - mMinWidth)/mCenterPatch.width();
-        float scaleV = (h - mMinHeight)/mCenterPatch.height();
-
-        float crs = cl + scaleH * mCenterPatch.width();
-        float cbs = ct + scaleV * mCenterPatch.height();
+        float crs = cl + w - mMinWidth;
+        float cbs = ct + h - mMinHeight;
 
         float cluv = cl/tw;
         float ctuv = ct/th;
         float cruv = cr/tw;
         float cbuv = cb/th;
-
-        d("minW="+mMinWidth+", minH="+mMinHeight);
-        d("cluv="+cluv+", ctuv="+ctuv+", cruv="+cruv+", cbuv="+cbuv+", tw="+tw+", th="+th);
-        d("cl="+cl+", ct="+ct+", crs="+crs+", cbs="+cbs+", w="+w+", h="+h);
 
         float[] V = new float[16];
         mVertexBuffer.position(0);
@@ -144,6 +137,7 @@ public class NinePatch extends Renderable implements WidgetBackground {
 
     }
 
+    @Override
     public void setToRect(RectF rect) {
         setPos(rect.left, rect.top);
         setSize(rect.width(), rect.height());

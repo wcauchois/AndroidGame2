@@ -16,7 +16,7 @@ public class TestClickDrawer extends Loggable {
 
     public TestClickDrawer(final Group group) {
 
-        group.getScene().getInputManager().clickUp.connect(new Signal.Listener<InputManager.ClickEvent>() {
+        group.getScene().getInputManager().click.connect(new Signal.Listener<InputManager.ClickEvent>() {
             public boolean onSignal(InputManager.ClickEvent e) {
                 handleClickUp(group, e.getPos());
                 return true;
