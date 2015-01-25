@@ -79,16 +79,20 @@ public class NinePatch extends Renderable implements WidgetBackground {
         float cr = (float)mCenterPatch.right;
         float cb = (float)mCenterPatch.bottom;
 
-        float scaleH = w - mMinWidth;
-        float scaleV = h - mMinHeight;
+        float scaleH = (w - mMinWidth)/mCenterPatch.width();
+        float scaleV = (h - mMinHeight)/mCenterPatch.height();
 
-        float crs = cl + scaleH * (cr-cl);
-        float cbs = ct + scaleV * (cb-ct);
+        float crs = cl + scaleH * mCenterPatch.width();
+        float cbs = ct + scaleV * mCenterPatch.height();
 
         float cluv = cl/tw;
         float ctuv = ct/th;
         float cruv = cr/tw;
         float cbuv = cb/th;
+
+        d("minW="+mMinWidth+", minH="+mMinHeight);
+        d("cluv="+cluv+", ctuv="+ctuv+", cruv="+cruv+", cbuv="+cbuv+", tw="+tw+", th="+th);
+        d("cl="+cl+", ct="+ct+", crs="+crs+", cbs="+cbs+", w="+w+", h="+h);
 
         float[] V = new float[16];
         mVertexBuffer.position(0);
@@ -104,7 +108,7 @@ public class NinePatch extends Renderable implements WidgetBackground {
         mVertexBuffer.put(V);
 
         // top-right
-        QuadDrawer.fillUVCoords(V, cruv, 0, tw, ctuv);
+        QuadDrawer.fillUVCoords(V, cruv, 0, 1, ctuv);
         QuadDrawer.fillVertices(V, crs, 0, w, ct);
         mVertexBuffer.put(V);
 
@@ -119,22 +123,22 @@ public class NinePatch extends Renderable implements WidgetBackground {
         mVertexBuffer.put(V);
 
         // center-right
-        QuadDrawer.fillUVCoords(V, cruv, ctuv, tw, cbuv);
+        QuadDrawer.fillUVCoords(V, cruv, ctuv, 1, cbuv);
         QuadDrawer.fillVertices(V, crs, ct, w, cbs);
         mVertexBuffer.put(V);
 
         // bottom-left
-        QuadDrawer.fillUVCoords(V, 0, cbuv, cluv, th);
+        QuadDrawer.fillUVCoords(V, 0, cbuv, cluv, 1);
         QuadDrawer.fillVertices(V, 0, cbs, cl, h);
         mVertexBuffer.put(V);
 
         // center-bottom
-        QuadDrawer.fillUVCoords(V, cluv, cbuv, cruv, th);
+        QuadDrawer.fillUVCoords(V, cluv, cbuv, cruv, 1);
         QuadDrawer.fillVertices(V, cl, cbs, crs, h);
         mVertexBuffer.put(V);
 
         // bottom-right
-        QuadDrawer.fillUVCoords(V, cruv, cbuv, tw, th);
+        QuadDrawer.fillUVCoords(V, cruv, cbuv, 1, 1);
         QuadDrawer.fillVertices(V, crs, cbs, w, h);
         mVertexBuffer.put(V);
 

@@ -132,7 +132,7 @@ public abstract class GameSkeleton
     public void onSurfaceCreated(GL10 unused, EGLConfig config) {
         // All GL state, including shader programs, must be re-generated here.
 
-        GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        GLES20.glClearColor(0, 0, 0, 1);
         GLES20.glEnable(GL10.GL_SCISSOR_TEST);
         GLES20.glDisable(GLES20.GL_DEPTH_TEST);
         GLES20.glDisable(GLES20.GL_CULL_FACE);

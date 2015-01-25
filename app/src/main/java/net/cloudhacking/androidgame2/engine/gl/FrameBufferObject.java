@@ -126,9 +126,10 @@ public class FrameBufferObject extends Loggable {
         // draw quads using the given vertex buffer
         gls.drawQuadSet(vbo, quadCount);
 
-        // unbind this framebuffer and reset the viewport
+        // unbind this framebuffer and reset the viewport and clear color
         unbind();
         GLES20.glViewport(0, 0, oldViewport.width(), oldViewport.height());
+        GLES20.glClearColor(0, 0, 0, 1);
 
         return fboTexture;
     }

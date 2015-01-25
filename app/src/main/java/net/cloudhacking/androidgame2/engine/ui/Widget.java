@@ -188,6 +188,7 @@ public abstract class Widget extends Group<Widget> {
         {
             mBackground.setToRect(getAbsoluteBounds());
             mBackground.update();
+            mNeedBGUpdate = false;
         }
         super.update();
     }

@@ -8,6 +8,7 @@ import net.cloudhacking.androidgame2.engine.CameraGroup;
 import net.cloudhacking.androidgame2.engine.Grid;
 import net.cloudhacking.androidgame2.engine.Scene;
 import net.cloudhacking.androidgame2.engine.element.Image;
+import net.cloudhacking.androidgame2.engine.element.NinePatch;
 import net.cloudhacking.androidgame2.engine.element.TileMap;
 import net.cloudhacking.androidgame2.engine.gl.TextRenderer;
 import net.cloudhacking.androidgame2.engine.ui.Button;
@@ -83,7 +84,7 @@ public class TestScene extends Scene {
         getInputManager().clickUp.connect( new Signal.Listener<InputManager.ClickEvent>() {
             @Override
             public boolean onSignal(InputManager.ClickEvent clickEvent) {
-                mFXFactory.spawnAt(activeCameraToScene( clickEvent.getPos() ));
+                mFXFactory.spawnAt(activeCameraToScene(clickEvent.getPos()));
                 return false;
             }
         });
@@ -101,7 +102,7 @@ public class TestScene extends Scene {
         RootWidget rootWidget = new RootWidget( getInputManager() );
 
         Widget.BindLocation buttonLoc = Widget.BindLocation.CENTER;
-        //rootWidget.addToFront(new Button(Assets.UI_SIMPLE, .1f, .1f, buttonLoc));
+        rootWidget.addToFront(new Button(Assets.UI_SIMPLE, .1f, .1f, buttonLoc));
 
 
         // lol i sure got u
@@ -119,10 +120,7 @@ public class TestScene extends Scene {
         mUICameraGroup.add(rootWidget);
 
 
-
-
-
-        getActiveCamera().setBoundaryRect(mTileMap.getRect());
+        //getActiveCamera().setBoundaryRect(mTileMap.getRect());
         return this;
     }
 
