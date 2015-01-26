@@ -1,6 +1,6 @@
 package net.cloudhacking.androidgame2.engine.element;
 
-import net.cloudhacking.androidgame2.engine.BasicGLScript;
+import net.cloudhacking.androidgame2.engine.gl.BasicGLScript;
 import net.cloudhacking.androidgame2.engine.Scene;
 import net.cloudhacking.androidgame2.engine.utils.Loggable;
 

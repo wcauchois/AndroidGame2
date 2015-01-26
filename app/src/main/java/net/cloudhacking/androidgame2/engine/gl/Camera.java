@@ -1,4 +1,4 @@
-package net.cloudhacking.androidgame2.engine;
+package net.cloudhacking.androidgame2.engine.gl;
 
 import android.graphics.RectF;
 

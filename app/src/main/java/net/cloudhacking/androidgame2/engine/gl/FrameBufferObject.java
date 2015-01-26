@@ -3,7 +3,6 @@ package net.cloudhacking.androidgame2.engine.gl;
 import android.graphics.Rect;
 import android.opengl.GLES20;
 
-import net.cloudhacking.androidgame2.engine.BasicGLScript;
 import net.cloudhacking.androidgame2.engine.GameSkeleton;
 import net.cloudhacking.androidgame2.engine.utils.Loggable;
 import net.cloudhacking.androidgame2.engine.utils.MatrixUtils;

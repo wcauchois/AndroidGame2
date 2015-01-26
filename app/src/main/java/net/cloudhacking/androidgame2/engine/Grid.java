@@ -7,9 +7,7 @@ import net.cloudhacking.androidgame2.Assets;
 import net.cloudhacking.androidgame2.engine.element.Animated;
 import net.cloudhacking.androidgame2.engine.element.Entity;
 import net.cloudhacking.androidgame2.engine.element.TileMap;
-import net.cloudhacking.androidgame2.engine.utils.InputManager;
 import net.cloudhacking.androidgame2.engine.utils.PointF;
-import net.cloudhacking.androidgame2.engine.utils.Signal;
 
 import java.util.ArrayList;
 import java.util.HashSet;

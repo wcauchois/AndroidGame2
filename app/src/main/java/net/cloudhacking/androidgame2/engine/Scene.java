@@ -4,7 +4,7 @@ import android.graphics.Rect;
 
 import net.cloudhacking.androidgame2.engine.element.Entity;
 import net.cloudhacking.androidgame2.engine.element.Group;
-import net.cloudhacking.androidgame2.engine.utils.InputManager;
+import net.cloudhacking.androidgame2.engine.gl.Camera;
 import net.cloudhacking.androidgame2.engine.utils.PointF;
 
 /**

@@ -2,7 +2,7 @@ package net.cloudhacking.androidgame2;
 
 import android.os.Bundle;
 
-import net.cloudhacking.androidgame2.engine.Camera;
+import net.cloudhacking.androidgame2.engine.gl.Camera;
 import net.cloudhacking.androidgame2.engine.GameSkeleton;
 
 /**

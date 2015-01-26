@@ -4,6 +4,8 @@ import android.graphics.RectF;
 
 import net.cloudhacking.androidgame2.engine.element.Entity;
 import net.cloudhacking.androidgame2.engine.element.Group;
+import net.cloudhacking.androidgame2.engine.gl.BasicGLScript;
+import net.cloudhacking.androidgame2.engine.gl.Camera;
 
 /**
  * Created by Andrew on 1/26/2015.

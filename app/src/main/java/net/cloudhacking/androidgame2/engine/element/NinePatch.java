@@ -3,7 +3,7 @@ package net.cloudhacking.androidgame2.engine.element;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
-import net.cloudhacking.androidgame2.engine.BasicGLScript;
+import net.cloudhacking.androidgame2.engine.gl.BasicGLScript;
 import net.cloudhacking.androidgame2.engine.gl.QuadDrawer;
 import net.cloudhacking.androidgame2.engine.gl.Texture;
 import net.cloudhacking.androidgame2.engine.ui.WidgetBackground;

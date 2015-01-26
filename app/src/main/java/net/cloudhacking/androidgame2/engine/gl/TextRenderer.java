@@ -57,7 +57,7 @@ public class TextRenderer extends Loggable {
             return this;
         }
 
-        private TextProps() {}
+        public TextProps() {}
 
         @Override public boolean equals(Object o) {
             if (!(o instanceof TextProps)) {

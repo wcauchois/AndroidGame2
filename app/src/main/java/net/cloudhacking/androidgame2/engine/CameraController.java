@@ -2,10 +2,9 @@ package net.cloudhacking.androidgame2.engine;
 
 import android.graphics.RectF;
 
+import net.cloudhacking.androidgame2.engine.gl.Camera;
 import net.cloudhacking.androidgame2.engine.ui.UICamera;
-import net.cloudhacking.androidgame2.engine.utils.InputManager;
 import net.cloudhacking.androidgame2.engine.utils.Loggable;
-import net.cloudhacking.androidgame2.engine.utils.Signal;
 
 /**
  * Created by wcauchois on 1/8/15.

@@ -1,6 +1,6 @@
-package net.cloudhacking.androidgame2.engine.gl;
+package net.cloudhacking.androidgame2.engine.element;
 
-import net.cloudhacking.androidgame2.engine.element.Renderable;
+import net.cloudhacking.androidgame2.engine.gl.PreRenderedTexture;
 import net.cloudhacking.androidgame2.engine.utils.AssetCache;
 
 import java.util.concurrent.Callable;

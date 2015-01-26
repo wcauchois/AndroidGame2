@@ -6,7 +6,7 @@ import net.cloudhacking.androidgame2.engine.Grid;
 import net.cloudhacking.androidgame2.engine.Level;
 import net.cloudhacking.androidgame2.engine.element.Image;
 import net.cloudhacking.androidgame2.engine.element.TileMap;
-import net.cloudhacking.androidgame2.engine.utils.Signal;
+import net.cloudhacking.androidgame2.engine.Signal;
 import net.cloudhacking.androidgame2.engine.utils.TiledImporter;
 
 import java.util.ArrayList;

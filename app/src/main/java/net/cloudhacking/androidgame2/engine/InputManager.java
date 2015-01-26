@@ -1,10 +1,14 @@
-package net.cloudhacking.androidgame2.engine.utils;
+package net.cloudhacking.androidgame2.engine;
 
 import android.content.Context;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+
+import net.cloudhacking.androidgame2.engine.utils.Loggable;
+import net.cloudhacking.androidgame2.engine.utils.PointF;
+import net.cloudhacking.androidgame2.engine.utils.Vec2;
 
 import java.util.ArrayList;
 import java.util.List;

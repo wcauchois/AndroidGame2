@@ -2,10 +2,9 @@ package net.cloudhacking.androidgame2.engine.element;
 
 import android.graphics.RectF;
 
-import net.cloudhacking.androidgame2.engine.BasicGLScript;
+import net.cloudhacking.androidgame2.engine.gl.BasicGLScript;
 import net.cloudhacking.androidgame2.engine.GameSkeleton;
 import net.cloudhacking.androidgame2.engine.gl.FrameBufferObject;
-import net.cloudhacking.androidgame2.engine.gl.PreRenderable;
 import net.cloudhacking.androidgame2.engine.gl.PreRenderedTexture;
 import net.cloudhacking.androidgame2.engine.gl.Texture;
 import net.cloudhacking.androidgame2.engine.utils.Asset;

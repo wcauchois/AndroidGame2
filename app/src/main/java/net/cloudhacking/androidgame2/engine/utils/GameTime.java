@@ -12,14 +12,14 @@ public class GameTime {
 
     private static float sTimeScale = 1f;
 
-    private static long sTimeNow;
+    private static long sTimeNow = 0;
     private static long sTimeLastTick;
 
     public static void setTimeScale(float timeScale) {
         sTimeScale = timeScale;
     }
 
-    public static void start() {
+    public static void reset() {
         sTimeNow = 0;
     }
 
