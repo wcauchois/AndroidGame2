@@ -131,7 +131,7 @@ public class PokemonFactory extends SpriteFactory {
         mRandGen = new Random();
         mStarted = false;
 
-        AssetCache.getSprite(Assets.POKEMON).setMaxFrameIndex(MAX_FRAME_INDEX);
+        AssetCache.getInstance().getSprite(Assets.POKEMON).setMaxFrameIndex(MAX_FRAME_INDEX);
 
         mExplosionFactory = new ExplosionFactory();
     }

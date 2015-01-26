@@ -52,7 +52,7 @@ public class TileMap extends PreRenderable {
 
 
     public TileMap(Asset asset, Map map, int cellWidth, int cellHeight) {
-        this(AssetCache.getTexture(asset), map, cellWidth, cellHeight);
+        this(AssetCache.getInstance().getTexture(asset), map, cellWidth, cellHeight);
     }
 
     public TileMap(Texture texture, Map map, int cellWidth, int cellHeight) {
@@ -67,7 +67,7 @@ public class TileMap extends PreRenderable {
 
     public TileMap(SpriteAsset asset, Map map) {
         super(0, 0, 0, 0);
-        Sprite tileset = AssetCache.getSprite(asset);
+        Sprite tileset = AssetCache.getInstance().getSprite(asset);
         mTexture = tileset.getTexture();
         mCellWidth = tileset.getWidth();
         mCellHeight = tileset.getHeight();

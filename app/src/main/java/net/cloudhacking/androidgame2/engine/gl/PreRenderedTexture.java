@@ -17,6 +17,9 @@ public class PreRenderedTexture extends Texture {
      */
 
     private static int ID = 0;
+    public static void resetID() {
+        ID = 0;
+    }
 
     private Callable<PreRenderedTexture> mReloader;
     private int mID;
@@ -47,7 +50,8 @@ public class PreRenderedTexture extends Texture {
         try {
             mHandle = mReloader.call().getHandle();
         } catch (Exception e) {
-            d("failed to reload texture");
+            d("failed to reload texture, ID: "+mID);
+            e.printStackTrace();
         }
     }
 

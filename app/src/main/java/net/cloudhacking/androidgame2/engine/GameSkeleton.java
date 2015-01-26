@@ -8,6 +8,7 @@ import android.util.DisplayMetrics;
 import android.view.Window;
 import android.view.WindowManager;
 
+import net.cloudhacking.androidgame2.engine.gl.GLScript;
 import net.cloudhacking.androidgame2.engine.gl.TextRenderer;
 import net.cloudhacking.androidgame2.engine.utils.AssetCache;
 import net.cloudhacking.androidgame2.engine.utils.GameTime;
@@ -33,7 +34,7 @@ public abstract class GameSkeleton
      */
 
     private static GameSkeleton sInstance;  // keep static instance of GameSkeleton
-    private static boolean sInitGame = true;
+    private static boolean sInitGame;
 
     private Bundle mSavedInstanceState;
     private GLSurfaceView mView;
@@ -110,11 +111,10 @@ public abstract class GameSkeleton
         mGLScript = null;
 
         sInstance = this;
+        sInitGame = true;
         mSavedInstanceState = savedInstanceState;
 
         mScene = null;
-
-        AssetCache.setContext(this);
         GameTime.start();
 
         mInputManager = new InputManager(this);
@@ -141,8 +141,8 @@ public abstract class GameSkeleton
         GLES20.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);  // set alpha blending function
 
         mGLScript = new BasicGLScript();
-        AssetCache.reloadTextures();
-        TextRenderer.reloadTextures();
+        AssetCache.getInstance().reloadTextures();
+        TextRenderer.getInstance().reloadTextures();
 
         d("surface created");
     }
@@ -165,8 +165,8 @@ public abstract class GameSkeleton
     public void onPause() {
         super.onPause();
         onPauseGame();
+        //if (mGLScript != null) mGLScript.delete();
         mView.onPause();
-        if (mGLScript != null) mGLScript.delete();
 
         d("game paused");
     }
@@ -189,8 +189,9 @@ public abstract class GameSkeleton
             mScene.destroy();
             mScene = null;
         }
+        AssetCache.clearInstance();
+        TextRenderer.clearInstance();
         sInstance = null;
-        sInitGame = true;
 
         d("game destroyed");
     }
@@ -201,6 +202,7 @@ public abstract class GameSkeleton
         GameTime.tick();
 
         if (sInitGame) {
+            d("initializing game");
 
             onInitGame(mSavedInstanceState);
             mSavedInstanceState = null;

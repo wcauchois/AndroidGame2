@@ -3,8 +3,8 @@ package net.cloudhacking.androidgame2.engine.utils;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Log;
 
+import net.cloudhacking.androidgame2.engine.GameSkeleton;
 import net.cloudhacking.androidgame2.engine.element.Sprite;
 import net.cloudhacking.androidgame2.engine.gl.PreRenderedTexture;
 import net.cloudhacking.androidgame2.engine.gl.Texture;
@@ -23,10 +23,15 @@ public class AssetCache extends Loggable {
      * buffers don't really change and we wouldn't want to store multiple copies of any bitmaps.
      */
 
-    private static Context sContext;
-
-    public static void setContext(Context context) {
-        sContext = context;
+    private static AssetCache sInstance;
+    public static AssetCache getInstance() {
+        if (sInstance == null) {
+            sInstance = new AssetCache(GameSkeleton.getInstance());
+        }
+        return sInstance;
+    }
+    public static void clearInstance() {
+        sInstance = null;
     }
 
 
@@ -34,23 +39,33 @@ public class AssetCache extends Loggable {
      * TEXTURE CACHE
      */
 
-    private static HashMap<Asset, Texture> sTextureCache = new HashMap<Asset, Texture>();
+    private Context mContext;
 
-    private static HashMap<Integer, PreRenderedTexture> sPreRenderedCache
-            = new HashMap<Integer, PreRenderedTexture>();
+    private HashMap<Asset, Texture> mTextureCache;
+    private HashMap<Integer, PreRenderedTexture> mPreRenderedCache;
+
+
+    private AssetCache(Context context) {
+        mContext = context;
+        mTextureCache = new HashMap<Asset, Texture>();
+        mPreRenderedCache = new HashMap<Integer, PreRenderedTexture>();
+        PreRenderedTexture.resetID();
+
+        d("initialized asset cache");
+    }
 
 
     /**
      * Config
      */
-    private static BitmapFactory.Options sBitmapOptions = new BitmapFactory.Options();
+    private static final BitmapFactory.Options sBitmapOptions = new BitmapFactory.Options();
     static {
         sBitmapOptions.inScaled = false;
         sBitmapOptions.inDither = false;
         sBitmapOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;
     }
 
-    private static Texture.TextureOptions sDefaultTextureOptions;
+    private static final Texture.TextureOptions sDefaultTextureOptions;
     static {
         sDefaultTextureOptions = new Texture.TextureOptions();
         sDefaultTextureOptions.minMode   = Texture.FilterType.NEAREST;
@@ -65,26 +80,26 @@ public class AssetCache extends Loggable {
      * loaded or the texture options are different, this will create a new texture and put it
      * into the cache.
      */
-    public static Texture getTexture(Asset asset) {
+    public Texture getTexture(Asset asset) {
         return getTexture(asset, sDefaultTextureOptions, true);
     }
 
-    public static Texture getTexture(Asset asset, Texture.TextureOptions opts) {
+    public Texture getTexture(Asset asset, Texture.TextureOptions opts) {
         return getTexture(asset, opts, true);
     }
 
-    public static Texture getTexture(Asset asset, Texture.TextureOptions opts, boolean checkOpts) {
+    public Texture getTexture(Asset asset, Texture.TextureOptions opts, boolean checkOpts) {
 
-        if (!sTextureCache.containsKey(asset)) {
+        if (!mTextureCache.containsKey(asset)) {
             try {
-                InputStream stream = sContext.getAssets().open(asset.getFileName());
+                InputStream stream = mContext.getAssets().open(asset.getFileName());
                 Bitmap bmp = BitmapFactory.decodeStream(stream, null, sBitmapOptions);
 
                 Texture tex = new Texture(bmp, opts);
                 tex.setAsset(asset);
-                sTextureCache.put(asset, tex);
+                mTextureCache.put(asset, tex);
 
-                Log.d(TAG, "successfully loaded texture into cache: " + asset.getFileName());
+                d("successfully loaded texture into cache: " + asset.getFileName());
                 return tex;
 
             } catch(IOException e) {
@@ -92,13 +107,13 @@ public class AssetCache extends Loggable {
             }
 
         } else if (checkOpts) {
-            Texture tex = sTextureCache.get(asset);
+            Texture tex = mTextureCache.get(asset);
 
             // check if the stored textures options equal the requested options
             if (!tex.getOptions().equals(opts)) {
                 tex = new Texture(tex.getBitmap(), opts);
                 tex.setAsset(asset);
-                sTextureCache.put(asset, tex);
+                mTextureCache.put(asset, tex);
                 return tex;
 
             } else {
@@ -106,25 +121,32 @@ public class AssetCache extends Loggable {
             }
 
         } else {
-            return sTextureCache.get(asset);
+            return mTextureCache.get(asset);
         }
 
     }
 
-    public static void addPreRendered(PreRenderedTexture pre) {
-        sPreRenderedCache.put(pre.getId(), pre);
+    public void addPreRendered(PreRenderedTexture pre) {
+        d("adding new pre-rendered texture to cache, ID: " + pre.getId());
+        mPreRenderedCache.put(pre.getId(), pre);
     }
 
-    public static PreRenderedTexture getPreRendered(int id) {
-        return sPreRenderedCache.get(id);
+    public void removePreRendered(int id) {
+        mPreRenderedCache.remove(id);
     }
 
-    public static void reloadTextures() {
-        for (Texture t : sTextureCache.values()) {
+    public PreRenderedTexture getPreRendered(int id) {
+        return mPreRenderedCache.get(id);
+    }
+
+    public void reloadTextures() {
+        for (Texture t : mTextureCache.values()) {
             t.reload();
+            d("reloading texture: " + t.getAsset().getFileName());
         }
-        for (PreRenderedTexture p : sPreRenderedCache.values()) {
+        for (PreRenderedTexture p : mPreRenderedCache.values()) {
             p.reload();
+            d("re-rendering texture, ID: "+p.getId());
         }
     }
 
@@ -137,11 +159,11 @@ public class AssetCache extends Loggable {
      * Cache sprite objects in order for l33t optimization, and so that we don't have to
      * regenerate the same vertex buffers for a hundred different creeps using the same sprite.
      */
-    private static HashMap<SpriteAsset, Sprite> sSpriteCache
+    private HashMap<SpriteAsset, Sprite> sSpriteCache
             = new HashMap<SpriteAsset, Sprite>();
 
 
-    public static Sprite getSprite(SpriteAsset asset) {
+    public Sprite getSprite(SpriteAsset asset) {
 
         if (!sSpriteCache.containsKey(asset)) {
             Sprite sprite = new Sprite(asset);
@@ -156,15 +178,16 @@ public class AssetCache extends Loggable {
 
     /**********************************************************************************************/
 
-    public static void clear() {
-        for (Texture t : sTextureCache.values()) {
+    public void clear() {
+        d("clearing asset cache");
+        for (Texture t : mTextureCache.values()) {
             t.delete();
         }
-        for (PreRenderedTexture p : sPreRenderedCache.values()) {
+        for (PreRenderedTexture p : mPreRenderedCache.values()) {
             p.delete();
         }
-        sTextureCache.clear();
-        sPreRenderedCache.clear();
+        mTextureCache.clear();
+        mPreRenderedCache.clear();
         sSpriteCache.clear();
     }
 

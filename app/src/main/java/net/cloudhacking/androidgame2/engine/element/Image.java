@@ -96,7 +96,7 @@ public class Image extends Renderable implements WidgetBackground {
 
 
     public void setTexture(Asset asset) {
-        mTexture = AssetCache.getTexture(asset);
+        mTexture = AssetCache.getInstance().getTexture(asset);
         setFrame(new RectF(0, 0, 1, 1));
     }
 

@@ -198,7 +198,7 @@ public class Texture extends Loggable {
         int[] handles = {mHandle};
         GLES20.glDeleteTextures(1, handles, 0);
 
-        mBitmap.recycle();
+        if (mBitmap != null) mBitmap.recycle();
         mBitmap = null;
     }
 

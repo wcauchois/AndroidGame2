@@ -20,7 +20,7 @@ public class Button extends TouchWidget {
     }
 
     public Button(Asset asset, float scale) {
-        Texture background = AssetCache.getTexture(asset);
+        Texture background = AssetCache.getInstance().getTexture(asset);
         float w = (scale*background.getWidth()) / Widget.getRootWidth();
         float h = (scale*background.getHeight()) / Widget.getRootHeight();
 
@@ -53,6 +53,7 @@ public class Button extends TouchWidget {
     @Override
     public void onClick() {
         Widget.widgetSelector.dispatch(this);
+        d("button clicked");
     }
 
 }

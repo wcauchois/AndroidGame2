@@ -33,7 +33,7 @@ public class NinePatch extends Renderable implements WidgetBackground {
     public NinePatch(NinePatchAsset asset, float width, float height) {
         super(0, 0, width, height);
 
-        mTexture = AssetCache.getTexture(asset);
+        mTexture = AssetCache.getInstance().getTexture(asset);
         mCenterPatch = asset.getCenterPatch();
 
         mMinWidth = mTexture.getWidth() - mCenterPatch.width();

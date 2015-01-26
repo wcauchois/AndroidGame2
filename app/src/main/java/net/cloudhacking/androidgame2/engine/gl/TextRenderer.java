@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class TextRenderer extends Loggable {
     public static final int MAX_CACHE_SIZE = 200;
-    public static final long EXPIRATION_TIME_SEC = 30;
+    //public static final long EXPIRATION_TIME_SEC = 30;
 
     public static final float DEFAULT_TEXT_SIZE = 60.0f;
     // Color is stored as a hex value, e.g. 0xFFFFFFFF (4 bytes = rgba)
@@ -146,7 +146,9 @@ public class TextRenderer extends Loggable {
     public TextRenderer() {
         mTextureCache = CacheBuilder.newBuilder()
                 .maximumSize(MAX_CACHE_SIZE)
-                .expireAfterAccess(EXPIRATION_TIME_SEC, TimeUnit.SECONDS)
+                //.expireAfterAccess(EXPIRATION_TIME_SEC, TimeUnit.SECONDS)
+                //  ***for some reason, if the expiration access is set, the textures will turn
+                //     black after the expiration time but not reload
                 .removalListener(new TextRemovalListener())
                 .build(new TextLoader());
     }
@@ -160,12 +162,10 @@ public class TextRenderer extends Loggable {
         }
     }
 
-    public static void reloadTextures() {
-        if (sInstance != null) {
-            ConcurrentMap<StringAndProps, Texture> textureMap = sInstance.mTextureCache.asMap();
-            for (Texture tex : textureMap.values()) {
-                tex.reload();
-            }
+    public void reloadTextures() {
+        ConcurrentMap<StringAndProps, Texture> textureMap = mTextureCache.asMap();
+        for (Texture tex : textureMap.values()) {
+            tex.reload();
         }
     }
 
@@ -175,5 +175,8 @@ public class TextRenderer extends Loggable {
             sInstance = new TextRenderer();
         }
         return sInstance;
+    }
+    public static void clearInstance() {
+        sInstance = null;
     }
 }

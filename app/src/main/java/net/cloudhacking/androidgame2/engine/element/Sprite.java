@@ -41,7 +41,7 @@ public class Sprite extends Loggable {
 
 
     public Sprite(SpriteAsset asset) {
-        mTexture = AssetCache.getTexture(asset);
+        mTexture = AssetCache.getInstance().getTexture(asset);
         mFrames = new TextureFrameSet(mTexture, asset);
 
         mWidth = asset.getFrameWidth();

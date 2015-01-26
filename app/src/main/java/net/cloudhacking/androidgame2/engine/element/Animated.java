@@ -58,7 +58,7 @@ public class Animated extends Renderable {
 
 
     public Animated(SpriteAsset asset) {
-        this( AssetCache.getSprite(asset) );
+        this( AssetCache.getInstance().getSprite(asset) );
     }
 
     public Animated(Sprite sprite) {
