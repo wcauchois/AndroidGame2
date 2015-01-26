@@ -8,9 +8,9 @@ import android.util.DisplayMetrics;
 import android.view.Window;
 import android.view.WindowManager;
 
-import net.cloudhacking.androidgame2.engine.gl.GLScript;
 import net.cloudhacking.androidgame2.engine.gl.TextRenderer;
 import net.cloudhacking.androidgame2.engine.utils.AssetCache;
+import net.cloudhacking.androidgame2.engine.utils.FPSCounter;
 import net.cloudhacking.androidgame2.engine.utils.GameTime;
 import net.cloudhacking.androidgame2.engine.utils.InputManager;
 import net.cloudhacking.androidgame2.engine.utils.LoggableActivity;
@@ -44,6 +44,8 @@ public abstract class GameSkeleton
     private Scene mScene;
     private InputManager mInputManager;
     private CameraController mCameraController;
+
+    private FPSCounter mFPSCounter;
 
 
     public static GameSkeleton getInstance() {
@@ -121,6 +123,8 @@ public abstract class GameSkeleton
         mView.setOnTouchListener(mInputManager);
 
         mCameraController = new CameraController(mInputManager);
+
+        mFPSCounter = new FPSCounter();
 
         d("activity created");
     }
@@ -208,6 +212,7 @@ public abstract class GameSkeleton
             mSavedInstanceState = null;
 
             sInitGame = false;
+            mFPSCounter.start();
         }
 
         if (mScene != null) {
@@ -223,6 +228,7 @@ public abstract class GameSkeleton
             GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
 
             mScene.draw(mGLScript);
+            mFPSCounter.logFrame();
         }
     }
 

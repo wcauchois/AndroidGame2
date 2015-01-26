@@ -2,6 +2,7 @@ package net.cloudhacking.androidgame2.engine.ui;
 
 import android.graphics.RectF;
 
+import net.cloudhacking.androidgame2.engine.GameSkeleton;
 import net.cloudhacking.androidgame2.engine.utils.InputManager;
 import net.cloudhacking.androidgame2.engine.utils.PointF;
 import net.cloudhacking.androidgame2.engine.utils.Signal;
@@ -11,11 +12,12 @@ import net.cloudhacking.androidgame2.engine.utils.Signal;
  */
 public class RootWidget extends Widget {
 
-    public RootWidget(InputManager inputManager) {
+    public RootWidget() {
         // set rect to be 100% width and 100% height
         super(new RectF(0, 0, Widget.getRootWidth(), Widget.getRootHeight()));
 
-        inputManager.click.connect(new Signal.Listener<InputManager.ClickEvent>() {
+        InputManager im = GameSkeleton.getInstance().getInputManager();
+        im.click.connect(new Signal.Listener<InputManager.ClickEvent>() {
             @Override
             public boolean onSignal(InputManager.ClickEvent clickEvent) {
                 return handleSignal(clickEvent);

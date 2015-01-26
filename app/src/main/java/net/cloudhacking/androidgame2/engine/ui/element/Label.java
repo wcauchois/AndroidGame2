@@ -1,10 +1,11 @@
-package net.cloudhacking.androidgame2.engine.ui;
+package net.cloudhacking.androidgame2.engine.ui.element;
 
 import android.graphics.RectF;
 
 import net.cloudhacking.androidgame2.engine.element.Image;
 import net.cloudhacking.androidgame2.engine.gl.TextRenderer;
 import net.cloudhacking.androidgame2.engine.gl.Texture;
+import net.cloudhacking.androidgame2.engine.ui.Widget;
 import net.cloudhacking.androidgame2.engine.utils.PointF;
 
 /**

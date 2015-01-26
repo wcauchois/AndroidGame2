@@ -1,10 +1,12 @@
-package net.cloudhacking.androidgame2.engine.ui;
+package net.cloudhacking.androidgame2.engine.ui.element;
 
 import android.graphics.RectF;
 
 import net.cloudhacking.androidgame2.engine.element.Image;
 import net.cloudhacking.androidgame2.engine.element.NinePatch;
 import net.cloudhacking.androidgame2.engine.gl.Texture;
+import net.cloudhacking.androidgame2.engine.ui.TouchWidget;
+import net.cloudhacking.androidgame2.engine.ui.Widget;
 import net.cloudhacking.androidgame2.engine.utils.Asset;
 import net.cloudhacking.androidgame2.engine.utils.AssetCache;
 import net.cloudhacking.androidgame2.engine.utils.NinePatchAsset;
@@ -24,8 +26,8 @@ public class Button extends TouchWidget {
         float w = (scale*background.getWidth()) / Widget.getRootWidth();
         float h = (scale*background.getHeight()) / Widget.getRootHeight();
 
-        setBounds( new RectF(0, 0, w, h) );
-        setBackgroundImage( new Image(background) );
+        setBounds(new RectF(0, 0, w, h));
+        setBackgroundImage(new Image(background));
     }
 
     public Button(Asset asset, BindLocation loc, float scale) {
@@ -53,7 +55,6 @@ public class Button extends TouchWidget {
     @Override
     public void onClick() {
         Widget.widgetSelector.dispatch(this);
-        d("button clicked");
     }
 
 }

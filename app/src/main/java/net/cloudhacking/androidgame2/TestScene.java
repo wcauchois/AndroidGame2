@@ -1,94 +1,33 @@
 package net.cloudhacking.androidgame2;
 
-import android.graphics.Color;
-
 import net.cloudhacking.androidgame2.engine.BasicGLScript;
-import net.cloudhacking.androidgame2.engine.CameraGroup;
-import net.cloudhacking.androidgame2.engine.Grid;
 import net.cloudhacking.androidgame2.engine.Scene;
-import net.cloudhacking.androidgame2.engine.element.Image;
-import net.cloudhacking.androidgame2.engine.element.TileMap;
-import net.cloudhacking.androidgame2.engine.gl.TextRenderer;
-import net.cloudhacking.androidgame2.engine.ui.Button;
-import net.cloudhacking.androidgame2.engine.ui.Label;
-import net.cloudhacking.androidgame2.engine.ui.RootWidget;
-import net.cloudhacking.androidgame2.engine.ui.Widget;
-import net.cloudhacking.androidgame2.engine.utils.CommonUtils;
-import net.cloudhacking.androidgame2.engine.utils.InputManager;
-import net.cloudhacking.androidgame2.engine.utils.JsonMap;
-import net.cloudhacking.androidgame2.engine.utils.PointF;
-import net.cloudhacking.androidgame2.engine.utils.Signal;
-
-import java.util.Random;
 
 /**
  * Created by Andrew on 1/15/2015.
  */
 public class TestScene extends Scene {
 
-    // essentials
-    private CameraGroup mActiveCameraGroup;
-    private CameraGroup mUICameraGroup;
-    private Grid mGrid;
-    private TileMap mTileMap;
-
-    public Grid getGrid() {
-        return mGrid;
-    }
-
-
-    // for testing
-    private PokemonFactory mPokeFactory;
+    private TestLevel mLevel;
+    private TestUI mUI;
 
 
     @Override
     public TestScene create() {
 
-        mActiveCameraGroup = new CameraGroup( getActiveCamera() );
-        mUICameraGroup = new CameraGroup( getUICamera() );
+        mLevel = new TestLevel();
+        mUI = new TestUI();
 
-        add(mActiveCameraGroup);
-        add(mUICameraGroup);
+        add(mLevel);
+        add(mUI);
 
+        mLevel.create();
+        mUI.create();
 
-        mTileMap = new TileMap( Assets.TEST_TILESET, new JsonMap(Resources.JSON_MAP_SIMPLE) );
-
-        Image tilemap = new Image( mTileMap.getPreRendered() );
-        tilemap.moveToOrigin();
-        mActiveCameraGroup.add( tilemap );
-
-
-        // set up game grid from tile map
-        mGrid = new Grid(mTileMap);
-        mActiveCameraGroup.add(mGrid);
-
-        mGrid.cellSelector.connect( new Signal.Listener<Grid.Cell>() {
-            @Override
-            public boolean onSignal(Grid.Cell cell) {
-                Grid.SELECTOR_ICON.startAnimationAt(cell.getCenter());
-                mActiveCameraGroup.addToFront(Grid.SELECTOR_ICON);
-                return false;
-            }
-        });
-
-
-
-        // this is my favorite... POKEMON FACTORY!!!
-        mPokeFactory = new PokemonFactory(mGrid);
-        mPokeFactory.start();
-        mActiveCameraGroup.add(mPokeFactory);
-
-
-        // UI
-
-        RootWidget rootWidget = new RootWidget( getInputManager() );
-
-
-        rootWidget.addToFront(new Button(Assets.UI_SIMPLE, 1, .07f, Widget.BindLocation.CENTER_TOP));
-
+        // vvv keep for reference vvv
 
         // lol i sure got u
-        String[] strings = new String[] { "such game", "very wow", "much defence", "amaze", "many towers" };
+        /*String[] strings = new String[] { "such game", "very wow", "much defence", "amaze", "many towers" };
         Integer[] colors = new Integer[] { Color.BLUE, Color.RED, Color.YELLOW, Color.GREEN, Color.LTGRAY };
         Random rand = CommonUtils.getRandom();
         for (int i = 0; i < rand.nextInt(3) + 5; i++) {
@@ -97,12 +36,9 @@ public class TestScene extends Scene {
                     CommonUtils.randomChoice(strings),
                     TextRenderer.newProps().textColor(CommonUtils.randomChoice(colors))
             ));
-        }
+        }*/
 
-        mUICameraGroup.add(rootWidget);
-
-
-        getActiveCamera().setBoundaryRect(mTileMap.getRect());
+        getActiveCamera().setBoundaryRect(mLevel.getSize());
         return this;
     }
 

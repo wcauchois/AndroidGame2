@@ -25,15 +25,17 @@ public class TouchWidget extends Widget {
     public boolean handleClick(PointF touch, RectF parentBounds) {
 
         if (mBounds.contains(touch.x, touch.y)) {
+            onClick();
 
             // touch point relative to the bounding box for this widget
             PointF relPt =
                     new PointF( (touch.x - mBounds.left)*(parentBounds.width()/mBounds.width()),
-                                (touch.y - mBounds.top)*(parentBounds.height()/mBounds.width())
+                                (touch.y - mBounds.top)*(parentBounds.height()/mBounds.height())
             );
 
             TouchWidget t;
             for (Widget w : mEntities) {
+
                 if (w instanceof TouchWidget) {
                     t = (TouchWidget) w;
 

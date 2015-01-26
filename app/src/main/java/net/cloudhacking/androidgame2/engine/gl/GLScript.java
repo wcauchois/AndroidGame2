@@ -228,7 +228,7 @@ public abstract class GLScript extends Loggable {
     }
 
     public void delete() {
-        //mProgram.deleteProgram();  // causes a GL error for some reason
+        mProgram.deleteProgram();  // causes a GL error for some reason
     }
 
 

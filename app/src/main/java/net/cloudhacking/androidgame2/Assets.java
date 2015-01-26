@@ -20,6 +20,7 @@ public class Assets {
     public static final SpriteAsset CARS            = new SpriteAsset("cars.png", 64, 64);
     public static final SpriteAsset SPACESHIPS      = new SpriteAsset("spaceships.png", 36, 36, 9, 9, 0, 0);
     public static final SpriteAsset POKEMON         = new SpriteAsset("pokemon.png", 64, 64);
+    public static final SpriteAsset MICRO_TILES     = new SpriteAsset("micro_tileset.png", 8, 8);
 
     public static final NinePatchAsset UI_SIMPLE    = new NinePatchAsset("ui_ninepatch.png", new Rect(10, 10, 20, 20) );
 

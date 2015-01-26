@@ -1,4 +1,4 @@
-package net.cloudhacking.androidgame2;
+package net.cloudhacking.androidgame2.example;
 
 import net.cloudhacking.androidgame2.Assets;
 import net.cloudhacking.androidgame2.engine.factory.SpriteFactory;

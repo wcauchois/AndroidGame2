@@ -11,7 +11,7 @@ import net.cloudhacking.androidgame2.engine.GameSkeleton;
 public class TDGame extends GameSkeleton {
 
     // TODO: create config/preferences system
-    private static final float SCROLL_SPEED = 1.3f;
+    private static final float SCROLL_SPEED = 1.1f;
 
 
     @Override

@@ -6,7 +6,6 @@ import net.cloudhacking.androidgame2.engine.BasicGLScript;
 import net.cloudhacking.androidgame2.engine.element.Group;
 import net.cloudhacking.androidgame2.engine.utils.PointF;
 import net.cloudhacking.androidgame2.engine.utils.Signal;
-import net.cloudhacking.androidgame2.engine.utils.Vec2;
 
 /**
  * Created by wcauchois on 1/21/15.
