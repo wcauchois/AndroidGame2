@@ -44,14 +44,11 @@ public class Grid extends Entity {
     /**
      * Animated selection icon that appears on the grid when you select a cell
      */
-    public static final SelectorIcon SELECTOR_ICON = new SelectorIcon();
+    public final SelectorIcon SELECTOR_ICON = new SelectorIcon();
 
     public static class SelectorIcon extends Animated {
 
         private final float BLINK_FREQ = 2;
-
-        private final AnimationSequence ANIM
-                = new AnimationSequence(new int[] {0, 1}, 0, BLINK_FREQ);
 
         public SelectorIcon() {
             super(Assets.SELECTOR_8PX);
@@ -62,7 +59,10 @@ public class Grid extends Entity {
             setPos(target);
             setActive();
             setVisibility(true);
-            queueAnimation(ANIM, true, true);
+            queueAnimation(
+                    new AnimationSequence(new int[] {1, 0}, 1, BLINK_FREQ),
+                    true, true
+            );
         }
 
         public void hide() {

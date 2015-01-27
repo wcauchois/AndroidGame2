@@ -51,8 +51,8 @@ public class TestLevel extends Level {
         mGrid.cellSelector.connect( new Signal.Listener<Grid.Cell>() {
             @Override
             public boolean onSignal(Grid.Cell cell) {
-                Grid.SELECTOR_ICON.startAnimationAt(cell.getCenter());
-                addToFront(Grid.SELECTOR_ICON);
+                mGrid.SELECTOR_ICON.startAnimationAt(cell.getCenter());
+                addToFront(mGrid.SELECTOR_ICON);
                 return false;
             }
         });

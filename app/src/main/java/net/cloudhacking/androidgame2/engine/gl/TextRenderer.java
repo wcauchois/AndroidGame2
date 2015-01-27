@@ -94,7 +94,7 @@ public class TextRenderer extends Loggable {
                 return false;
             } else {
                 StringAndProps other = (StringAndProps) o;
-                return s == other.s && props.equals(other.props);
+                return s.equals(other.s) && props.equals(other.props);
             }
         }
 

@@ -165,11 +165,13 @@ public class AssetCache extends Loggable {
     public Sprite getSprite(SpriteAsset asset) {
 
         if (!mSpriteCache.containsKey(asset)) {
+            d("creating new sprite from: "+asset.getFileName());
             Sprite sprite = new Sprite(asset);
             mSpriteCache.put(asset, sprite);
             return sprite;
 
         } else {
+            d("retrieving existing asset: "+asset.getFileName());
             return mSpriteCache.get(asset);
         }
     }

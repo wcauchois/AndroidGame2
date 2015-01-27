@@ -14,11 +14,10 @@ public class FPSCounter extends Label {
     private int mFrames;
 
     private static TextRenderer.TextProps mProps = new TextRenderer.TextProps();
-    private static final Texture DEFAULT
-            = TextRenderer.getInstance().getTexture("FPS: 00", mProps);
 
     public FPSCounter(BindLocation loc) {
-        super(DEFAULT, loc, ScaleType.FIXED);
+        super(TextRenderer.getInstance().getTexture("FPS: 00", mProps),
+                loc, ScaleType.FIXED);
         mStart = System.nanoTime();
         mFrames = 0;
     }
