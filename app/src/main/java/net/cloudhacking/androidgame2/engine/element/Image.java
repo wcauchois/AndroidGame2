@@ -134,21 +134,8 @@ public class Image extends Renderable implements WidgetBackground {
     }
 
     private void updateVertices() {  // scene coordinates, centered on position
-
-        float halfWidth = getWidth()/2, halfHeight = getHeight()/2;
-
-        mVertices[0] 	= -halfWidth;
-        mVertices[1] 	= -halfHeight;
-
-        mVertices[4] 	= +halfWidth;
-        mVertices[5] 	= -halfHeight;
-
-        mVertices[8] 	= +halfWidth;
-        mVertices[9] 	= +halfHeight;
-
-        mVertices[12]	= -halfWidth;
-        mVertices[13]	= +halfHeight;
-
+        float hw = getWidth()/2, hh = getHeight()/2;
+        QuadDrawer.fillVertices(mVertices, -hw, -hh, hw, hh);
         mNeedBufferUpdate = true;
     }
 

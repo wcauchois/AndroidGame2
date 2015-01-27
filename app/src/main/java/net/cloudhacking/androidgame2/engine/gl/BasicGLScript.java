@@ -50,7 +50,6 @@ public class BasicGLScript extends GLScript {
         d("OpenGL program successfully compiled");
 
         mLastCamera = null;
-        this.use();
     }
 
 
@@ -62,15 +61,14 @@ public class BasicGLScript extends GLScript {
 
 
     public ShaderSrc getShaderSrc() {
-        String[] srcString = SHADER.split("//\n");
         ShaderSrc src = new ShaderSrc();
-        src.putSource(ShaderType.VERTEX, srcString[0]);
-        src.putSource(ShaderType.FRAGMENT, srcString[1]);
+        src.putSource(ShaderType.VERTEX, VERTEX_SHADER);
+        src.putSource(ShaderType.FRAGMENT, FRAGMENT_SHADER);
         return src;
     }
 
 
-    private static final String SHADER =
+    private static final String VERTEX_SHADER =
         "uniform mat4 uCamera;" +
         "uniform mat4 uModel;" +
         "attribute vec4 aXYZW;" +
@@ -79,10 +77,9 @@ public class BasicGLScript extends GLScript {
         "void main() {" +
         "  gl_Position = uCamera * uModel * aXYZW;" +
         "  vUV = aUV;" +
-        "}" +
+        "}";
 
-        "//\n" +
-
+    private static final String FRAGMENT_SHADER =
         "precision mediump float;" +
         "varying vec2 vUV;" +
         "uniform sampler2D uTex;" +

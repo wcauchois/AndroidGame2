@@ -3,6 +3,7 @@ package net.cloudhacking.androidgame2.engine.element;
 import android.graphics.RectF;
 
 import net.cloudhacking.androidgame2.engine.gl.BasicGLScript;
+import net.cloudhacking.androidgame2.engine.gl.QuadDrawer;
 import net.cloudhacking.androidgame2.engine.gl.Texture;
 import net.cloudhacking.androidgame2.engine.utils.AssetCache;
 import net.cloudhacking.androidgame2.engine.utils.BufferUtils;
@@ -90,40 +91,14 @@ public class Sprite extends Loggable {
 
 
     private void initVertices() {
-
-        float halfWidth = mWidth/2, halfHeight = mHeight/2;
-
-        mVertices[0] 	= -halfWidth;
-        mVertices[1] 	= -halfHeight;
-
-        mVertices[4] 	= +halfWidth;
-        mVertices[5] 	= -halfHeight;
-
-        mVertices[8] 	= +halfWidth;
-        mVertices[9] 	= +halfHeight;
-
-        mVertices[12]	= -halfWidth;
-        mVertices[13]	= +halfHeight;
-
+        float hw = mWidth/2, hh = mHeight/2;
+        QuadDrawer.fillVertices(mVertices, -hw, -hh, hw, hh);
     }
 
 
     private void setFrame(int frameIndex) {
-
         RectF frame = mFrames.getUVFrame(frameIndex);
-
-        mVertices[2]  = frame.left;
-        mVertices[3]  = frame.top;
-
-        mVertices[6]  = frame.right;
-        mVertices[7]  = frame.top;
-
-        mVertices[10] = frame.right;
-        mVertices[11] = frame.bottom;
-
-        mVertices[14] = frame.left;
-        mVertices[15] = frame.bottom;
-
+        QuadDrawer.fillUVCoords(mVertices, frame);
     }
 
 

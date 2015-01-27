@@ -140,6 +140,7 @@ public abstract class GameSkeleton
         GLES20.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);  // set alpha blending function
 
         mGLScript = new BasicGLScript();
+        mGLScript.use();
         AssetCache.getInstance().reloadTextures();
         TextRenderer.getInstance().reloadTextures();
 

@@ -6,6 +6,7 @@ import net.cloudhacking.androidgame2.engine.gl.BasicGLScript;
 import net.cloudhacking.androidgame2.engine.GameSkeleton;
 import net.cloudhacking.androidgame2.engine.gl.FrameBufferObject;
 import net.cloudhacking.androidgame2.engine.gl.PreRenderedTexture;
+import net.cloudhacking.androidgame2.engine.gl.QuadDrawer;
 import net.cloudhacking.androidgame2.engine.gl.Texture;
 import net.cloudhacking.androidgame2.engine.utils.Asset;
 import net.cloudhacking.androidgame2.engine.utils.AssetCache;
@@ -109,30 +110,8 @@ public class TileMap extends PreRenderable {
                 r = (ix+1) * mCellWidth;
                 b = (iy+1) * mCellHeight;
 
-                // top left
-                vertices[0]  = l;
-                vertices[1]  = t;
-                vertices[2]  = uv.left;
-                vertices[3]  = uv.top;
-
-                // top right
-                vertices[4]  = r;
-                vertices[5]  = t;
-                vertices[6]  = uv.right;
-                vertices[7]  = uv.top;
-
-                // bottom right
-                vertices[8]  = r;
-                vertices[9]  = b;
-                vertices[10] = uv.right;
-                vertices[11] = uv.bottom;
-
-                // bottom left
-                vertices[12] = l;
-                vertices[13] = b;
-                vertices[14] = uv.left;
-                vertices[15] = uv.bottom;
-
+                QuadDrawer.fillVertices(vertices, l, t, r, b);
+                QuadDrawer.fillUVCoords(vertices, uv);
                 mVertexBuffer.put(vertices);
             }
         }
