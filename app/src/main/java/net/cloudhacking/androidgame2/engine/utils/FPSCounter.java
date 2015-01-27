@@ -3,32 +3,26 @@ package net.cloudhacking.androidgame2.engine.utils;
 import android.graphics.RectF;
 
 import net.cloudhacking.androidgame2.engine.element.Image;
-import net.cloudhacking.androidgame2.engine.gl.BasicGLScript;
 import net.cloudhacking.androidgame2.engine.gl.TextRenderer;
 import net.cloudhacking.androidgame2.engine.gl.Texture;
-import net.cloudhacking.androidgame2.engine.ui.Widget;
+import net.cloudhacking.androidgame2.engine.ui.element.Label;
 
 /**
  * Created by Andrew on 1/26/2015.
  */
-public class FPSCounter extends Widget {
+public class FPSCounter extends Label {
 
     private long mStart;
     private int mFrames;
 
-    private TextRenderer.TextProps mProps;
+    private static TextRenderer.TextProps mProps = new TextRenderer.TextProps();
+    private static final Texture DEFAULT
+            = TextRenderer.getInstance().getTexture("FPS: 00", mProps);
 
     public FPSCounter(BindLocation loc) {
+        super(DEFAULT, loc);
         mStart = System.nanoTime();
         mFrames = 0;
-        mProps = new TextRenderer.TextProps();
-
-        Image bg = genCounter(99);
-        float w = bg.getWidth(), h = bg.getHeight();
-
-        setBindLocation(loc);
-        setBounds( new RectF(0, 0, .16f, 1) );
-        setBackgroundImage(bg);
     }
 
     private Image genCounter(int fps) {

@@ -24,20 +24,6 @@ public class TestScene extends Scene {
         mLevel.create();
         mUI.create();
 
-        // vvv keep for reference vvv
-
-        // lol i sure got u
-        /*String[] strings = new String[] { "such game", "very wow", "much defence", "amaze", "many towers" };
-        Integer[] colors = new Integer[] { Color.BLUE, Color.RED, Color.YELLOW, Color.GREEN, Color.LTGRAY };
-        Random rand = CommonUtils.getRandom();
-        for (int i = 0; i < rand.nextInt(3) + 5; i++) {
-            rootWidget.addToFront(Label.create(
-                    new PointF(rand.nextFloat(), rand.nextFloat()),
-                    CommonUtils.randomChoice(strings),
-                    TextRenderer.newProps().textColor(CommonUtils.randomChoice(colors))
-            ));
-        }*/
-
         getActiveCamera().setBoundaryRect(mLevel.getSize());
         return this;
     }

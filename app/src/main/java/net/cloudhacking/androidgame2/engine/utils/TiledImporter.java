@@ -20,13 +20,13 @@ public class TiledImporter extends Loggable {
      *      http://www.mapeditor.org/
      */
 
-    public static class TiledMap implements TileMap.Map {
+    public static class Map implements TileMap.Map {
 
         private int[] mData;
         private int mWidth;
         private int mHeight;
 
-        public TiledMap(int[] data, int w, int h) {
+        public Map(int[] data, int w, int h) {
             mData = data;
             mWidth = w;
             mHeight = h;
@@ -55,9 +55,9 @@ public class TiledImporter extends Loggable {
     }
 
 
-    public static ArrayList<TiledMap> loadMaps(Resource jsonFile) {
+    public static ArrayList<Map> loadMaps(Resource jsonFile) {
         String jsonString = ResourceUtils.readTextFileFromRawResource(jsonFile.getId());
-        ArrayList<TiledMap> maps = new ArrayList<TiledMap>();
+        ArrayList<Map> maps = new ArrayList<Map>();
 
         try {
             JSONObject obj = new JSONObject(jsonString);
@@ -81,7 +81,7 @@ public class TiledImporter extends Loggable {
                     data[j] = tile > 0 ? tile-1 : (width * height)-2 ;
                 }
 
-                maps.add( new TiledMap(data, width, height) );
+                maps.add( new Map(data, width, height) );
             }
 
             return maps;

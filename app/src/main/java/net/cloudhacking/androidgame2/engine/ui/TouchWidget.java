@@ -9,16 +9,16 @@ import net.cloudhacking.androidgame2.engine.utils.PointF;
  */
 public class TouchWidget extends Widget {
 
+    public TouchWidget(WidgetBackground bg, RectF bounds, BindLocation loc) {
+        super(bg, loc, bounds);
+    }
+
     public TouchWidget(RectF bounds, BindLocation loc) {
-        super(bounds, loc);
+        super(null, loc, bounds);
     }
 
     public TouchWidget(RectF bounds) {
-        super(bounds);
-    }
-
-    public TouchWidget() {
-        super(new RectF(0,0,1,1), BindLocation.NULL);
+        super(null, BindLocation.NULL, bounds);
     }
 
 

@@ -1,8 +1,8 @@
 package net.cloudhacking.androidgame2;
 
-import net.cloudhacking.androidgame2.engine.ui.element.Button;
+import net.cloudhacking.androidgame2.engine.ui.element.Panel;
 import net.cloudhacking.androidgame2.engine.ui.UI;
-import net.cloudhacking.androidgame2.engine.ui.Widget;
+import net.cloudhacking.androidgame2.engine.ui.Widget.BindLocation;
 import net.cloudhacking.androidgame2.engine.utils.FPSCounter;
 
 /**
@@ -13,11 +13,11 @@ public class TestUI extends UI {
     @Override
     public void create() {
 
-        Button btn = new Button(Assets.UI_SIMPLE, 1, .07f, Widget.BindLocation.CENTER_TOP);
+        Panel panel = new Panel(Assets.UI_SIMPLE, 1, .07f, BindLocation.CENTER_TOP);
 
-        btn.add(new FPSCounter(Widget.BindLocation.CENTER_RIGHT) );
+        panel.add(new FPSCounter(BindLocation.CENTER_LEFT));
 
-        root.addToFront(btn);
+        root.addToFront(panel);
 
     }
 

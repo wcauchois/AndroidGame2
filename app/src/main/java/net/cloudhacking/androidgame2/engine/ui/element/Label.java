@@ -15,19 +15,14 @@ public class Label extends Widget {
     public static Label create(PointF topLeft, String msg, TextRenderer.TextProps textProps) {
         Texture tex = TextRenderer.getInstance().getTexture(msg, textProps);
 
-        float relativeWidth = (float)tex.getWidth() / Widget.getRootWidth();
-        float relativeHeight = (float)tex.getHeight() / Widget.getRootHeight();
-
-        RectF bounds = new RectF(topLeft.x, topLeft.y, topLeft.x + relativeWidth, topLeft.y + relativeHeight);
-        return new Label(tex, bounds);
+        return new Label(tex, BindLocation.CENTER);
     }
 
     public static Label create(PointF topLeft, String msg) {
-        return create(topLeft, msg, TextRenderer.newProps() /* default props */);
+        return create(topLeft, msg, TextRenderer.newProps() /* default props */ );
     }
 
-    public Label(Texture tex, RectF bounds) {
-        super(bounds);
-        setBackgroundImage(new Image(tex));
+    public Label(Texture tex, BindLocation loc) {
+        super(new Image(tex), loc, ScaleType.FIT_FIXED_RATIO);
     }
 }

@@ -54,7 +54,7 @@ public class Grid extends Entity {
                 = new AnimationSequence(new int[] {0, 1}, 0, BLINK_FREQ);
 
         public SelectorIcon() {
-            super(Assets.SELECTOR_ICON);
+            super(Assets.SELECTOR_8PX);
             setVisibility(false);
         }
 

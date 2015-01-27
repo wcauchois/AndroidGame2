@@ -107,6 +107,10 @@ public class Renderable extends Entity {
     }
 
     public RectF getRect() {
+        return new RectF(mPos.x, mPos.y, mPos.x + mWidth, mPos.y + mHeight);
+    }
+
+    public RectF getScaledRect() {
         return new RectF(mPos.x, mPos.y, mPos.x + getScaledWidth(), mPos.y + getScaledHeight());
     }
 

@@ -22,19 +22,25 @@ public class TestLevel extends Level {
     @Override
     public void create() {
 
-
-        ArrayList<TiledImporter.TiledMap> imported
+        // import background tile data from json map exported from Tiled
+        ArrayList<TiledImporter.Map> imported
                 = TiledImporter.loadMaps(Resources.JSON_MAP_MICRO);
 
-        //mTileMap = new TileMap( Assets.TEST_TILESET, new JsonMap(Resources.JSON_MAP_SIMPLE) );
+        // create tile maps
         TileMap mTileMapL1 = new TileMap( Assets.MICRO_TILES, imported.get(0) );
         TileMap mTileMapL2 = new TileMap( Assets.MICRO_TILES, imported.get(1) );
 
+        // pre-render tile maps and add to level
         Image tileMapBase = new Image( mTileMapL1.getPreRendered() );
-        Image tileMapTerrain = new Image( mTileMapL2.getPreRendered() );
         tileMapBase.moveToOrigin();
-        tileMapTerrain.moveToOrigin();
+        tileMapBase.update();
+        tileMapBase.setInactive();
         add(tileMapBase);
+
+        Image tileMapTerrain = new Image( mTileMapL2.getPreRendered() );
+        tileMapTerrain.moveToOrigin();
+        tileMapTerrain.update();
+        tileMapBase.setInactive();
         add(tileMapTerrain);
 
         mSize = mTileMapL1.getRect();
