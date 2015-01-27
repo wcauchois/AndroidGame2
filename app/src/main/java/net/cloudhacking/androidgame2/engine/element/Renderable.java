@@ -196,6 +196,10 @@ public class Renderable extends Entity {
         mColorM = vm.clone();
     }
 
+    public void setAlpha(float a) {
+        mColorM[3] = a;
+    }
+
     public float[] getColorA() {
         return mColorA.clone();
     }

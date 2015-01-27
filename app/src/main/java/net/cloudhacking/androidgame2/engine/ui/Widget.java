@@ -52,6 +52,12 @@ public abstract class Widget extends Group<Widget> {
         NULL  // don't bind
     }
 
+    // margin around bound elements
+    private static int sMargin = 8 /* pixels */ ;
+    public static void setMargin(int margin) {
+        sMargin = margin;
+    }
+
     // determines widget scaling
     public static enum ScaleType {
 
@@ -114,7 +120,7 @@ public abstract class Widget extends Group<Widget> {
         mNeedUpdate = true;
     }
 
-    // for root widget
+    // create widget whose bounds are raw pixel coordinates
     public Widget(RectF bounds) {
         // assumes boundary values in [0,1] range
         mBounds = bounds;
@@ -192,20 +198,20 @@ public abstract class Widget extends Group<Widget> {
     }
 
     public void updateBounds() {
-        // This function assumes that bounding rect coords are between 0 and 1, unless
-        // the scale type is set to fixed width, in which case the bounds will be set to
-        // the size of the image in screen space in the constructor.
 
         RectF parentAbsBounds = ((Widget)getParent()).getAbsoluteBounds();
         float absW = parentAbsBounds.width();
         float absH = parentAbsBounds.height();
 
-        float w, h;
+        float w, h;  // width and height should be in the [0,1] range
+
+        float mw = sMargin / absW;
+        float mh = sMargin / absH;
+
         switch(mScaleType) {
             case FIXED:
                 w = (mRelativeW * sRootWidth) / absW;
                 h = (mRelativeH * sRootHeight) / absH;
-                mBounds = new RectF(0, 0, w, h);
                 break;
 
             case FIT_FIXED_RATIO:
@@ -225,7 +231,6 @@ public abstract class Widget extends Group<Widget> {
                     d("bind location cannot be NULL for scale type FIT_FIXED_RATIO; setting to CENTER.");
                     mBindLocation = BindLocation.CENTER;
                 }
-                mBounds = new RectF(0, 0, w, h);
                 break;
 
             case FIT_FREE:
@@ -233,7 +238,6 @@ public abstract class Widget extends Group<Widget> {
                 h = mBounds.height();
                 w = ( w > 1 ? 1 : w ) < 0 ? 0 : w;
                 h = ( h > 1 ? 1 : h ) < 0 ? 0 : h;
-                mBounds = new RectF(0, 0, w, h);
                 break;
 
             default:
@@ -241,43 +245,42 @@ public abstract class Widget extends Group<Widget> {
                 h = 1;
         }
 
-        w = mBounds.width();
-        h = mBounds.height();
+
         switch (mBindLocation) {
             case TOP_LEFT:
-                mBounds = new RectF(0, 0, w, h);
+                mBounds = new RectF(mw, mh, w+mw, h+mh);
                 break;
 
             case TOP_RIGHT:
-                mBounds = new RectF(1 - w, 0, 1, h);
+                mBounds = new RectF(1-w-mw, mh, 1-mw, h+mh);
                 break;
 
             case BOTTOM_LEFT:
-                mBounds = new RectF(0, 1 - h, w, 1);
+                mBounds = new RectF(mw, 1-h-mh, w+mw, 1-mh);
                 break;
 
             case BOTTOM_RIGHT:
-                mBounds = new RectF(1 - w, 1 - h, 1, 1);
+                mBounds = new RectF(1-w-mw, 1-h-mh, 1-mw, 1-mh);
                 break;
 
             case CENTER_LEFT:
-                mBounds = new RectF(0, .5f - h/2, w, .5f + h/2);
+                mBounds = new RectF(mw, .5f-h/2, w+mw, .5f+h/2);
                 break;
 
             case CENTER_TOP:
-                mBounds = new RectF(.5f - w/2, 0, .5f + w/2, h);
+                mBounds = new RectF(.5f-w/2, mh, .5f+w/2, h+mh);
                 break;
 
             case CENTER_RIGHT:
-                mBounds = new RectF(1 - w, .5f - h/2, 1, .5f + h/2);
+                mBounds = new RectF(1-w-mw, .5f-h/2, 1-mw, .5f+h/2);
                 break;
 
             case CENTER_BOTTOM:
-                mBounds = new RectF(.5f - w/2, 1 - h, .5f + w/2, 1);
+                mBounds = new RectF(.5f-w/2, 1-h-mh, .5f+w/2, 1-mh);
                 break;
 
             case CENTER:
-                mBounds = new RectF(.5f - w/2, .5f - h/2, .5f + w/2, .5f + h/2);
+                mBounds = new RectF(.5f-w/2, .5f-h/2, .5f+w/2, .5f+h/2);
                 break;
 
             case NULL:
@@ -290,7 +293,6 @@ public abstract class Widget extends Group<Widget> {
             mBackground.update();
         }
     }
-
 
 
 

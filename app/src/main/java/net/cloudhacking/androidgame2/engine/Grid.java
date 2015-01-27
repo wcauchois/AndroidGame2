@@ -211,12 +211,20 @@ public class Grid extends Entity {
         return mColumns * mCellWidth;
     }
 
+    public int getCellWidth() {
+        return mCellWidth;
+    }
+
     public int getColumns() {
         return mColumns;
     }
 
     public int getHeight() {
         return mRows * mCellHeight;
+    }
+
+    public int getCellHeight() {
+        return mCellHeight;
     }
 
     public int getRows() {
@@ -246,6 +254,19 @@ public class Grid extends Entity {
 
     public void setOccupation(int index, boolean bool) {
         mGrid[ index ].setOccupation(bool);
+    }
+
+    public void setOccupation(TileMap.Map collisionMap) {
+        if (collisionMap.getWidth() != mColumns || collisionMap.getHeight() != mRows) {
+            return;
+        }
+        for (int i=0; i<(mColumns*mRows); i++) {
+            if (collisionMap.getTile(i) == 0) {
+                setOccupation(i, true);
+            } else {
+                setOccupation(i, false);
+            }
+        }
     }
 
 
@@ -346,6 +367,10 @@ public class Grid extends Entity {
             return mMembers.contains( coordToIndex(ix, iy) );
         }
 
+        public boolean containsCell(int index) {
+            return mMembers.contains(index);
+        }
+
         public boolean isEmpty() {
             return mPath.isEmpty();
         }
@@ -368,6 +393,10 @@ public class Grid extends Entity {
             return mPath.size();
         }
 
+        @Override
+        public String toString() {
+            return mMembers.toString();
+        }
     }
 
 

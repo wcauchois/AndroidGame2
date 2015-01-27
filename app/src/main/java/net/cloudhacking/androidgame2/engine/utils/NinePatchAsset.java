@@ -9,9 +9,9 @@ public class NinePatchAsset extends Asset {
 
     private Rect mCenterPatch;
 
-    public NinePatchAsset(String filename, Rect centerPatch) {
+    public NinePatchAsset(String filename, int cleft, int ctop, int cright, int cbottom) {
         super(filename);
-        mCenterPatch = centerPatch;
+        mCenterPatch = new Rect(cleft, ctop, cright, cbottom);
     }
 
     public Rect getCenterPatch() {

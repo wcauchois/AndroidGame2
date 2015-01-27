@@ -9,8 +9,6 @@ import net.cloudhacking.androidgame2.engine.element.TileMap;
 import net.cloudhacking.androidgame2.engine.Signal;
 import net.cloudhacking.androidgame2.engine.utils.TiledImporter;
 
-import java.util.ArrayList;
-
 /**
  * Created by Andrew on 1/26/2015.
  */
@@ -19,16 +17,18 @@ public class TestLevel extends Level {
     private Grid mGrid;
     private RectF mSize;
 
+    private TestCreepFactory mFactory;
+
     @Override
     public void create() {
 
         // import background tile data from json map exported from Tiled
-        ArrayList<TiledImporter.Map> imported
+        TiledImporter.TiledObject imported
                 = TiledImporter.loadMaps(Resources.JSON_MAP_MICRO);
 
         // create tile maps
-        TileMap mTileMapL1 = new TileMap( Assets.MICRO_TILES, imported.get(0) );
-        TileMap mTileMapL2 = new TileMap( Assets.MICRO_TILES, imported.get(1) );
+        TileMap mTileMapL1 = new TileMap( Assets.MICRO_TILES, imported.getLayers().get(0) );
+        TileMap mTileMapL2 = new TileMap( Assets.MICRO_TILES, imported.getLayers().get(1) );
 
         // pre-render tile maps and add to level
         Image tileMapBase = new Image( mTileMapL1.getPreRendered() );
@@ -45,8 +45,9 @@ public class TestLevel extends Level {
 
         mSize = mTileMapL1.getRect();
 
-        // set up game grid from tile map size
+        // set up game grid from tile map size; set collision map
         mGrid = (Grid) add(new Grid(mTileMapL1));
+        mGrid.setOccupation(imported.getCollisionMap());
 
         mGrid.cellSelector.connect( new Signal.Listener<Grid.Cell>() {
             @Override
@@ -56,6 +57,19 @@ public class TestLevel extends Level {
                 return false;
             }
         });
+
+        mFactory = new TestCreepFactory(mGrid);
+        add(mFactory);
+
+        mGrid.cellSelector.connect(new Signal.Listener<Grid.Cell>() {
+            @Override
+            public boolean onSignal(Grid.Cell cell) {
+                mFactory.spawnAt(cell.getCenter());
+                return false;
+            }
+        });
+
+
 
     }
 

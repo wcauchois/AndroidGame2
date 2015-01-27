@@ -12,8 +12,8 @@ import net.cloudhacking.androidgame2.engine.utils.NinePatchAsset;
  */
 public class Panel extends TouchWidget {
 
-    public Panel(NinePatchAsset npa, float w, float h, BindLocation loc) {
-        super( new NinePatch(npa), new RectF(0, 0, w, h), loc );
+    public Panel(NinePatchAsset npa, RectF bounds, BindLocation loc) {
+        super( new NinePatch(npa), bounds, loc );
     }
 
 

@@ -95,6 +95,10 @@ public class Vec2 {
         return (x * other.y - y * other.x);
     }
 
+    public float angle() {
+        return (float)Math.atan2(y,x);
+    }
+
     public Vec2 copy() {
         return new Vec2(x, y);
     }
