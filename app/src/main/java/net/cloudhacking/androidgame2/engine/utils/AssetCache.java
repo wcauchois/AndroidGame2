@@ -43,12 +43,14 @@ public class AssetCache extends Loggable {
 
     private HashMap<Asset, Texture> mTextureCache;
     private HashMap<Integer, PreRenderedTexture> mPreRenderedCache;
+    private HashMap<SpriteAsset, Sprite> mSpriteCache;
 
 
     private AssetCache(Context context) {
         mContext = context;
         mTextureCache = new HashMap<Asset, Texture>();
         mPreRenderedCache = new HashMap<Integer, PreRenderedTexture>();
+        mSpriteCache = new HashMap<SpriteAsset, Sprite>();
         PreRenderedTexture.resetID();
 
         d("initialized asset cache");
@@ -159,19 +161,16 @@ public class AssetCache extends Loggable {
      * Cache sprite objects in order for l33t optimization, and so that we don't have to
      * regenerate the same vertex buffers for a hundred different creeps using the same sprite.
      */
-    private HashMap<SpriteAsset, Sprite> sSpriteCache
-            = new HashMap<SpriteAsset, Sprite>();
-
 
     public Sprite getSprite(SpriteAsset asset) {
 
-        if (!sSpriteCache.containsKey(asset)) {
+        if (!mSpriteCache.containsKey(asset)) {
             Sprite sprite = new Sprite(asset);
-            sSpriteCache.put(asset, sprite);
+            mSpriteCache.put(asset, sprite);
             return sprite;
 
         } else {
-            return sSpriteCache.get(asset);
+            return mSpriteCache.get(asset);
         }
     }
 
@@ -188,7 +187,7 @@ public class AssetCache extends Loggable {
         }
         mTextureCache.clear();
         mPreRenderedCache.clear();
-        sSpriteCache.clear();
+        mSpriteCache.clear();
     }
 
 }

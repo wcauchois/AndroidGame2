@@ -40,12 +40,12 @@ public class TestLevel extends Level {
         Image tileMapTerrain = new Image( mTileMapL2.getPreRendered() );
         tileMapTerrain.moveToOrigin();
         tileMapTerrain.update();
-        tileMapBase.setInactive();
+        tileMapTerrain.setInactive();
         add(tileMapTerrain);
 
         mSize = mTileMapL1.getRect();
 
-        // set up game grid from tile map
+        // set up game grid from tile map size
         mGrid = (Grid) add(new Grid(mTileMapL1));
 
         mGrid.cellSelector.connect( new Signal.Listener<Grid.Cell>() {

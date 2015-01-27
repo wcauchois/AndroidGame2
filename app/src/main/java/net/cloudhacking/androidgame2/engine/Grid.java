@@ -83,7 +83,7 @@ public class Grid extends Entity {
 
         // from flood map
         private Cell mReachableNeighbor;  // towards the flood source
-        private int mDistToSource;  // -1 is this Cell is unreachable
+        private int mDistToSource;  // -1 if this Cell is unreachable
 
         public Cell(int ix, int iy) {
             this.ix = ix;

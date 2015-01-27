@@ -13,12 +13,10 @@ public class TestUI extends UI {
     @Override
     public void create() {
 
-        Panel panel = new Panel(Assets.UI_SIMPLE, 1, .07f, BindLocation.CENTER_TOP);
+        //Panel panel = new Panel(Assets.UI_SIMPLE, 1f, .07f, BindLocation.CENTER_TOP);
+        //root.addToFront(panel);
 
-        panel.add(new FPSCounter(BindLocation.CENTER_LEFT));
-
-        root.addToFront(panel);
-
+        root.add(new FPSCounter(BindLocation.TOP_LEFT));
     }
 
 }

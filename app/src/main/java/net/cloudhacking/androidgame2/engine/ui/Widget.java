@@ -203,8 +203,8 @@ public abstract class Widget extends Group<Widget> {
         float w, h;
         switch(mScaleType) {
             case FIXED:
-                w = mRelativeW / absW;
-                h = mRelativeH / absH;
+                w = (mRelativeW * sRootWidth) / absW;
+                h = (mRelativeH * sRootHeight) / absH;
                 mBounds = new RectF(0, 0, w, h);
                 break;
 
