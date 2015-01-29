@@ -1,5 +1,6 @@
-package net.cloudhacking.androidgame2;
+package net.cloudhacking.androidgame2.example;
 
+import net.cloudhacking.androidgame2.Assets;
 import net.cloudhacking.androidgame2.engine.Grid;
 import net.cloudhacking.androidgame2.engine.element.Image;
 import net.cloudhacking.androidgame2.engine.element.Sprite;
@@ -25,7 +26,8 @@ public class TestCreepFactory extends SpriteFactory {
 
     private class TestCreep extends SpriteSpawn {
 
-        Image mPathMap;
+        TileMap mPathMap;
+        //Image mPathMap;
         private Grid.Cell mStart;
 
         private class TestCreepAnimation implements Animation {
@@ -77,14 +79,15 @@ public class TestCreepFactory extends SpriteFactory {
                     mCurrentlyAnimating = false;
                     return;
                 }
-                TileMap pathMap = new TileMap(Assets.HIGHLIGHTER_8PX, new PathMap(),
+                mPathMap = new TileMap(Assets.HIGHLIGHTER_8PX, new PathMap(),
                         mGrid.getCellWidth(), mGrid.getCellHeight());
 
-                mPathMap = new Image( pathMap.getPreRendered() );
+                mPathMap.update();
+                /*mPathMap = new Image( pathMap.getPreRendered() );
                 mPathMap.moveToOrigin();
                 mPathMap.setAlpha(.8f);
                 mPathMap.update();
-                mPathMap.setInactive();
+                mPathMap.setInactive();*/
 
                 if (mCellPath.peek() == null) mDestinationReached = true;
             }

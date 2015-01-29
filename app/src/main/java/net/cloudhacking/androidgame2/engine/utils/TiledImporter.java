@@ -94,7 +94,7 @@ public class TiledImporter extends Loggable {
                 layer = layers.getJSONObject(i);
                 array = layer.getJSONArray("data");
 
-                // case: visual later
+                // case: visual layer
                 if (!layer.getString("name").equalsIgnoreCase("collision")) {
                     data = new int[width * height];
                     int tile;

@@ -38,18 +38,20 @@ public class TouchWidget extends Widget {
 
                 if (w instanceof TouchWidget) {
                     t = (TouchWidget) w;
-
                     if (t.handleClick(relPt, mBounds)) {
                         t.onClick();
                         return true;
                     }
                 }
             }
+            return true;
         }
         return false;
     }
 
 
-    public void onClick() {}
+    public void onClick() {
+        Widget.widgetSelector.dispatch(this);
+    }
 
 }

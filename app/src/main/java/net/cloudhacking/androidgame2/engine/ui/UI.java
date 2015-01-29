@@ -1,5 +1,7 @@
 package net.cloudhacking.androidgame2.engine.ui;
 
+import net.cloudhacking.androidgame2.engine.InputManager;
+import net.cloudhacking.androidgame2.engine.Signal;
 import net.cloudhacking.androidgame2.engine.gl.BasicGLScript;
 import net.cloudhacking.androidgame2.engine.GameSkeleton;
 import net.cloudhacking.androidgame2.engine.element.Group;
@@ -18,6 +20,7 @@ public class UI extends Group<RootWidget> {
                               .getUICamera();
 
         root = new RootWidget();
+
         add(root);
     }
 

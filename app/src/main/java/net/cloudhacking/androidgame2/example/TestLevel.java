@@ -1,7 +1,9 @@
-package net.cloudhacking.androidgame2;
+package net.cloudhacking.androidgame2.example;
 
 import android.graphics.RectF;
 
+import net.cloudhacking.androidgame2.Assets;
+import net.cloudhacking.androidgame2.Resources;
 import net.cloudhacking.androidgame2.engine.Grid;
 import net.cloudhacking.androidgame2.engine.Level;
 import net.cloudhacking.androidgame2.engine.element.Image;

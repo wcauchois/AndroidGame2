@@ -17,7 +17,7 @@ public class RootWidget extends Widget {
         super(new RectF(0, 0, Widget.getRootWidth(), Widget.getRootHeight()));
 
         InputManager im = GameSkeleton.getInstance().getInputManager();
-        im.click.connect(new Signal.Listener<InputManager.ClickEvent>() {
+        im.click.connectFirst(new Signal.Listener<InputManager.ClickEvent>() {
             @Override
             public boolean onSignal(InputManager.ClickEvent clickEvent) {
                 return handleSignal(clickEvent);

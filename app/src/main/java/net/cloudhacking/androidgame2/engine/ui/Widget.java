@@ -130,9 +130,12 @@ public abstract class Widget extends Group<Widget> {
         mRelativeW = bounds.width();
         mRelativeH = bounds.height();
         mAspectRatio = mRelativeW / mRelativeH;
-        mNeedUpdate = false;
+        cancelUpdate();
     }
 
+    public void cancelUpdate() {
+        mNeedUpdate = false;
+    }
 
     public void setBackgroundImage(WidgetBackground bg) {
         mBackground = bg;
@@ -158,6 +161,16 @@ public abstract class Widget extends Group<Widget> {
         mNeedUpdate = true;
     }
 
+    public void setWidth(float width) {
+        mBounds.right = width;
+        mNeedUpdate = true;
+    }
+
+    public void setHeight(float height) {
+        mBounds.bottom = height;
+        mNeedUpdate = true;
+    }
+
     public BindLocation getBindLocation() {
         return mBindLocation;
     }
@@ -174,6 +187,13 @@ public abstract class Widget extends Group<Widget> {
     public void setScaleType(ScaleType stype) {
         mScaleType = stype;
         mNeedUpdate = true;
+    }
+
+    public void scaleToWidget(Widget w) {
+        RectF r = w.getAbsoluteBounds();
+        float rt = (r.right + 2 * sMargin) / sRootWidth;
+        float bt = (r.bottom + 2 * sMargin) / sRootHeight;
+        setBounds( new RectF(0, 0, rt, bt) );
     }
 
 
@@ -208,6 +228,9 @@ public abstract class Widget extends Group<Widget> {
         float mw = sMargin / absW;
         float mh = sMargin / absH;
 
+        float absWadjust = absW - 2 * sMargin;
+        float absHadjust = absH - 2 * sMargin;
+
         switch(mScaleType) {
             case FIXED:
                 w = (mRelativeW * sRootWidth) / absW;
@@ -219,13 +242,13 @@ public abstract class Widget extends Group<Widget> {
 
                 // too wide
                 if (mAspectRatio > absRatio) {
-                    w = 1;
-                    h = absRatio / mAspectRatio;
+                    w = (absWadjust / absW);
+                    h = (absRatio / mAspectRatio) * (absWadjust / absW);
 
                 // too tall
                 } else {
-                    w = mAspectRatio / absRatio;
-                    h = 1;
+                    w = (mAspectRatio / absRatio) * (absHadjust / absH) ;
+                    h = (absHadjust / absH);
                 }
                 if (mBindLocation == BindLocation.NULL) {
                     d("bind location cannot be NULL for scale type FIT_FIXED_RATIO; setting to CENTER.");
@@ -236,13 +259,13 @@ public abstract class Widget extends Group<Widget> {
             case FIT_FREE:
                 w = mBounds.width();
                 h = mBounds.height();
-                w = ( w > 1 ? 1 : w ) < 0 ? 0 : w;
-                h = ( h > 1 ? 1 : h ) < 0 ? 0 : h;
+                w = ( w > (1-2*mw) ? (1-2*mw) : w ) < 0 ? 0 : w;
+                h = ( h > (1-2*mh) ? (1-2*mh) : h ) < 0 ? 0 : h;
                 break;
 
             default:
-                w = 1;
-                h = 1;
+                w = (1-2*mw);
+                h = (1-2*mh);
         }
 
 

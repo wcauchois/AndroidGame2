@@ -2,6 +2,7 @@ package net.cloudhacking.androidgame2;
 
 import android.os.Bundle;
 
+import net.cloudhacking.androidgame2.engine.Scene;
 import net.cloudhacking.androidgame2.engine.gl.Camera;
 import net.cloudhacking.androidgame2.engine.GameSkeleton;
 
@@ -15,10 +16,11 @@ public class TDGame extends GameSkeleton {
 
 
     @Override
-    public void onInitGame(Bundle savedInstanceState) {
+    public Scene onInitGame(Bundle savedInstanceState) {
         Camera.setScrollSpeed(SCROLL_SPEED);
 
-        setScene( new TestScene() );
+
+        return new GameScene();
     }
 
     @Override
@@ -29,6 +31,11 @@ public class TDGame extends GameSkeleton {
     @Override
     public void onResumeGame() {
         // resume game state here
+    }
+
+    @Override
+    public void onSaveGame(Bundle outState) {
+        // save game state in outState bundle
     }
 
     @Override

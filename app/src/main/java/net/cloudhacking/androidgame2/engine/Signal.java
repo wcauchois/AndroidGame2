@@ -25,6 +25,10 @@ public class Signal<T> {
         mListeners.addLast(listener);
     }
 
+    public void connectFirst(Listener<T> listener) {
+        mListeners.addFirst(listener);
+    }
+
     public void remove(Listener<T> listener) {
         mListeners.remove(listener);
     }

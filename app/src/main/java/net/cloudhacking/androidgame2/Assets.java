@@ -24,5 +24,6 @@ public class Assets {
     public static final SpriteAsset MICRO_TILES     = new SpriteAsset("micro_tileset.png", 8, 8);
 
     public static final NinePatchAsset UI_SIMPLE    = new NinePatchAsset("ui_simple.png", 10, 10, 20, 20);
+    public static final NinePatchAsset UI_PURPLE    = new NinePatchAsset("ui_purple.png", 10, 10, 20, 20);
 
 }

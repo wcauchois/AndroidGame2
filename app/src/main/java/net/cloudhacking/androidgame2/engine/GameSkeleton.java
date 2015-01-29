@@ -78,7 +78,7 @@ public abstract class GameSkeleton
         return mCameraController;
     }
 
-    abstract public void onInitGame(Bundle savedInstanceState);
+    abstract public Scene onInitGame(Bundle savedInstanceState);
 
     abstract public void onPauseGame();
 
@@ -86,7 +86,7 @@ public abstract class GameSkeleton
 
     abstract public void onDestroyGame();
 
-    //abstract public void onSaveGame(Bundle outState);
+    abstract public void onSaveGame(Bundle outState);
 
 
 
@@ -204,7 +204,7 @@ public abstract class GameSkeleton
         if (sInitGame) {
             d("initializing game");
 
-            onInitGame(mSavedInstanceState);
+            mScene = onInitGame(mSavedInstanceState);
             mSavedInstanceState = null;
 
             sInitGame = false;
@@ -225,5 +225,8 @@ public abstract class GameSkeleton
             mScene.draw(mGLScript);
         }
     }
+
+
+    // TODO: scene switching functionality
 
 }
