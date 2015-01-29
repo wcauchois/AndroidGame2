@@ -275,6 +275,7 @@ public class InputManager
                     break;
                 case CLICK_DOWN:
                     // Currently no click down signal.
+                    // TODO: implement click down as a sort of hover, then cancel if a drag event starts
                     mScrolling = false;
                     break;
             }

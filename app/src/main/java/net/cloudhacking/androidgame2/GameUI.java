@@ -20,6 +20,9 @@ public class GameUI extends UI {
         Button btn = new Button(Assets.UI_PURPLE, btnLabel, Widget.BindLocation.CENTER_BOTTOM);
         root.add(btn);
         btn.scaleToWidget(btnLabel);
+
+
+
     }
 
 }

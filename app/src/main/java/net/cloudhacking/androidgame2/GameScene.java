@@ -17,7 +17,7 @@ public class GameScene extends Scene {
     public Scene create() {
 
         ui    = new GameUI();
-        level = new TestLevel();
+        level = new PilotLevel();
 
         ui.create();
         level.create();
