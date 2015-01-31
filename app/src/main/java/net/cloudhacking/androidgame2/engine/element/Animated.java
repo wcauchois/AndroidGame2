@@ -18,7 +18,7 @@ public class Animated extends Renderable {
      * An animated object is controlled by an implementation of the Animation interface.  An
      * animation can be queued or forced to start, and can also optionally be looped.  If there
      * is no animation or the current animation runs out and there is no queued animation, then
-     * the DEFAULT_ANIMATION will be set, which will just always render sprite frame zero.
+     * the NULL_ANIMATION will be set, which will just always render sprite frame zero.
      *
      * The Animation interface is versatile if it is an inner class to an extension of Animated,
      * because then it has access to all the movement variables from Renderable and so it can then
@@ -36,7 +36,7 @@ public class Animated extends Renderable {
     }
 
 
-    public static final Animation DEFAULT_ANIMATION = new Animation() {
+    public static final Animation NULL_ANIMATION = new Animation() {
         public void start() {}
         public void reset() {}
         public void update() {}
@@ -67,7 +67,7 @@ public class Animated extends Renderable {
         setWidth(mSprite.getWidth());
         setHeight(mSprite.getHeight());
 
-        mAnimation = DEFAULT_ANIMATION;
+        mAnimation = NULL_ANIMATION;
     }
 
     public Sprite getSprite() {
@@ -105,7 +105,7 @@ public class Animated extends Renderable {
             mAnimation.start();
 
         } else {
-            mAnimation = DEFAULT_ANIMATION;
+            mAnimation = NULL_ANIMATION;
         }
 
         super.update();

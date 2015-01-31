@@ -2,9 +2,9 @@ package net.cloudhacking.androidgame2.example;
 
 import net.cloudhacking.androidgame2.Assets;
 import net.cloudhacking.androidgame2.engine.factory.SpriteFactory;
+import net.cloudhacking.androidgame2.engine.utils.CommonUtils;
 
 import java.util.HashMap;
-import java.util.Random;
 
 /**
  * Created by Andrew on 1/21/2015.
@@ -23,17 +23,16 @@ public class ExplosionFactory extends SpriteFactory {
 
         @Override
         public Animation constructAnimation() {
-            int row = mRandGen.nextInt(8);
+            int row = CommonUtils.getRandom().nextInt(8);
             return new AnimationSequence(sSequenceCache.get(row), 0, SPEED);
         }
 
     }
 
 
-    private final float SPEED = 10;
-    private final float SCALE = 4;
+    private static final float SPEED = 10;
+    private static final float SCALE = 4;
 
-    private Random mRandGen;
     private static HashMap<Integer, int[]> sSequenceCache;
     static {
         sSequenceCache = new HashMap<Integer, int[]>();
@@ -45,11 +44,6 @@ public class ExplosionFactory extends SpriteFactory {
             }
             sSequenceCache.put(i, seq);
         }
-    }
-
-
-    public ExplosionFactory() {
-        mRandGen = new Random();
     }
 
     @Override

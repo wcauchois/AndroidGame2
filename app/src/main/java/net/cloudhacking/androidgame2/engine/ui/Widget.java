@@ -12,6 +12,12 @@ import net.cloudhacking.androidgame2.engine.Signal;
  */
 public abstract class Widget extends Group<Widget> {
 
+    // TODO: Putting UI on back burner until I really know what I need.  I probably don't
+    // TODO: need all the formatting stuff, and I realized that the UI also doesn't really need
+    // TODO: to be entirely independent from the screen size (for example the bottom menu bar
+    // TODO: could have a fixed height but scalable width).  It's probably a lot faster to use
+    // TODO: pixel coordinates.  Also I need to figure out how to scale based on screen density.
+
     /**
      * This represents a general UI object.  The coordinate system is set up so that a
      * widgets bounding rect size is a percentage of its parent's bounding rect size.  This way
