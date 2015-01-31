@@ -79,8 +79,7 @@ public class TileMap extends PreRenderable {
     public void setMap(Map map) {
         mColumns = map.getWidth();
         mRows = map.getHeight();
-        mQuadCount = mRows * mColumns;
-        mVertexBuffer = BufferUtils.makeQuadFloatBuffer(mQuadCount);
+        mVertexBuffer = BufferUtils.makeQuadFloatBuffer(mRows * mColumns);
 
         setWidth(mCellWidth * mColumns);
         setHeight(mCellHeight * mRows);
@@ -90,6 +89,7 @@ public class TileMap extends PreRenderable {
 
     private void updateVertices(Map map) {
 
+        mQuadCount = 0;
         float[] vertices = new float[16];
 
         RectF uv;
@@ -100,10 +100,11 @@ public class TileMap extends PreRenderable {
             for (int iy=0; iy<mRows; iy++) {
 
                 index = ix + iy * mColumns;
-
-                mVertexBuffer.position( 16*index );
-
                 uv = mFrames.getUVFrame( map.getTile(index) );
+
+                if (uv==null) continue;
+
+                mVertexBuffer.position( 16*mQuadCount );
 
                 l = ix * mCellWidth;
                 t = iy * mCellHeight;
@@ -113,6 +114,11 @@ public class TileMap extends PreRenderable {
                 QuadDrawer.fillVertices(vertices, l, t, r, b);
                 QuadDrawer.fillUVCoords(vertices, uv);
                 mVertexBuffer.put(vertices);
+                mQuadCount++;
+
+                if (ix==42 && iy==80) {
+                    d("debug break");
+                }
             }
         }
     }

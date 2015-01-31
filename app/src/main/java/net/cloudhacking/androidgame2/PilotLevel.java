@@ -1,24 +1,16 @@
 package net.cloudhacking.androidgame2;
 
-import android.graphics.RectF;
-
 import net.cloudhacking.androidgame2.engine.Grid;
 import net.cloudhacking.androidgame2.engine.Level;
 import net.cloudhacking.androidgame2.engine.Signal;
 import net.cloudhacking.androidgame2.engine.element.Image;
 import net.cloudhacking.androidgame2.engine.element.TileMap;
 import net.cloudhacking.androidgame2.engine.utils.TiledImporter;
-import net.cloudhacking.androidgame2.example.TestCreepFactory;
 
 /**
  * Created by research on 1/29/15.
  */
 public class PilotLevel extends Level {
-
-    private Grid mGrid;
-    private RectF mSize;
-
-    private TestCreepFactory mFactory;
 
     @Override
     public void create() {
@@ -44,28 +36,23 @@ public class PilotLevel extends Level {
         tileMapTerrain.setInactive();
         add(tileMapTerrain);
 
-        mSize = mTileMapL1.getRect();
+        size = mTileMapL1.getRect();
 
         // set up game grid from tile map size; set collision map
-        mGrid = (Grid) add(new Grid(mTileMapL1));
-        mGrid.setOccupation(imported.getCollisionMap());
+        grid = (Grid) add(Grid.createFromTileMap(mTileMapL1));
 
-        mGrid.cellSelector.connect( new Signal.Listener<Grid.Cell>() {
+        // map collision map to occupied
+        grid.mapToState(imported.getCollisionMap(), Grid.CellState.EMPTY, Grid.CellState.OCCUPIED);
+
+        grid.cellSelector.connect( new Signal.Listener<Grid.Cell>() {
             @Override
             public boolean onSignal(Grid.Cell cell) {
-                mGrid.SELECTOR_ICON.startAnimationAt(cell.getCenter());
-                addToFront(mGrid.SELECTOR_ICON);
+                grid.SELECTOR_ICON.startAnimationAt(cell.getCenter());
+                addToFront(grid.SELECTOR_ICON);
                 return false;
             }
         });
 
-
-    }
-
-
-    @Override
-    public RectF getSize() {
-        return mSize;
     }
 
 }

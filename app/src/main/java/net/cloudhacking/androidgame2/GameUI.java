@@ -23,8 +23,6 @@ public class GameUI extends UI {
         root.add(btn);
         btn.scaleToWidget(btnLabel);
 
-
-
     }
 
 }

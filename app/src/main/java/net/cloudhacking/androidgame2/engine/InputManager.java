@@ -24,6 +24,11 @@ public class InputManager
                    ScaleGestureDetector.OnScaleGestureListener
 {
 
+    // TODO: This class probably needs some overhaul.  I would like to implement the
+    // TODO: drag fling so that when you stop dragging it glides for a little.  I also need
+    // TODO: to implement a stop drag signal (which can probably be the beginning of the
+    // TODO: onFling.
+
     /**
      * This class is the interface between android's touch screen and our Signal triggers.
      */

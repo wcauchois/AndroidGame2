@@ -40,7 +40,7 @@ public abstract class GameSkeleton
     private GLSurfaceView mView;
     private float mScreenDensity;
     private Rect mViewport;
-    private BasicGLScript mGLScript;
+    private BasicGLScript mBasicGLScript;
     private Scene mScene;
     private InputManager mInputManager;
     private CameraController mCameraController;
@@ -51,7 +51,7 @@ public abstract class GameSkeleton
     }
 
     public BasicGLScript getGLScript() {
-        return mGLScript;
+        return mBasicGLScript;
     }
 
     public Rect getViewport() {
@@ -108,7 +108,7 @@ public abstract class GameSkeleton
         mView.setRenderer(this);
         setContentView(mView);
 
-        mGLScript = null;
+        mBasicGLScript = null;
 
         sInstance = this;
         sInitGame = true;
@@ -139,8 +139,8 @@ public abstract class GameSkeleton
         // GLES20.glBlendFunc( GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA );
         GLES20.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);  // set alpha blending function
 
-        mGLScript = new BasicGLScript();
-        mGLScript.use();
+        mBasicGLScript = new BasicGLScript();
+        mBasicGLScript.use();
         AssetCache.getInstance().reloadTextures();
         TextRenderer.getInstance().reloadTextures();
 
@@ -165,7 +165,7 @@ public abstract class GameSkeleton
     public void onPause() {
         super.onPause();
         onPauseGame();
-        //if (mGLScript != null) mGLScript.delete();
+        //if (mBasicGLScript != null) mBasicGLScript.delete();
         mView.onPause();
 
         d("game paused");
@@ -218,11 +218,11 @@ public abstract class GameSkeleton
             mCameraController.update();
             mScene.update();
 
-            mGLScript.clearLastCamera();
+            mBasicGLScript.clearLastCamera();
             GLES20.glScissor(0, 0, mViewport.width(), mViewport.height());
             GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
 
-            mScene.draw(mGLScript);
+            mScene.draw(mBasicGLScript);
         }
     }
 

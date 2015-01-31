@@ -2,6 +2,7 @@ package net.cloudhacking.androidgame2.engine.gl;
 
 import android.graphics.RectF;
 import android.opengl.GLES20;
+import android.util.Log;
 
 import net.cloudhacking.androidgame2.engine.utils.BufferUtils;
 import net.cloudhacking.androidgame2.engine.utils.Loggable;

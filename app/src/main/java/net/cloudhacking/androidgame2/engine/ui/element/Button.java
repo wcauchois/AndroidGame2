@@ -11,7 +11,7 @@ public class Button extends TouchPanel {
 
     public Button(NinePatchAsset asset, String text, float width, float height, BindLocation loc) {
         super(asset, new RectF(0, 0, width, height), loc);
-        add(new TextLabel(text, BindLocation.CENTER, ScaleType.FIT_FIXED_RATIO));
+        add(new TextLabel(text, BindLocation.CENTER, ScaleType.FIXED));
     }
 
     public Button(NinePatchAsset asset, TextLabel label, BindLocation loc) {

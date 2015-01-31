@@ -32,7 +32,7 @@ public class TestCreepFactory extends SpriteFactory {
 
         private class TestCreepAnimation implements Animation {
 
-            Grid.CellPath mCellPath;
+            Grid.CellPathSet mCellPath;
 
             private boolean mDestinationReached;
             private boolean mCurrentlyAnimating;
@@ -74,7 +74,7 @@ public class TestCreepFactory extends SpriteFactory {
                 mCurrentlyAnimating = true;
                 setVisibility(true);
 
-                mCellPath = mGrid.getBestPath(mStart, mGrid.getCell(21,19));
+                mCellPath = mGrid.getBestPathSet(mStart, mGrid.getCell(21,19));
                 if (mCellPath == null) {
                     mCurrentlyAnimating = false;
                     return;

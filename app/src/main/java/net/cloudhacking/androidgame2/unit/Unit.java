@@ -10,6 +10,9 @@ import java.util.LinkedList;
  */
 public abstract class Unit extends Animated {
 
+    private static final float DEFAULT_HP = 1.0f;
+    private static final float DEFAULT_MOVESPEED = 50;
+
     private boolean mAlive;
 
     private float mHP;
@@ -21,8 +24,8 @@ public abstract class Unit extends Animated {
     public Unit(SpriteAsset asset) {
         super(asset);
         mAlive = true;
-        mHP = 1.0f;
-        mMoveSpeed = 50;
+        mHP = DEFAULT_HP;
+        mMoveSpeed = DEFAULT_MOVESPEED;
         mTargetedBy = new LinkedList<Unit>();
         mTarget = null;
     }

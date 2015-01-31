@@ -9,7 +9,6 @@ import net.cloudhacking.androidgame2.engine.element.Entity;
 import net.cloudhacking.androidgame2.engine.element.TileMap;
 import net.cloudhacking.androidgame2.engine.utils.PointF;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
@@ -75,11 +74,17 @@ public class Grid extends Entity {
 
     /**********************************************************************************************/
 
+    public static enum CellState {
+        // If we end up having different terrain types we'll need to
+        // implement a terrain movement cost function for A*.
+        EMPTY, OCCUPIED
+    }
+
     public class Cell {
         public int ix;
         public int iy;
         public int index;
-        private boolean mOccupied;
+        private CellState mState;
 
         // from flood map
         private Cell mReachableNeighbor;  // towards the flood source
@@ -89,17 +94,21 @@ public class Grid extends Entity {
             this.ix = ix;
             this.iy = iy;
             this.index = ix + iy * mColumns;
-            mOccupied = false;
+            mState = CellState.EMPTY;
             mReachableNeighbor = null;
             mDistToSource = -1;
         }
 
-        public void setOccupation(boolean bool) {
-            mOccupied = bool;
+        public void setState(CellState state) {
+            mState = state;
+        }
+
+        public CellState getState() {
+            return mState;
         }
 
         public boolean isOccupied() {
-            return mOccupied;
+            return mState == CellState.OCCUPIED;
         }
 
         public PointF getRelativeCenter() {
@@ -158,6 +167,10 @@ public class Grid extends Entity {
         }
     }
 
+    public CellSelector getClickListener() {
+        return mClickListener;
+    }
+
     public Signal<Cell> cellSelector = new Signal<Cell>();
 
     /**********************************************************************************************/
@@ -175,6 +188,8 @@ public class Grid extends Entity {
 
     private int mCellWidth;
     private int mCellHeight;
+
+    private CellSelector mClickListener;
 
 
     public Grid(int cols, int rows, int cellWidth, int cellHeight) {
@@ -195,14 +210,14 @@ public class Grid extends Entity {
             }
         }
 
-        GameSkeleton.getInstance().getInputManager().click.connect(new CellSelector());
+        mClickListener = new CellSelector();
     }
 
-    public Grid(TileMap map) {
-        this(map.getColumnsLength(),
-             map.getRowsLength(),
-             map.getCellWidth() * (int)map.getScale().x,
-             map.getCellHeight() * (int)map.getScale().y
+    public static Grid createFromTileMap(TileMap map) {
+        return new Grid(map.getColumnsLength(),
+                map.getRowsLength(),
+                map.getCellWidth() * (int)map.getScale().x,
+                map.getCellHeight() * (int)map.getScale().y
         );
     }
 
@@ -241,30 +256,38 @@ public class Grid extends Entity {
     }
 
     public boolean isOccupied(int ix, int iy) {
-        return isOccupied(coordToIndex(ix, iy));
+        return isOccupied( coordToIndex(ix, iy) );
     }
 
     public boolean isOccupied(int index) {
         return mGrid[ index ].isOccupied();
     }
 
-    public void setOccupation(int ix, int iy, boolean bool) {
-        setOccupation( coordToIndex(ix, iy), bool );
+    public void setState(int ix, int iy, CellState state) {
+        setState(coordToIndex(ix, iy), state);
     }
 
-    public void setOccupation(int index, boolean bool) {
-        mGrid[ index ].setOccupation(bool);
+    public void setState(int index, CellState state) {
+        mGrid[ index ].setState(state);
     }
 
-    public void setOccupation(TileMap.Map collisionMap) {
-        if (collisionMap.getWidth() != mColumns || collisionMap.getHeight() != mRows) {
+    public CellState getState(int ix, int iy) {
+        return getState( coordToIndex(ix, iy) );
+    }
+
+    public CellState getState(int index) {
+        return mGrid[ index ].getState();
+    }
+
+    public void mapToState(TileMap.Map map, CellState trueState, CellState falseState) {
+        if (map.getWidth() != mColumns || map.getHeight() != mRows) {
             return;
         }
         for (int i=0; i<(mColumns*mRows); i++) {
-            if (collisionMap.getTile(i) == 0) {
-                setOccupation(i, true);
+            if (map.getTile(i) != 0) {
+                setState(i, trueState);
             } else {
-                setOccupation(i, false);
+                setState(i, falseState);
             }
         }
     }
@@ -294,16 +317,31 @@ public class Grid extends Entity {
     /**
      * Flood map
      */
-    private ArrayList<Cell> neighbors;
+    private Cell[] neighbors = new Cell[4];
     private boolean[] mReachable;
     private Cell mFloodSource;
 
-    private ArrayList<Cell> getCellNeighbors(Cell c) {
-        neighbors = new ArrayList<Cell>(4);
-        if ( c.ix-1 >= 0       && !c.isOccupied() ) neighbors.add( getCell(c.ix-1, c.iy) );
-        if ( c.ix+1 < mColumns && !c.isOccupied() ) neighbors.add( getCell(c.ix+1, c.iy) );
-        if ( c.iy+1 < mRows    && !c.isOccupied() ) neighbors.add( getCell(c.ix, c.iy+1) );
-        if ( c.iy-1 >= 0       && !c.isOccupied() ) neighbors.add( getCell(c.ix, c.iy-1) );
+    private Cell[] getCellNeighbors(Cell c) {
+        if ( c.ix-1 >= 0 && !c.isOccupied() ) {
+            neighbors[0] = getCell(c.ix-1, c.iy);
+        } else {
+            neighbors[0] = null;
+        }
+        if ( c.ix+1 < mColumns && !c.isOccupied() ) {
+            neighbors[1] = getCell(c.ix+1, c.iy);
+        } else {
+            neighbors[1] = null;
+        }
+        if ( c.iy+1 < mRows && !c.isOccupied() ) {
+            neighbors[2] = getCell(c.ix, c.iy+1);
+        } else {
+            neighbors[2] = null;
+        }
+        if ( c.iy-1 >= 0 && !c.isOccupied() ) {
+            neighbors[3] = getCell(c.ix, c.iy-1);
+        } else {
+            neighbors[3] = null;
+        }
 
         return neighbors;
     }
@@ -351,24 +389,10 @@ public class Grid extends Entity {
 
     public class CellPath {
 
-        private LinkedList<Cell> mPath;
-        private HashSet<Integer> mMembers;  // by cell index
+        protected LinkedList<Cell> mPath;
 
-        public CellPath(LinkedList<Cell> path, HashSet<Integer> members) {
+        public CellPath(LinkedList<Cell> path) {
             mPath = path;
-            mMembers = members;
-        }
-
-        public boolean containsCell(Cell cell) {
-            return mMembers.contains( cell.index );
-        }
-
-        public boolean containsCell(int ix, int iy) {
-            return mMembers.contains( coordToIndex(ix, iy) );
-        }
-
-        public boolean containsCell(int index) {
-            return mMembers.contains(index);
         }
 
         public boolean isEmpty() {
@@ -376,9 +400,7 @@ public class Grid extends Entity {
         }
 
         public Cell pop() {
-            Cell popped = mPath.pollFirst();
-            mMembers.remove(popped.index);
-            return popped;
+            return mPath.pollFirst();
         }
 
         public Cell peek() {
@@ -392,31 +414,40 @@ public class Grid extends Entity {
         public int length() {
             return mPath.size();
         }
+    }
+
+
+    public class CellPathSet extends CellPath {
+
+        private HashSet<Integer> mMembers;  // by cell index
+
+        public CellPathSet(LinkedList<Cell> path, HashSet<Integer> members) {
+            super(path);
+            mMembers = members;
+        }
 
         @Override
-        public String toString() {
-            return mMembers.toString();
+        public Cell pop() {
+            Cell popped = mPath.pollFirst();
+            mMembers.remove(popped.index);
+            return popped;
+        }
+
+        public boolean containsCell(Cell cell) {
+            return mMembers.contains( cell.index );
+        }
+
+        public boolean containsCell(int ix, int iy) {
+            return mMembers.contains( coordToIndex(ix, iy) );
+        }
+
+        public boolean containsCell(int index) {
+            return mMembers.contains(index);
         }
     }
 
 
-    public CellPath getBestPath(int startX, int startY, int goalX, int goalY) {
-        return getBestPath( getCell(startX, startY), getCell(goalX, goalY) );
-    }
-
-    public CellPath getBestPath(Cell start, Cell goal) {
-        return buildCellPath(findPath(start, goal), goal.index);
-    }
-
-    public LinkedList<PointF> getBestPathAsPoints(int startX, int startY, int goalX, int goalY) {
-        return getBestPathAsPoints( getCell(startX, startY), getCell(goalX, goalY) );
-    }
-
-    public LinkedList<PointF> getBestPathAsPoints(Cell start, Cell goal) {
-        return buildPointPath(findPath(start, goal), goal.index);
-    }
-
-    private CellPath buildCellPath(SparseIntArray history, int goalIndex) {
+    private CellPathSet buildCellPathSet(SparseIntArray history, int goalIndex) {
         if (history == null) return null;
 
         LinkedList<Cell> path = new LinkedList<Cell>();
@@ -431,7 +462,22 @@ public class Grid extends Entity {
             nextIndex = history.get(nextIndex);
         }
 
-        return new CellPath(path, members);
+        return new CellPathSet(path, members);
+    }
+
+    private CellPath buildCellPath(SparseIntArray history, int goalIndex) {
+        if (history == null) return null;
+
+        LinkedList<Cell> path = new LinkedList<Cell>();
+        path.add(getCell(goalIndex));
+
+        int nextIndex = history.get(goalIndex);
+        while (nextIndex != -1) {
+            path.addFirst(getCell(nextIndex));
+            nextIndex = history.get(nextIndex);
+        }
+
+        return new CellPath(path);
     }
 
     private LinkedList<PointF> buildPointPath(SparseIntArray history, int goalIndex) {
@@ -446,6 +492,31 @@ public class Grid extends Entity {
             nextIndex = history.get(nextIndex);
         }
         return path;
+    }
+
+
+    public CellPath getBestPath(int startX, int startY, int goalX, int goalY) {
+        return getBestPath( getCell(startX, startY), getCell(goalX, goalY) );
+    }
+
+    public CellPath getBestPath(Cell start, Cell goal) {
+        return buildCellPath(findPath(start, goal), goal.index);
+    }
+
+    public CellPathSet getBestPathSet(int startX, int startY, int goalX, int goalY) {
+        return getBestPathSet( getCell(startX, startY), getCell(goalX, goalY) );
+    }
+
+    public CellPathSet getBestPathSet(Cell start, Cell goal) {
+        return buildCellPathSet(findPath(start, goal), goal.index);
+    }
+
+    public LinkedList<PointF> getBestPathAsPoints(int startX, int startY, int goalX, int goalY) {
+        return getBestPathAsPoints( getCell(startX, startY), getCell(goalX, goalY) );
+    }
+
+    public LinkedList<PointF> getBestPathAsPoints(Cell start, Cell goal) {
+        return buildPointPath(findPath(start, goal), goal.index);
     }
 
 
@@ -497,6 +568,8 @@ public class Grid extends Entity {
             }
 
             for (Cell n : getCellNeighbors(current)) {
+                if (n==null) continue;
+
                 newCost = costs.get(current.index) + /* cost to next cell = */ 1 ;
 
                 if ( !visited.contains(n.index) || newCost<costs.get(n.index) ) {

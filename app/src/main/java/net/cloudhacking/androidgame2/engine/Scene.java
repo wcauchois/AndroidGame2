@@ -21,14 +21,14 @@ public abstract class Scene extends Group<Entity> {
     abstract public void destroy();
 
 
-    private InputManager im;
-    private CameraController cc;
+    protected InputManager inputManager;
+    protected CameraController cameraController;
 
     private boolean mCreated;
 
     public Scene() {
-        im  = GameSkeleton.getInstance().getInputManager();
-        cc  = GameSkeleton.getInstance().getCameraController();
+        inputManager = GameSkeleton.getInstance().getInputManager();
+        cameraController = GameSkeleton.getInstance().getCameraController();
         mCreated = false;
     }
 
@@ -48,15 +48,15 @@ public abstract class Scene extends Group<Entity> {
      */
 
     public InputManager getInputManager() {
-        return im;
+        return inputManager;
     }
 
     public CameraController getCameraController() {
-        return cc;
+        return cameraController;
     }
 
     public Camera getActiveCamera() {
-        return cc.getActiveCamera();
+        return cameraController.getActiveCamera();
     }
 
     public PointF activeCameraToScene(PointF cameraTouch) {
@@ -64,7 +64,7 @@ public abstract class Scene extends Group<Entity> {
     }
 
     public Camera getUICamera() {
-        return cc.getUICamera();
+        return cameraController.getUICamera();
     }
 
     public Rect getViewport() {

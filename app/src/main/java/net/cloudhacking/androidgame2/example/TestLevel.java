@@ -48,8 +48,8 @@ public class TestLevel extends Level {
         mSize = mTileMapL1.getRect();
 
         // set up game grid from tile map size; set collision map
-        mGrid = (Grid) add(new Grid(mTileMapL1));
-        mGrid.setOccupation(imported.getCollisionMap());
+        mGrid = (Grid) add(Grid.createFromTileMap(mTileMapL1));
+        grid.mapToState(imported.getCollisionMap(), Grid.CellState.EMPTY, Grid.CellState.OCCUPIED);
 
         mGrid.cellSelector.connect( new Signal.Listener<Grid.Cell>() {
             @Override

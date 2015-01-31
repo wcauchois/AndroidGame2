@@ -100,7 +100,10 @@ public class TiledImporter extends Loggable {
                     int tile;
                     for (int j = 0; j < array.length(); j++) {
                         tile = array.getInt(j);
-                        data[j] = tile > 0 ? tile - 1 : (width * height) - 2;
+                        data[j] = tile > 0 ? tile-1 : -2;
+                        // TODO: find a better solution for blank squares
+                        // use 1023 for null because its a blank texture
+                        // (see TextureFrameSet)
                     }
 
                     maps.add(new Map(data, width, height));
@@ -110,8 +113,7 @@ public class TiledImporter extends Loggable {
                     collision = new int[width * height];
                     int tile;
                     for (int j=0; j<array.length(); j++) {
-                        tile = array.getInt(j);
-                        collision[j] = tile > 0 ? 1 : 0 ;
+                        collision[j] = array.getInt(j);
                     }
                 }
             }
