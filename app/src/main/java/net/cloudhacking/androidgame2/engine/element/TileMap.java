@@ -96,8 +96,10 @@ public class TileMap extends PreRenderable {
         float l, t, r, b;  // left, top, right, bottom
 
         int index;
-        for (int ix=0; ix<mColumns; ix++) {
-            for (int iy=0; iy<mRows; iy++) {
+        // weird degenerate triangle bug if you iterate
+        // over columns instead of rows... no clue!
+        for (int iy=0; iy<mRows; iy++) {
+            for (int ix=0; ix<mColumns; ix++) {
 
                 index = ix + iy * mColumns;
                 uv = mFrames.getUVFrame( map.getTile(index) );
@@ -116,9 +118,6 @@ public class TileMap extends PreRenderable {
                 mVertexBuffer.put(vertices);
                 mQuadCount++;
 
-                if (ix==42 && iy==80) {
-                    d("debug break");
-                }
             }
         }
     }

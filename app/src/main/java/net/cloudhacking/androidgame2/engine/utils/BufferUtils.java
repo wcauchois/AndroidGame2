@@ -54,7 +54,7 @@ public class BufferUtils extends Loggable {
     }
 
     public static ShortBuffer makeEmptyShortBuffer(int size) {
-        ByteBuffer bb = ByteBuffer.allocateDirect(size * (Short.SIZE/2) );
+        ByteBuffer bb = ByteBuffer.allocateDirect(size * (Short.SIZE/8) );
         bb.order(ByteOrder.nativeOrder());
         return bb.asShortBuffer();
     }

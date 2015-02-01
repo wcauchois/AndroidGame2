@@ -17,18 +17,18 @@ public class PilotLevel extends Level {
 
         // import background tile data from json map exported from Tiled
         TiledImporter.TiledObject imported
-                = TiledImporter.loadMaps(Resources.JSON_MAP_MICRO);
+                = TiledImporter.loadMaps(Resources.BIG_MAP);
 
         // create tile maps
         TileMap mTileMapL1 = new TileMap( Assets.MICRO_TILES, imported.getLayers().get(0) );
         TileMap mTileMapL2 = new TileMap( Assets.MICRO_TILES, imported.getLayers().get(1) );
 
         // pre-render tile maps and add to level
-        Image tileMapBase = new Image( mTileMapL1.getPreRendered() );
-        tileMapBase.moveToOrigin();
-        tileMapBase.update();
-        tileMapBase.setInactive();
-        add(tileMapBase);
+        Image tileMapWater = new Image( mTileMapL1.getPreRendered() );
+        tileMapWater.moveToOrigin();
+        tileMapWater.update();
+        tileMapWater.setInactive();
+        add(tileMapWater);
 
         Image tileMapTerrain = new Image( mTileMapL2.getPreRendered() );
         tileMapTerrain.moveToOrigin();

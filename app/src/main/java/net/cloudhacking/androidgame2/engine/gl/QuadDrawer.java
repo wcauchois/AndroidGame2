@@ -2,7 +2,6 @@ package net.cloudhacking.androidgame2.engine.gl;
 
 import android.graphics.RectF;
 import android.opengl.GLES20;
-import android.util.Log;
 
 import net.cloudhacking.androidgame2.engine.utils.BufferUtils;
 import net.cloudhacking.androidgame2.engine.utils.Loggable;
@@ -24,7 +23,7 @@ public class QuadDrawer extends Loggable {
      *  |    |
      * [3]--[2]
      */
-    private static final short[] QUAD_VERTEX_ORDER = new short[] {0, 3, 2, 0, 2, 1};
+    private static final short[] QUAD_VERTEX_ORDER = new short[] {0, 1, 2, 0, 2, 3};
 
     private static final int SIZE = QUAD_VERTEX_ORDER.length;  // number of vertices per quad
 
