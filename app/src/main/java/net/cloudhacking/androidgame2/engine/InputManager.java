@@ -234,6 +234,10 @@ public class InputManager
             return mSpan;
         }
 
+        public ScaleEventType getEventType() {
+            return mEventType;
+        }
+
         private ScaleEvent(PointF focus, float span, ScaleEventType eventType) {
             mFocus = focus;
             mSpan = span;
@@ -256,7 +260,7 @@ public class InputManager
         }
     }
 
-    private enum ScaleEventType {
+    public enum ScaleEventType {
         START_SCALE, SCALE, END_SCALE
     }
 
@@ -287,8 +291,8 @@ public class InputManager
         }
     }
 
-    private enum ClickEventType {
-        CLICK_UP, CLICK_DOWN
+    public enum ClickEventType {
+        CLICK_UP, CLICK_DOWN, CLICK_CANCEL
     }
 
 

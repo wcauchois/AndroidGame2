@@ -26,6 +26,7 @@ public class GameScene extends Scene {
         add(ui);
 
         // TODO: connect all listeners to input manager here
+        // TODO: in order to organize hit test order
         inputManager.click.connect(0, ui.root);
         inputManager.click.connect(1, level.grid.getClickListener());
 

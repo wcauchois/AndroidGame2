@@ -10,7 +10,7 @@ import java.util.LinkedList;
 public class ControllableUnit extends Unit {
 
     public enum Action {
-        MOVE, ATTACK, STOP
+        MOVE, ATTACK, DEFEND, STOP
     }
 
     private Action mCurrentAction;

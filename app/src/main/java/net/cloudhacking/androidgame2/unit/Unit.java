@@ -1,5 +1,6 @@
 package net.cloudhacking.androidgame2.unit;
 
+import net.cloudhacking.androidgame2.engine.Grid;
 import net.cloudhacking.androidgame2.engine.element.Animated;
 import net.cloudhacking.androidgame2.engine.utils.SpriteAsset;
 
@@ -14,6 +15,7 @@ public abstract class Unit extends Animated {
     private static final float DEFAULT_MOVESPEED = 50;
 
     private boolean mAlive;
+    private Grid.Cell mLocation;
 
     private float mHP;
     private float mMoveSpeed;
@@ -24,6 +26,7 @@ public abstract class Unit extends Animated {
     public Unit(SpriteAsset asset) {
         super(asset);
         mAlive = true;
+        mLocation = null;
         mHP = DEFAULT_HP;
         mMoveSpeed = DEFAULT_MOVESPEED;
         mTargetedBy = new LinkedList<Unit>();
@@ -32,6 +35,10 @@ public abstract class Unit extends Animated {
 
     public boolean isAlive() {
         return mAlive;
+    }
+
+    public Grid.Cell getLocation() {
+        return mLocation;
     }
 
     public void kill() {
