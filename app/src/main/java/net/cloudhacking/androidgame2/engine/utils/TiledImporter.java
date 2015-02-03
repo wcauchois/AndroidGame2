@@ -3,6 +3,7 @@ package net.cloudhacking.androidgame2.engine.utils;
 import android.util.Log;
 
 import net.cloudhacking.androidgame2.engine.element.TileMap;
+import net.cloudhacking.androidgame2.engine.gl.PreRenderedTexture;
 
 import org.json.JSONArray;
 import org.json.JSONException;

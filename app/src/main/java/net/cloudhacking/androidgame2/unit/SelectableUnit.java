@@ -14,6 +14,12 @@ public class SelectableUnit extends Unit {
         mSelected = false;
     }
 
+    public void setHoverColor(boolean bool) {
+        // triggered on click-down, set to false on click-up/cancel
+        // when unit is "hovered" on by a touch event, set highlight around unit or
+        // something.
+    }
+
     public void select() {
         mSelected = true;
     }

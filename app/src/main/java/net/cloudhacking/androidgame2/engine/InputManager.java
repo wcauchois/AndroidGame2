@@ -59,7 +59,7 @@ public class InputManager
     public boolean onTouch(View unused, MotionEvent e) {
         mScaleDetector.onTouchEvent(e);
         mGestureDetector.onTouchEvent(e);
-        processEvent(e);
+        additionalCheck(e);
         return true;
     }
 
@@ -243,7 +243,7 @@ public class InputManager
     }
 
     // in order to detect if a drag has ended, or other custom gestures
-    private void processEvent(MotionEvent me) {
+    private void additionalCheck(MotionEvent me) {
         final int action = me.getActionMasked();
 
         switch (action) {

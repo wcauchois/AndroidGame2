@@ -57,6 +57,9 @@ public class UnitController
     }
 
     public boolean handleDragEvent(InputManager.DragEvent e) {
+        // if click down hits a unit in this group, an ensuing click up will select it,
+        // otherwise a drag will highlight a path from the current location of the unit
+        // to the target of the drag.
         return false;
     }
 

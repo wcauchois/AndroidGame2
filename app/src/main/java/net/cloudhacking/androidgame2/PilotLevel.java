@@ -6,6 +6,7 @@ import net.cloudhacking.androidgame2.engine.Signal;
 import net.cloudhacking.androidgame2.engine.element.Image;
 import net.cloudhacking.androidgame2.engine.element.TileMap;
 import net.cloudhacking.androidgame2.engine.utils.TiledImporter;
+import net.cloudhacking.androidgame2.engine.utils.Vec2;
 import net.cloudhacking.androidgame2.unit.ControllableUnit;
 import net.cloudhacking.androidgame2.unit.UnitController;
 
@@ -64,6 +65,8 @@ public class PilotLevel extends Level {
 
         mMothership = new ControllableUnit(Assets.MOTHERSHIP);
         mMothership.moveToCell( grid.getCell(50,50) );
+        mMothership.setAlpha(0.5f);
+        mMothership.setVelocity(new Vec2(0,10));
         mUnitController.add(mMothership);
 
         grid.cellSelector.connect(mUnitController);
