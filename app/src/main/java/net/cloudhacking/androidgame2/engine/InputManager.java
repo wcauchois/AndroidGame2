@@ -1,6 +1,8 @@
 package net.cloudhacking.androidgame2.engine;
 
+import android.content.Context;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 
 import net.cloudhacking.androidgame2.engine.utils.Loggable;
@@ -13,9 +15,13 @@ import java.util.List;
 /**
  * Created by research on 2/2/15.
  */
-public class InputManager extends Loggable implements View.OnTouchListener {
+public class InputManager
+        extends Loggable
+        implements View.OnTouchListener,
+                   ScaleGestureDetector.OnScaleGestureListener
+{
 
-    private static final boolean LOG = true;
+    private static final boolean LOG = false;
 
     private void logEvent(Event e) {
         if (e instanceof ClickEvent) {
@@ -32,15 +38,23 @@ public class InputManager extends Loggable implements View.OnTouchListener {
 
 
     private List<Event> mQueuedEvents = new ArrayList<Event>();
+    private ScaleGestureDetector mScaleDetector;
 
     public Signal<ClickEvent> click = new Signal<ClickEvent>();
     public Signal<DragEvent> drag = new Signal<DragEvent>();
     public Signal<ScaleEvent> scale = new Signal<ScaleEvent>();
 
+    public InputManager(Context context) {
+        mScaleDetector = new ScaleGestureDetector(context, this);
+        mActivePointer1 = INVALID_POINTER;
+        mDragging = false;
+    }
+
 
     @Override
-    public boolean onTouch(View unused, MotionEvent mEvent) {
-        processEvent(mEvent);
+    public boolean onTouch(View unused, MotionEvent e) {
+        processEvent(e);
+        mScaleDetector.onTouchEvent(e);
         return true;
     }
 
@@ -173,21 +187,19 @@ public class InputManager extends Loggable implements View.OnTouchListener {
 
 
     /**********************************************************************************************/
+    // handle click and drag events
 
     private static final Pointer INVALID_POINTER = null;
-
     private static final float DRAG_START_THRESHOLD = 0.1f;
 
     private Pointer mActivePointer1;  // first touch; for click and drag
     private Pointer mActivePointer2;  // second touch; for scaling
     private boolean mDragging;
-    private boolean mScaling;
 
     public InputManager() {
         mActivePointer1 = INVALID_POINTER;
         mActivePointer2 = INVALID_POINTER;
         mDragging = false;
-        mScaling = false;
     }
 
     private class Pointer {
@@ -213,6 +225,10 @@ public class InputManager extends Loggable implements View.OnTouchListener {
             return mDelta;
         }
 
+        public void setPos(PointF pos) {
+            mPos = pos;
+        }
+
         public void updatePos(PointF pos) {
             mDelta = mPos.vecTowards(pos);
             mPos = pos;
@@ -232,10 +248,11 @@ public class InputManager extends Loggable implements View.OnTouchListener {
         switch (action) {
             case MotionEvent.ACTION_DOWN:
                 // track pointer
+                d("pointer 1 down: "+me.getPointerId(me.getActionIndex()));
                 id = me.getPointerId(0);
                 pos = new PointF(me.getX(), me.getY());
                 mActivePointer1 = new Pointer(id, pos);
-                addEvent( genClickEvent(ClickEventType.DOWN) );
+                addEvent(genClickEvent(ClickEventType.DOWN));
                 break;
 
 
@@ -244,6 +261,13 @@ public class InputManager extends Loggable implements View.OnTouchListener {
                     id = me.getPointerId(me.getActionIndex());
                     pos = new PointF(me.getX(), me.getY());
                     mActivePointer2 = new Pointer(id, pos);
+
+                    // switch pointers back if old one is still down
+                    if (id == 0) {
+                        Pointer tmp = mActivePointer1.clone();
+                        mActivePointer1 = mActivePointer2;
+                        mActivePointer2 = tmp;
+                    }
                 }
                 break;
 
@@ -260,8 +284,8 @@ public class InputManager extends Loggable implements View.OnTouchListener {
                 }
 
                 if (!mDragging) {
-                    addEvent( genClickEvent(ClickEventType.CANCEL) );
-                    addEvent( genDragEvent(DragEventType.START) );
+                    addEvent(genClickEvent(ClickEventType.CANCEL));
+                    addEvent(genDragEvent(DragEventType.START));
                     mDragging = true;
                 } else {
                     addEvent(genDragEvent(DragEventType.UPDATE));
@@ -279,12 +303,6 @@ public class InputManager extends Loggable implements View.OnTouchListener {
                         }
                     }
 
-                    if (!mScaling) {
-                        addEvent( genScaleEvent(ScaleEventType.START) );
-                        mScaling = true;
-                    } else {
-                        addEvent( genScaleEvent(ScaleEventType.UPDATE) );
-                    }
                 }
                 break;
 
@@ -293,37 +311,34 @@ public class InputManager extends Loggable implements View.OnTouchListener {
                 id = me.getPointerId(me.getActionIndex());
 
                 if (id == mActivePointer2.getId()) {
+                    d("pointer 2 up: "+me.getPointerId(me.getActionIndex()));
                     pos = new PointF(me.getX(), me.getY());
-                    mActivePointer2.updatePos(pos);
 
-                    addEvent( genScaleEvent(ScaleEventType.END) );
                     mActivePointer2 = INVALID_POINTER;
-                    mScaling = false;
 
                 // if first touch down lifts up first, switch first
                 // active pointer to second one
                 } else if (id == mActivePointer1.getId()) {
+                    d("pointer 1 up: "+me.getPointerId(me.getActionIndex()));
                     pos = new PointF(me.getX(), me.getY());
                     mActivePointer1.updatePos(pos);
-
-                    addEvent( genScaleEvent(ScaleEventType.END) );
                     mActivePointer1 = mActivePointer2.clone();
                     mActivePointer2 = INVALID_POINTER;
-                    mScaling = false;
                 }
                 break;
 
 
             case MotionEvent.ACTION_UP:
+                d("pointer up: "+me.getPointerId(me.getActionIndex()));
                 pos = new PointF(me.getX(), me.getY());
                 mActivePointer1.updatePos(pos);
 
                 if (mDragging) {
-                    addEvent( genDragEvent(DragEventType.END) );
+                    addEvent(genDragEvent(DragEventType.END));
                     mDragging = false;
 
                 } else {
-                    addEvent( genClickEvent(ClickEventType.UP) );
+                    addEvent(genClickEvent(ClickEventType.UP));
                 }
 
                 mActivePointer1 = INVALID_POINTER;
@@ -344,15 +359,33 @@ public class InputManager extends Loggable implements View.OnTouchListener {
                              type);
     }
 
-    private ScaleEvent genScaleEvent(ScaleEventType type) {
-        PointF focus = mActivePointer1.getPos()
-                .pointBetween(mActivePointer2.getPos());
-        float span = mActivePointer1.getPos()
-                .distTo(mActivePointer2.getPos());
 
-        return new ScaleEvent(focus, span, type);
+    /**********************************************************************************************/
+    // handle scale events through ScaleGestureDetector
+
+    private void addScaleEvent(ScaleGestureDetector detector, ScaleEventType eventType) {
+        addEvent(new ScaleEvent(
+                new PointF(detector.getFocusX(), detector.getFocusY()),
+                detector.getCurrentSpan(),
+                eventType
+        ));
     }
 
+    @Override
+    public boolean onScaleBegin(ScaleGestureDetector detector) {
+        addScaleEvent(detector, ScaleEventType.START);
+        return true;
+    }
 
+    @Override
+    public boolean onScale(ScaleGestureDetector detector) {
+        addScaleEvent(detector, ScaleEventType.UPDATE);
+        return true;
+    }
+
+    @Override
+    public void onScaleEnd(ScaleGestureDetector detector) {
+        addScaleEvent(detector, ScaleEventType.END);
+    }
 
 }

@@ -63,7 +63,7 @@ public class PilotLevel extends Level {
         mUnitController = new UnitController(grid);
 
         mMothership = new ControllableUnit(Assets.MOTHERSHIP);
-        mMothership.setLocation( grid.getCell(50,50) );
+        mMothership.moveToCell( grid.getCell(50,50) );
         mUnitController.add(mMothership);
 
         grid.cellSelector.connect(mUnitController);

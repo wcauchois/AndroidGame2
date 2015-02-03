@@ -116,7 +116,7 @@ public abstract class GameSkeleton
 
         mScene = null;
 
-        mInputManager = new InputManager();
+        mInputManager = new InputManager(this);
         mView.setOnTouchListener(mInputManager);
 
         mCameraController = new CameraController();
