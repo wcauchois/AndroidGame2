@@ -19,6 +19,8 @@ import java.util.Stack;
  */
 public class Grid extends Entity {
 
+    // TODO: do grid overlay using glDrawLines()
+
     /**
      * This class represents a grid in the game that can be used for path-finding and
      * placement of in-game entities.  It also contains a signal that will dispatch upon

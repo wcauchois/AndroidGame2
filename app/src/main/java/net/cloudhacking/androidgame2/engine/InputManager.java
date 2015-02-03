@@ -140,12 +140,18 @@ public class InputManager
 
     public class DragEvent extends PositionedEvent {
         private DragEventType mType;
+        private PointF mOrigin;
         private Vec2 mDelta;
 
-        public DragEvent(PointF pos, Vec2 delta, DragEventType type) {
+        public DragEvent(PointF origin, PointF pos, Vec2 delta, DragEventType type) {
             super(pos);
+            mOrigin = origin;
             mDelta = delta;
             mType = type;
+        }
+
+        public PointF getOrigin() {
+            return mOrigin;
         }
 
         public Vec2 getDelta() {
@@ -195,6 +201,7 @@ public class InputManager
     // handle click and drag events through GestureDetector
 
     private boolean mDragging;
+    private PointF mDragOrigin;
     private PointF mCurrentDragPos;
 
     @Override
@@ -217,13 +224,19 @@ public class InputManager
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float dx, float dy) {
         if (!mDragging) {
             mCurrentDragPos = new PointF(e1.getX(), e1.getY());
+            mDragOrigin = mCurrentDragPos;
             addEvent(new ClickEvent(mCurrentDragPos, ClickEventType.CANCEL));
-            addEvent(new DragEvent(mCurrentDragPos, new Vec2(), DragEventType.START));
+            addEvent(new DragEvent(mDragOrigin,
+                                   mCurrentDragPos,
+                                   new Vec2(),
+                                   DragEventType.START)
+            );
             mDragging = true;
 
         } else {
             mCurrentDragPos = new PointF(e2.getX(), e2.getY());
-            addEvent(new DragEvent(mCurrentDragPos,
+            addEvent(new DragEvent(mDragOrigin,
+                                   mCurrentDragPos,
                                    new Vec2(dx, dy),
                                    DragEventType.UPDATE)
             );
@@ -257,8 +270,13 @@ public class InputManager
                 break;
             case MotionEvent.ACTION_UP:
                 if (mDragging) {
-                    addEvent( new DragEvent(mCurrentDragPos, new Vec2(), DragEventType.END) );
+                    addEvent(new DragEvent(mDragOrigin,
+                                           mCurrentDragPos,
+                                           new Vec2(),
+                                           DragEventType.END)
+                    );
                     mDragging = false;
+                    mDragOrigin = null;
                 }
                 break;
         }

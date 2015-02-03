@@ -18,12 +18,13 @@ public class GameScene extends Scene {
         ui    = new GameUI();
         level = new PilotLevel();
 
-        ui.create();
-        level.create();
-
         // in render order
         add(level);
         add(ui);
+
+        ui.create();
+        level.create();
+
 
         // TODO: connect all listeners to input manager here
         // TODO: in order to organize hit test order

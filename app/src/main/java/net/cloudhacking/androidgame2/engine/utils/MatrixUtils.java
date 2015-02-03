@@ -46,7 +46,7 @@ public class MatrixUtils {
     }
 
     public static void rotate2D(float[] m, float a) {
-        a *= G2RAD;
+        //a *= G2RAD;  // convert from degrees to radians
         float sin = (float)Math.sin(a);
         float cos = (float)Math.cos(a);
         float m0 = m[0];

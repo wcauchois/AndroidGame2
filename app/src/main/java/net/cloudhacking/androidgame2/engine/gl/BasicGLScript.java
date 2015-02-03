@@ -159,4 +159,25 @@ public class BasicGLScript extends GLScript {
         setVertexAttribPointers(vertices);
         QuadDrawer.drawQuadSet(quadCount);
     }
+
+
+    /**
+     * Draw lines
+     */
+    public void drawLines(FloatBuffer vertices, int offset, int vertexCount) {
+        vertices.position(0);
+        aXY.vertexAttribPointer(2, 2, vertices);
+        aUV.vertexAttribPointer(2, 2, vertices);
+        LineDrawer.drawLines(offset, vertexCount);
+    }
+
+    /**
+     * Draw a filled convex shape
+     */
+    public void drawConvexFilled(FloatBuffer vertices, int offset, int vertexCount) {
+        vertices.position(0);
+        aXY.vertexAttribPointer(2, 2, vertices);
+        aUV.vertexAttribPointer(2, 2, vertices);
+        LineDrawer.drawConvexFilled(offset, vertexCount);
+    }
 }
