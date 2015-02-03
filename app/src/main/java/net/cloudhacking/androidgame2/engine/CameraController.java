@@ -9,7 +9,7 @@ import net.cloudhacking.androidgame2.engine.utils.Loggable;
 /**
  * Created by wcauchois on 1/8/15.
  */
-public class CameraController extends Loggable {
+public class CameraController extends Loggable implements Signal.Listener {
 
     private Camera mActiveCamera;
     private UICamera mUICamera;
@@ -17,49 +17,60 @@ public class CameraController extends Loggable {
 
     private float mRelativeScaleSpan;
 
+    @Override
+    public boolean onSignal(Object o) {
+        if (o instanceof InputManager.DragEvent) {
+            return handleDrag((InputManager.DragEvent)o);
+        } else if (o instanceof InputManager.ScaleEvent) {
+            return handleScale((InputManager.ScaleEvent)o);
+        }
+        return false;
+    }
+
+    private boolean handleDrag(InputManager.DragEvent e) {
+        if (mDisabled) return false;
+
+        switch (e.getType()) {
+            case START:
+                break;
+
+            case UPDATE:
+                mActiveCamera.incrementFocus(e.getDelta().negate());
+                break;
+
+            case END:
+                break;
+        }
+        return true;
+    }
+
+    private boolean handleScale(InputManager.ScaleEvent e) {
+        if (mDisabled) return false;
+
+        switch (e.getType()) {
+            case START:
+                mRelativeScaleSpan = e.getSpan();
+                break;
+
+            case UPDATE:
+                mActiveCamera.setRelativeZoom(e.getSpan() / mRelativeScaleSpan);
+                break;
+
+            case END:
+                mActiveCamera.bindRelativeZoom();
+                break;
+        }
+
+        return true;
+    }
+
     /**********************************************************************************************/
 
 
-    public CameraController(InputManager inputManager) {
+    public CameraController() {
         mActiveCamera = new Camera();
         mUICamera = new UICamera();
         mDisabled = false;
-
-        inputManager.drag.connect(new Signal.Listener<InputManager.DragEvent>() {
-            public boolean onSignal(InputManager.DragEvent e) {
-                if (mDisabled) return false;
-
-                mActiveCamera.incrementFocus(e.getDelta());
-                return true;
-            }
-        });
-
-        inputManager.startScale.connect(new Signal.Listener<InputManager.ScaleEvent>() {
-            public boolean onSignal(InputManager.ScaleEvent e) {
-                if (mDisabled) return false;
-
-                mRelativeScaleSpan = e.getSpan();
-                return true;
-            }
-        });
-
-        inputManager.scale.connect(new Signal.Listener<InputManager.ScaleEvent>() {
-            public boolean onSignal(InputManager.ScaleEvent e) {
-                if (mDisabled) return false;
-
-                mActiveCamera.setRelativeZoom(e.getSpan() / mRelativeScaleSpan);
-                return true;
-            }
-        });
-
-        inputManager.endScale.connect(new Signal.Listener<InputManager.ScaleEvent>() {
-            public boolean onSignal(InputManager.ScaleEvent e) {
-                if (mDisabled) return false;
-
-                mActiveCamera.bindRelativeZoom();
-                return true;
-            }
-        });
     }
 
     public void setBoundaryRect(RectF boundaryRect) {

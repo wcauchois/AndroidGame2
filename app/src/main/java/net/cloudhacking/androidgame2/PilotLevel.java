@@ -6,11 +6,16 @@ import net.cloudhacking.androidgame2.engine.Signal;
 import net.cloudhacking.androidgame2.engine.element.Image;
 import net.cloudhacking.androidgame2.engine.element.TileMap;
 import net.cloudhacking.androidgame2.engine.utils.TiledImporter;
+import net.cloudhacking.androidgame2.unit.ControllableUnit;
+import net.cloudhacking.androidgame2.unit.UnitController;
 
 /**
  * Created by research on 1/29/15.
  */
 public class PilotLevel extends Level {
+
+    private UnitController mUnitController;
+    private ControllableUnit mMothership;
 
     @Override
     public void create() {
@@ -38,6 +43,7 @@ public class PilotLevel extends Level {
 
         size = mTileMapL1.getRect();
 
+
         // set up game grid from tile map size; set collision map
         grid = (Grid) add(Grid.createFromTileMap(mTileMapL1));
 
@@ -52,6 +58,18 @@ public class PilotLevel extends Level {
                 return false;
             }
         });
+
+
+        mUnitController = new UnitController(grid);
+
+        mMothership = new ControllableUnit(Assets.MOTHERSHIP);
+        mMothership.setLocation( grid.getCell(50,50) );
+        mUnitController.add(mMothership);
+
+        grid.cellSelector.connect(mUnitController);
+
+        add(mUnitController);
+
 
     }
 

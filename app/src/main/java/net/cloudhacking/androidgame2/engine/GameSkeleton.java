@@ -116,10 +116,12 @@ public abstract class GameSkeleton
 
         mScene = null;
 
-        mInputManager = new InputManager(this);
+        mInputManager = new InputManager();
         mView.setOnTouchListener(mInputManager);
 
-        mCameraController = new CameraController(mInputManager);
+        mCameraController = new CameraController();
+        mInputManager.drag.connect(mCameraController);
+        mInputManager.scale.connect(mCameraController);
 
         d("activity created");
     }

@@ -151,14 +151,20 @@ public class Grid extends Entity {
 
         @Override
         public boolean onSignal(InputManager.ClickEvent e) {
-            mSelected = nearestCell(getScene().activeCameraToScene(e.getPos()));
+            switch(e.getType()) {
+                case UP:
+                    mSelected = nearestCell(getScene().activeCameraToScene(e.getPos()));
 
-            if (mSelected == null) {
-                return false;
+                    if (mSelected == null) {
+                        return false;
 
-            } else {
-                cellSelector.dispatch(mSelected);
-                return false;  // XXX set to true after testing
+                    } else {
+                        cellSelector.dispatch(mSelected);
+                        return false;  // XXX set to true after testing
+                    }
+
+                default:
+                    return false;
             }
         }
 
@@ -248,7 +254,7 @@ public class Grid extends Entity {
 
 
     public Cell getCell(int ix, int iy) {
-        return getCell( coordToIndex(ix, iy) );
+        return getCell(coordToIndex(ix, iy));
     }
 
     public Cell getCell(int index) {
@@ -504,7 +510,7 @@ public class Grid extends Entity {
     }
 
     public CellPathSet getBestPathSet(int startX, int startY, int goalX, int goalY) {
-        return getBestPathSet( getCell(startX, startY), getCell(goalX, goalY) );
+        return getBestPathSet(getCell(startX, startY), getCell(goalX, goalY));
     }
 
     public CellPathSet getBestPathSet(Cell start, Cell goal) {

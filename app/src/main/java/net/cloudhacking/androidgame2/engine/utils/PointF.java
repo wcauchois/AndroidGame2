@@ -70,6 +70,10 @@ public class PointF {
         return FloatMath.sqrt(dx*dx + dy*dy);
     }
 
+    public PointF pointBetween(PointF other) {
+        return new PointF((x+other.x)/2, (y+other.y)/2);
+    }
+
     public float distFromOrigin() {
         return FloatMath.sqrt(x * x + y * y);
     }

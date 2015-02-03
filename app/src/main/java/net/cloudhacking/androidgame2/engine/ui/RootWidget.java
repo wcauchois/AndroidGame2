@@ -2,7 +2,6 @@ package net.cloudhacking.androidgame2.engine.ui;
 
 import android.graphics.RectF;
 
-import net.cloudhacking.androidgame2.engine.GameSkeleton;
 import net.cloudhacking.androidgame2.engine.InputManager;
 import net.cloudhacking.androidgame2.engine.utils.PointF;
 import net.cloudhacking.androidgame2.engine.Signal;
@@ -19,17 +18,24 @@ public class RootWidget extends Widget implements Signal.Listener<InputManager.C
 
     @Override
     public boolean onSignal(InputManager.ClickEvent event) {
-        PointF pt = event.getPos();
-        PointF relPt = new PointF( pt.x/Widget.getRootWidth(), pt.y/Widget.getRootHeight() );
+        switch(event.getType()) {
+            case UP:
+                PointF pt = event.getPos();
+                PointF relPt = new PointF(pt.x / Widget.getRootWidth(),
+                                          pt.y / Widget.getRootHeight()
+                );
 
-        for (Widget w : mEntities) {
-            if (w instanceof TouchWidget) {
-                if (((TouchWidget)w).handleClick(relPt, new RectF(0, 0, 1, 1))) {
-                    return true;
+                for (Widget w : mEntities) {
+                    if (w instanceof TouchWidget) {
+                        if (((TouchWidget) w).handleClick(relPt, new RectF(0, 0, 1, 1))) {
+                            return true;
+                        }
+                    }
                 }
-            }
+
+            default:
+                return false;
         }
-        return false;
     }
 
 }

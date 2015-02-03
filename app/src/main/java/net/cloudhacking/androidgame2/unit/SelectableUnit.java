@@ -5,7 +5,7 @@ import net.cloudhacking.androidgame2.engine.utils.SpriteAsset;
 /**
  * Created by Andrew on 2/1/2015.
  */
-public class SelectableUnit extends ControllableUnit {
+public class SelectableUnit extends Unit {
 
     private boolean mSelected;
 

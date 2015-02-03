@@ -7,7 +7,7 @@ import java.util.LinkedList;
 /**
  * Created by research on 1/30/15.
  */
-public class ControllableUnit extends Unit {
+public class ControllableUnit extends SelectableUnit {
 
     public enum Action {
         MOVE, ATTACK, DEFEND, STOP

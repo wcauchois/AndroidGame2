@@ -53,6 +53,9 @@ public class TextureFrameSet extends Loggable {
         mTextureWidth = texture.getWidth();
         mTextureHeight = texture.getHeight();
 
+        if (frameWidth == -1) frameWidth = mTextureWidth;
+        if (frameHeight == -1) frameHeight = mTextureHeight;
+
         RectF rect;
         float du = (float)frameWidth/mTextureWidth;
         float dv = (float)frameHeight/mTextureHeight;

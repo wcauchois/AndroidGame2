@@ -1,5 +1,7 @@
 package net.cloudhacking.androidgame2.engine.utils;
 
+import net.cloudhacking.androidgame2.engine.element.Sprite;
+
 /**
  * Created by Andrew on 1/21/2015.
  */
@@ -11,6 +13,10 @@ public class SpriteAsset extends Asset {
     private int mVSpacing;
     private int mHOffset;
     private int mVOFfset;
+
+    public SpriteAsset(String filename) {
+        this(filename, -1, -1, 0, 0, 0, 0);
+    }
 
     public SpriteAsset(String filename, int fw, int fh) {
         this(filename, fw, fh, 0, 0, 0, 0);

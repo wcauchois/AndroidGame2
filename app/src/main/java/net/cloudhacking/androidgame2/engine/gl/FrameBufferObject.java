@@ -40,6 +40,10 @@ public class FrameBufferObject extends Loggable {
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
     }
 
+    public void delete() {
+        GLES20.glDeleteFramebuffers(1, new int[] {mHandle}, 0);
+    }
+
     public boolean checkStatus() {
         bind();
         return GLES20.glCheckFramebufferStatus( GLES20.GL_FRAMEBUFFER )

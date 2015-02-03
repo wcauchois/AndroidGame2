@@ -157,7 +157,11 @@ public class TileMap extends PreRenderable {
         int w = (int)getWidth();
         int h = (int)getHeight();
 
-        return fbo.renderToTexture(gls, w, h, true, mTexture, mVertexBuffer, mQuadCount);
+        PreRenderedTexture fboTexture =
+                fbo.renderToTexture(gls, w, h, true, mTexture, mVertexBuffer, mQuadCount);
+
+        fbo.delete();
+        return fboTexture;
     }
 
 }
