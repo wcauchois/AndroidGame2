@@ -103,7 +103,7 @@ public class PokemonFactory extends SpriteFactory {
 
 
         public PokemonSprite() {
-            super(Assets.POKEMON);
+            super(Assets.POKEMON2);
         }
 
         @Override
@@ -132,7 +132,7 @@ public class PokemonFactory extends SpriteFactory {
         mRandGen = new Random();
         mStarted = false;
 
-        AssetCache.getInstance().getSprite(Assets.POKEMON).setMaxFrameIndex(MAX_FRAME_INDEX);
+        AssetCache.getInstance().getSprite(Assets.POKEMON2).setMaxFrameIndex(MAX_FRAME_INDEX);
 
         mExplosionFactory = new ExplosionFactory();
     }

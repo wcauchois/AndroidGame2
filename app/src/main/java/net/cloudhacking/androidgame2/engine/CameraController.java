@@ -35,7 +35,7 @@ public class CameraController extends Loggable implements Signal.Listener {
                 break;
 
             case UPDATE:
-                mActiveCamera.incrementFocus(e.getDelta().negate());
+                mActiveCamera.incrementFocus(e.getDelta());
                 break;
 
             case END:

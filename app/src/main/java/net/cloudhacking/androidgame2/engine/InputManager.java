@@ -1,6 +1,7 @@
 package net.cloudhacking.androidgame2.engine;
 
 import android.content.Context;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
@@ -18,6 +19,7 @@ import java.util.List;
 public class InputManager
         extends Loggable
         implements View.OnTouchListener,
+                   GestureDetector.OnGestureListener,
                    ScaleGestureDetector.OnScaleGestureListener
 {
 
@@ -37,8 +39,10 @@ public class InputManager
     }
 
 
-    private List<Event> mQueuedEvents = new ArrayList<Event>();
     private ScaleGestureDetector mScaleDetector;
+    private GestureDetector mGestureDetector;
+
+    private List<Event> mQueuedEvents = new ArrayList<Event>();
 
     public Signal<ClickEvent> click = new Signal<ClickEvent>();
     public Signal<DragEvent> drag = new Signal<DragEvent>();
@@ -46,15 +50,16 @@ public class InputManager
 
     public InputManager(Context context) {
         mScaleDetector = new ScaleGestureDetector(context, this);
-        mActivePointer1 = INVALID_POINTER;
+        mGestureDetector = new GestureDetector(context, this);
         mDragging = false;
     }
 
 
     @Override
     public boolean onTouch(View unused, MotionEvent e) {
-        processEvent(e);
         mScaleDetector.onTouchEvent(e);
+        mGestureDetector.onTouchEvent(e);
+        processEvent(e);
         return true;
     }
 
@@ -187,176 +192,76 @@ public class InputManager
 
 
     /**********************************************************************************************/
-    // handle click and drag events
+    // handle click and drag events through GestureDetector
 
-    private static final Pointer INVALID_POINTER = null;
-    private static final float DRAG_START_THRESHOLD = 0.1f;
-
-    private Pointer mActivePointer1;  // first touch; for click and drag
-    private Pointer mActivePointer2;  // second touch; for scaling
     private boolean mDragging;
+    private PointF mCurrentDragPos;
 
-    public InputManager() {
-        mActivePointer1 = INVALID_POINTER;
-        mActivePointer2 = INVALID_POINTER;
-        mDragging = false;
+    @Override
+    public boolean onDown(MotionEvent e) {
+        addEvent(new ClickEvent(new PointF(e.getX(), e.getY()),
+                                ClickEventType.DOWN)
+        );
+        return true;
     }
 
-    private class Pointer {
-        private int mId;
-        private PointF mPos;
-        private Vec2 mDelta;
-
-        public Pointer(int id, PointF pos) {
-            mId = id;
-            mPos = pos;
-            mDelta = new Vec2();
-        }
-
-        public int getId() {
-            return mId;
-        }
-
-        public PointF getPos() {
-            return mPos;
-        }
-
-        public Vec2 getDelta() {
-            return mDelta;
-        }
-
-        public void setPos(PointF pos) {
-            mPos = pos;
-        }
-
-        public void updatePos(PointF pos) {
-            mDelta = mPos.vecTowards(pos);
-            mPos = pos;
-        }
-
-        public Pointer clone() {
-            return new Pointer(mId, mPos.copy());
-        }
+    @Override
+    public boolean onFling(MotionEvent e1, MotionEvent e2, float vx, float vy) {
+        return true;
     }
 
+    @Override
+    public void onLongPress(MotionEvent e) {}
 
+    @Override
+    public boolean onScroll(MotionEvent e1, MotionEvent e2, float dx, float dy) {
+        if (!mDragging) {
+            mCurrentDragPos = new PointF(e1.getX(), e1.getY());
+            addEvent(new ClickEvent(mCurrentDragPos, ClickEventType.CANCEL));
+            addEvent(new DragEvent(mCurrentDragPos, new Vec2(), DragEventType.START));
+            mDragging = true;
+
+        } else {
+            mCurrentDragPos = new PointF(e2.getX(), e2.getY());
+            addEvent(new DragEvent(mCurrentDragPos,
+                                   new Vec2(dx, dy),
+                                   DragEventType.UPDATE)
+            );
+        }
+        return true;
+    }
+
+    @Override
+    public void onShowPress(MotionEvent e) {}
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent e) {
+        addEvent( new ClickEvent(new PointF(e.getX(), e.getY()),
+                                 ClickEventType.UP)
+        );
+        return true;
+    }
+
+    // in order to detect if a drag has ended, or other custom gestures
     private void processEvent(MotionEvent me) {
         final int action = me.getActionMasked();
 
-        int id;
-        PointF pos;
         switch (action) {
             case MotionEvent.ACTION_DOWN:
-                // track pointer
-                d("pointer 1 down: "+me.getPointerId(me.getActionIndex()));
-                id = me.getPointerId(0);
-                pos = new PointF(me.getX(), me.getY());
-                mActivePointer1 = new Pointer(id, pos);
-                addEvent(genClickEvent(ClickEventType.DOWN));
                 break;
-
-
             case MotionEvent.ACTION_POINTER_DOWN:
-                if (mActivePointer2 == INVALID_POINTER) {
-                    id = me.getPointerId(me.getActionIndex());
-                    pos = new PointF(me.getX(), me.getY());
-                    mActivePointer2 = new Pointer(id, pos);
-
-                    // switch pointers back if old one is still down
-                    if (id == 0) {
-                        Pointer tmp = mActivePointer1.clone();
-                        mActivePointer1 = mActivePointer2;
-                        mActivePointer2 = tmp;
-                    }
-                }
                 break;
-
-
             case MotionEvent.ACTION_MOVE:
-                int count = me.getPointerCount();
-
-                // update drag
-                pos = new PointF(me.getX(0), me.getY(0));
-                mActivePointer1.updatePos(pos);
-
-                if (mActivePointer1.getDelta().norm() < DRAG_START_THRESHOLD) {
-                    return;
-                }
-
-                if (!mDragging) {
-                    addEvent(genClickEvent(ClickEventType.CANCEL));
-                    addEvent(genDragEvent(DragEventType.START));
-                    mDragging = true;
-                } else {
-                    addEvent(genDragEvent(DragEventType.UPDATE));
-                }
-
-                // multi-touch; update scale
-                if (count > 1) {
-
-                    // find id matching mActivePointer2 and update
-                    for(int i=0; i<count; i++) {
-                        id = me.getPointerId(i);
-                        if (id == mActivePointer2.getId()) {
-                            pos = new PointF(me.getX(i), me.getY(i));
-                            mActivePointer2.updatePos(pos);
-                        }
-                    }
-
-                }
                 break;
-
-
             case MotionEvent.ACTION_POINTER_UP:
-                id = me.getPointerId(me.getActionIndex());
-
-                if (id == mActivePointer2.getId()) {
-                    d("pointer 2 up: "+me.getPointerId(me.getActionIndex()));
-                    pos = new PointF(me.getX(), me.getY());
-
-                    mActivePointer2 = INVALID_POINTER;
-
-                // if first touch down lifts up first, switch first
-                // active pointer to second one
-                } else if (id == mActivePointer1.getId()) {
-                    d("pointer 1 up: "+me.getPointerId(me.getActionIndex()));
-                    pos = new PointF(me.getX(), me.getY());
-                    mActivePointer1.updatePos(pos);
-                    mActivePointer1 = mActivePointer2.clone();
-                    mActivePointer2 = INVALID_POINTER;
-                }
                 break;
-
-
             case MotionEvent.ACTION_UP:
-                d("pointer up: "+me.getPointerId(me.getActionIndex()));
-                pos = new PointF(me.getX(), me.getY());
-                mActivePointer1.updatePos(pos);
-
                 if (mDragging) {
-                    addEvent(genDragEvent(DragEventType.END));
+                    addEvent( new DragEvent(mCurrentDragPos, new Vec2(), DragEventType.END) );
                     mDragging = false;
-
-                } else {
-                    addEvent(genClickEvent(ClickEventType.UP));
                 }
-
-                mActivePointer1 = INVALID_POINTER;
                 break;
         }
-    }
-
-
-    // generate events from the active pointers
-
-    private ClickEvent genClickEvent(ClickEventType type) {
-        return new ClickEvent(mActivePointer1.getPos(), type);
-    }
-
-    private DragEvent genDragEvent(DragEventType type) {
-        return new DragEvent(mActivePointer1.getPos(),
-                             mActivePointer1.getDelta(),
-                             type);
     }
 
 
