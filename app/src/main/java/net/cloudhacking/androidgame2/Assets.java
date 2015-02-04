@@ -1,6 +1,5 @@
 package net.cloudhacking.androidgame2;
 
-import net.cloudhacking.androidgame2.engine.element.Sprite;
 import net.cloudhacking.androidgame2.engine.utils.Asset;
 import net.cloudhacking.androidgame2.engine.utils.NinePatchAsset;
 import net.cloudhacking.androidgame2.engine.utils.SpriteAsset;
@@ -20,6 +19,7 @@ public class Assets {
     public static final SpriteAsset EXPLOSIONS      = new SpriteAsset("explosions.png", 32, 32);
     public static final SpriteAsset POKEMON2        = new SpriteAsset("pokemon2.png", 50, 40);
     public static final SpriteAsset MICRO_TILES     = new SpriteAsset("micro_tileset.png", 8, 8);
+    public static final SpriteAsset MINI_CHARS      = new SpriteAsset("mini_chars.png", 8, 8);
 
     public static final NinePatchAsset UI_SIMPLE    = new NinePatchAsset("ui_simple.png", 10, 10, 20, 20);
     public static final NinePatchAsset UI_PURPLE    = new NinePatchAsset("ui_purple.png", 10, 10, 20, 20);

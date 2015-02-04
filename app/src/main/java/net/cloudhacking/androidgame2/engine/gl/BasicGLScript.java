@@ -1,7 +1,5 @@
 package net.cloudhacking.androidgame2.engine.gl;
 
-import net.cloudhacking.androidgame2.engine.gl.*;
-
 import java.nio.FloatBuffer;
 
 /**
@@ -123,6 +121,10 @@ public class BasicGLScript extends GLScript {
     }
 
 
+    //----------------------------------------------------------------------------------------------
+    // Quad Drawing
+
+
     /**
      * Set the vertex attribute pointers for the XY coordinates and UV coordinates attributes
      *
@@ -161,23 +163,38 @@ public class BasicGLScript extends GLScript {
     }
 
 
+    //----------------------------------------------------------------------------------------------
+    // Array Drawing
+
+
+    private void setArrayPointers(FloatBuffer vertices) {
+        vertices.position(0);
+        aXY.vertexAttribPointer(2, 2, vertices);
+        aUV.vertexAttribPointer(2, 2, vertices);
+    }
+
+
     /**
      * Draw lines
      */
     public void drawLines(FloatBuffer vertices, int offset, int vertexCount) {
-        vertices.position(0);
-        aXY.vertexAttribPointer(2, 2, vertices);
-        aUV.vertexAttribPointer(2, 2, vertices);
-        LineDrawer.drawLines(offset, vertexCount);
+        setArrayPointers(vertices);
+        ArrayDrawer.drawLines(offset, vertexCount);
     }
 
     /**
      * Draw a filled convex shape
      */
     public void drawConvexFilled(FloatBuffer vertices, int offset, int vertexCount) {
-        vertices.position(0);
-        aXY.vertexAttribPointer(2, 2, vertices);
-        aUV.vertexAttribPointer(2, 2, vertices);
-        LineDrawer.drawConvexFilled(offset, vertexCount);
+        setArrayPointers(vertices);
+        ArrayDrawer.drawConvexFilled(offset, vertexCount);
+    }
+
+    /**
+     * Draw triangle strip
+     */
+    public void drawTriangleStrip(FloatBuffer vertices, int offset, int vertexCount) {
+        setArrayPointers(vertices);
+        ArrayDrawer.drawTriangleStrip(offset, vertexCount);
     }
 }

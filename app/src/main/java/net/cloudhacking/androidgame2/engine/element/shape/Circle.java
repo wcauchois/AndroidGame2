@@ -16,56 +16,96 @@ public class Circle extends Renderable {
 
     public static final int SEGMENTS = 30;
 
-    public static FloatBuffer sVertexBuffer;
+    private PointF mCenter;
+    private float mRadius;
+    private float mThickness;
 
-    static {
+    public FloatBuffer mVertexBuffer;
+    private boolean mNeedBufferUpdate;
+
+
+    public Circle(float radius, float thickness, float[] color) {
+        this(new PointF(), radius, thickness, color);
+    }
+
+    public Circle(PointF center, float radius, float thickness, float[] color) {
+        super(0, 0, 0, 0);
+        mCenter = center;
+        mRadius = radius;
+        mThickness = thickness;
+        setPos(mCenter);
+        setColorM(new float[]{0, 0, 0, 0});
+        setColorA(color);
+        mNeedBufferUpdate = true;
+    }
+
+    public PointF getCenter() {
+        return mCenter;
+    }
+
+    public float getRadius() {
+        return mRadius;
+    }
+
+    public float getThickness() {
+        return mThickness;
+    }
+
+    public void setRadius(float r) {
+        mRadius = r;
+        mNeedBufferUpdate = true;
+    }
+
+    public void setThickness(float thickness) {
+        mThickness = thickness;
+        mNeedBufferUpdate = true;
+    }
+
+
+    private void updateVertices() {
+        float d = 2*mRadius + mThickness;
+        setWidth(d);
+        setHeight(d);
+
+        float innerR = mRadius-(mThickness/2);
+        float outerR = mRadius+(mThickness/2);
+
         int idx=0;
-
-        float[] vertices = new float[2*(SEGMENTS+1)];
-        vertices[idx++] = 0.0f;
-        vertices[idx++] = 0.0f;
-
+        float[] vertices = new float[4*(SEGMENTS+1)];
         float theta = (float)(2*Math.PI)/SEGMENTS;
         float angle;
-        for (int i=1; i<=SEGMENTS; i++) {
+        float cos, sin;
+        for (int i=0; i<=SEGMENTS; i++) {
             angle = i*theta;
-            vertices[idx++] = FloatMath.cos(angle);
-            vertices[idx++] = FloatMath.sin(angle);
+            cos = FloatMath.cos(angle);
+            sin = FloatMath.sin(angle);
+
+            // outer
+            vertices[idx++] = outerR*cos;
+            vertices[idx++] = outerR*sin;
+
+            // inner
+            vertices[idx++] = innerR*cos;
+            vertices[idx++] = innerR*sin;
         }
 
-        sVertexBuffer = BufferUtils.makeFloatBuffer(vertices);
-    }
-
-    private boolean mFilled;
-    private float mRadius;
-
-    public Circle(float radius, float[] color, boolean filled) {
-        this(new PointF(), radius, color, filled);
-    }
-
-    public Circle(PointF center, float radius, float[] color, boolean filled) {
-        super(0,0,0,0);
-        setPos(center);
-        mRadius = radius;
-        setScale(mRadius);
-        setWidth(2);
-        setHeight(2);
-        setColorM(new float[] {0,0,0,0});
-        setColorA(color);
-        mFilled = filled;
+        mVertexBuffer = BufferUtils.makeFloatBuffer(vertices);
+        mNeedBufferUpdate = false;
     }
 
 
     @Override
+    public void update() {
+        if (mNeedBufferUpdate) {
+            updateVertices();
+        }
+        super.update();
+    }
+
+    @Override
     public void draw(BasicGLScript gls) {
         super.draw(gls);
-        if (mFilled) {
-            // include center point
-            gls.drawConvexFilled(sVertexBuffer, 0, SEGMENTS+1);
-        } else {
-            // exclude center point
-            gls.drawLines(sVertexBuffer, 1, SEGMENTS);
-        }
+        gls.drawTriangleStrip(mVertexBuffer, 0, 2*(SEGMENTS+1));
     }
 
 }

@@ -44,6 +44,10 @@ public class InputManager
 
     private List<Event> mQueuedEvents = new ArrayList<Event>();
 
+    // TODO: have UIclick and SCENEclick, check UIclick first, then convert
+    // TODO: coords and check SCENEclick.
+    //public Signal<ClickEvent> clickScene = new Signal<ClickEvent>();
+    //public Signal<ClickEvent> clickUI = new Signal<ClickEvent>();
     public Signal<ClickEvent> click = new Signal<ClickEvent>();
     public Signal<DragEvent> drag = new Signal<DragEvent>();
     public Signal<ScaleEvent> scale = new Signal<ScaleEvent>();
@@ -133,6 +137,7 @@ public class InputManager
 
         @Override
         public void doDispatch() {
+            // TODO: dispatch to UI, then scene
             click.dispatch(this);
         }
     }
