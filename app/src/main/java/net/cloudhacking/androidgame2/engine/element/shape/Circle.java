@@ -15,6 +15,7 @@ import java.nio.FloatBuffer;
 public class Circle extends Renderable {
 
     public static final int SEGMENTS = 30;
+    public static final int BUFFER_SIZE = 4*(SEGMENTS+1);
 
     private PointF mCenter;
     private float mRadius;
@@ -71,11 +72,11 @@ public class Circle extends Renderable {
         float outerR = mRadius+(mThickness/2);
 
         int idx=0;
-        float[] vertices = new float[4*(SEGMENTS+1)];
+        float[] vertices = new float[BUFFER_SIZE];
         float theta = (float)(2*Math.PI)/SEGMENTS;
         float angle;
         float cos, sin;
-        for (int i=0; i<=SEGMENTS; i++) {
+        for (int i=0; i<SEGMENTS+1; i++) {
             angle = i*theta;
             cos = FloatMath.cos(angle);
             sin = FloatMath.sin(angle);
@@ -94,6 +95,11 @@ public class Circle extends Renderable {
     }
 
 
+    public boolean contains(PointF p) {
+        return mCenter.distTo(p) < mRadius;
+    }
+
+
     @Override
     public void update() {
         if (mNeedBufferUpdate) {
@@ -105,7 +111,7 @@ public class Circle extends Renderable {
     @Override
     public void draw(BasicGLScript gls) {
         super.draw(gls);
-        gls.drawTriangleStrip(mVertexBuffer, 0, 2*(SEGMENTS+1));
+        gls.drawTriangleStrip(mVertexBuffer, 0, BUFFER_SIZE/2);
     }
 
 }

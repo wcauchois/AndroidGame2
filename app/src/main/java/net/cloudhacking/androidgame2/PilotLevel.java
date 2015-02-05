@@ -23,7 +23,7 @@ public class PilotLevel extends Level {
     private UnitController mUnitController;
     private ControllableUnit mMothership, mChar;
 
-    private PointF cam2scene(PointF camPt) {
+    public PointF cam2scene(PointF camPt) {
         return getScene().getActiveCamera().cameraToScene(camPt);
     }
 

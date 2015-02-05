@@ -33,22 +33,18 @@ public class Signal<T> {
         mListeners.remove(listener);
     }
 
-    public void dispatch(T t) {
+    public boolean dispatch(T t) {
         Listener<T>[] listeners = mListeners.toArray(new Listener[0]);
 
         Listener<T> listener;
         for (int i = 0; i < listeners.length; i++) {
             listener = listeners[i];
             if (mListeners.contains(listener)) {
-                /**
-                 * Instead of having to call back to this signal and cancel, return true for
-                 * onSignal(t) if you want to handle the signal and cancel the search, or false if
-                 * you don't.
-                 */
                 if (listener.onSignal(t)) {
-                    break;
+                    return true;
                 }
             }
         }
+        return false;
     }
 }

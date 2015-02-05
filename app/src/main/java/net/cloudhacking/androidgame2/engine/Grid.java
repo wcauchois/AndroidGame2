@@ -422,6 +422,24 @@ public class Grid extends Entity {
         public int length() {
             return mPath.size();
         }
+
+        public float[] getPathVertices() {
+            float[] vertices = new float[2*mPath.size()];
+
+            int i=0;
+            PointF p;
+            for (Cell c : mPath) {
+                p = c.getCenter();
+                vertices[i++] = p.x;
+                vertices[i++] = p.y;
+            }
+            return vertices;
+        }
+
+        @Override
+        public String toString() {
+            return mPath.toString();
+        }
     }
 
 
@@ -590,6 +608,79 @@ public class Grid extends Entity {
 
         }
         return null;
+    }
+
+
+    // class used for active path-finding animation
+
+    public PathFinder getPathFinder(Cell source) {
+        return new PathFinder(source);
+    }
+
+    public class PathFinder {
+
+        private Cell mSource;
+
+        private PriorityQueue<CellSortable> mFrontier;
+        private HashSet<Integer> mVisited;
+        private SparseArray<Float> mCosts;
+        private SparseIntArray mHistory;
+
+        private SparseArray<CellPath> mPathCache;
+
+        public PathFinder(Cell source) {
+            mSource = source;
+
+            mFrontier = new PriorityQueue<CellSortable>();
+            mVisited = new HashSet<Integer>();
+            mCosts = new SparseArray<Float>();
+            mHistory = new SparseIntArray();
+
+            mPathCache = new SparseArray<CellPath>();
+
+            mFrontier.add(new CellSortable(source.index, 0f));
+            mHistory.put(source.index, -1);
+            mCosts.put(source.index, 0f);
+            mVisited.add(source.index);
+        }
+
+        public CellPath getPathTo(Cell target) {
+
+            CellPath tmp = mPathCache.get(target.index);
+
+            if (tmp != null) {
+                return tmp;
+            }
+
+            Cell current;
+            float newCost;
+            while (!mFrontier.isEmpty()) {
+                current = getCell( mFrontier.poll().cellIndex );
+
+                if (current.equals(target)) {
+                    tmp = buildCellPath(mHistory, target.index);
+                    mPathCache.put(target.index, tmp);
+                    return tmp;
+                }
+
+                for (Cell n : getCellNeighbors(current)) {
+                    if (n==null) continue;
+
+                    newCost = mCosts.get(current.index) + /* cost to next cell = */ 1 ;
+
+                    if ( !mVisited.contains(n.index) || newCost< mCosts.get(n.index) ) {
+                        mCosts.put(n.index, newCost);
+                        mFrontier.add( new CellSortable(n.index, newCost + heuristic(n, target)) );
+                        mHistory.put(n.index, current.index);
+                        mVisited.add(n.index);
+                    }
+                }
+
+            }
+            return null;
+        }
+
+
     }
 
 }

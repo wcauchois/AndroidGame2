@@ -173,13 +173,20 @@ public class BasicGLScript extends GLScript {
         aUV.vertexAttribPointer(2, 2, vertices);
     }
 
-
     /**
      * Draw lines
      */
     public void drawLines(FloatBuffer vertices, int offset, int vertexCount) {
         setArrayPointers(vertices);
         ArrayDrawer.drawLines(offset, vertexCount);
+    }
+
+    /**
+     * Draw line loop
+     */
+    public void drawLineLoop(FloatBuffer vertices, int offset, int vertexCount) {
+        setArrayPointers(vertices);
+        ArrayDrawer.drawLineLoop(offset, vertexCount);
     }
 
     /**

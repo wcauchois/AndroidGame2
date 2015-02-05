@@ -10,6 +10,10 @@ import net.cloudhacking.androidgame2.engine.utils.Loggable;
 public class ArrayDrawer extends Loggable {
 
     public static void drawLines(int offset, int vertexCount) {
+        GLES20.glDrawArrays(GLES20.GL_LINES, offset, vertexCount);
+    }
+
+    public static void drawLineLoop(int offset, int vertexCount) {
         GLES20.glDrawArrays(GLES20.GL_LINE_LOOP, offset, vertexCount);
     }
 

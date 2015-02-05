@@ -1,10 +1,12 @@
 package net.cloudhacking.androidgame2.unit;
 
+import net.cloudhacking.androidgame2.PilotLevel;
 import net.cloudhacking.androidgame2.engine.Grid;
 import net.cloudhacking.androidgame2.engine.InputManager;
 import net.cloudhacking.androidgame2.engine.Level;
 import net.cloudhacking.androidgame2.engine.Signal;
 import net.cloudhacking.androidgame2.engine.element.Group;
+import net.cloudhacking.androidgame2.engine.element.shape.PixelLines;
 
 /**
  * Created by Andrew on 1/31/2015.
@@ -15,16 +17,20 @@ public class UnitController
 {
 
     private Grid mGrid;
-    private Level mLevel;
+    private PilotLevel mLevel;
     private SelectableUnit mSelected;
 
-    public UnitController(Level level) {
+    public UnitController(PilotLevel level) {
         mLevel = level;
         mGrid = level.grid;
-        mLevel.addToFront(mGrid.SELECTOR_ICON);
+        mLevel.add(mGrid.SELECTOR_ICON);
         mGrid.SELECTOR_ICON.hide();
+
         mSelected = null;
         mDownSelect = false;
+        mPathAnim = new PixelLines(new float[] {1,0,0,1});
+        mLastNearest = null;
+        mLevel.add(mPathAnim);
     }
 
     public void select(ControllableUnit u) {
@@ -45,6 +51,10 @@ public class UnitController
     // Selection Handling
 
     private boolean mDownSelect;
+    private Grid.PathFinder mPathFinder;
+    private Grid.CellPath mCurrentPath;
+    private Grid.Cell mLastNearest;
+    private PixelLines mPathAnim;
 
     @Override
     public boolean onSignal(Object o) {
@@ -62,14 +72,18 @@ public class UnitController
     public boolean handleClickEvent(InputManager.ClickEvent e) {
         switch(e.getType()) {
             case DOWN:
-                Grid.Cell nearest = mGrid.nearestCell(getScene().activeCameraToScene(e.getPos()));
+                Grid.Cell nearest = mGrid.nearestCell(mLevel.cam2scene(e.getPos()));
 
                 for (ControllableUnit u : mEntities) {
                     if (u.getLocation() == nearest) {
                         select(u);
-                        mGrid.SELECTOR_ICON.startAnimationAt(nearest.getCenter());
-                        mLevel.bringToFront(mGrid.SELECTOR_ICON);
                         mDownSelect = true;
+                        mGrid.SELECTOR_ICON.startAnimationAt(nearest.getCenter());
+                        mPathFinder = mGrid.getPathFinder(u.getLocation());
+                        mLevel.bringToFront(mGrid.SELECTOR_ICON);
+                        mLevel.bringToFront(mPathAnim);
+
+                        getScene().getCameraController().setDisabled(true);
                         return true;
                     }
                 }
@@ -78,10 +92,10 @@ public class UnitController
 
             case UP:
                 mDownSelect = false;
+                getScene().getCameraController().setDisabled(false);
 
-            default:
-                return false;
         }
+        return false;
     }
 
     public boolean handleDragEvent(InputManager.DragEvent e) {
@@ -90,14 +104,34 @@ public class UnitController
         // to the target of the drag.
         switch (e.getType()) {
             case START:
-                if (mDownSelect) return true;
+                if (mDownSelect) {
+                    return true;
+                }
                 break;
+
             case UPDATE:
-                // check paths
-                break;
+                if (!mDownSelect) return false;
+
+                Grid.Cell nearest = mGrid.nearestCell(mLevel.cam2scene(e.getPos()));
+                if (nearest != mLastNearest) {
+                    mLastNearest = nearest;
+                    mCurrentPath = mPathFinder.getPathTo(nearest);
+                    if (mCurrentPath != null) {
+                        mPathAnim.setVertices(mCurrentPath.getPathVertices());
+                        d("generated new path to: "+nearest);
+                        d("generated path: "+mCurrentPath);
+                    }
+                }
+                return true;
+
             case END:
                 mDownSelect = false;
+                getScene().getCameraController().setDisabled(false);
+                return true;
+
+            default:
                 break;
+
         }
         return false;
     }

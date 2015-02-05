@@ -138,6 +138,8 @@ public class InputManager
         @Override
         public void doDispatch() {
             // TODO: dispatch to UI, then scene
+            //if (clickUI.dispatch(this) { return; }
+            //clickScene.dispatch(this_with_converted_coord);
             click.dispatch(this);
         }
     }
@@ -281,7 +283,6 @@ public class InputManager
                                            DragEventType.END)
                     );
                     mDragging = false;
-                    mDragOrigin = null;
                 }
                 break;
         }

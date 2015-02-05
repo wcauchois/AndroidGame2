@@ -85,6 +85,10 @@ public class CameraController extends Loggable implements Signal.Listener {
         return mUICamera;
     }
 
+    public void setDisabled(boolean bool) {
+        mDisabled = bool;
+    }
+
 
     public void update() {
         if (!mDisabled) mActiveCamera.update();
