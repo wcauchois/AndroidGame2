@@ -78,7 +78,7 @@ public class Grid extends Entity {
 
     public static enum CellState {
         // If we end up having different terrain types we'll need to
-        // implement a terrain movement cost function for A*.
+        // implement a terrain movement cost function for path-finding.
         EMPTY, OCCUPIED
     }
 
@@ -120,6 +120,14 @@ public class Grid extends Entity {
 
         public PointF getCenter() {
             return getRelativeCenter().add(mPos.toVec());
+        }
+
+        public float getWidth() {
+            return mCellWidth;
+        }
+
+        public float getHeight() {
+            return mCellHeight;
         }
 
         public Cell getReachableNeighbor() {
@@ -407,6 +415,10 @@ public class Grid extends Entity {
             return mPath.isEmpty();
         }
 
+        public LinkedList<Cell> getLinkedList() {
+            return mPath;
+        }
+
         public Cell pop() {
             return mPath.pollFirst();
         }
@@ -443,6 +455,7 @@ public class Grid extends Entity {
     }
 
 
+    // use this if you need to check if cells are on the given path or not
     public class CellPathSet extends CellPath {
 
         private HashSet<Integer> mMembers;  // by cell index
@@ -611,7 +624,11 @@ public class Grid extends Entity {
     }
 
 
-    // class used for active path-finding animation
+    /**
+     * Class used for active path-finding animation.  It keeps caches the shortest path to each
+     * point as the user drags their finger across the screen so that we can animated the path
+     * that a unit would potentially take across the map.
+     */
 
     public PathFinder getPathFinder(Cell source) {
         return new PathFinder(source);
@@ -644,6 +661,10 @@ public class Grid extends Entity {
             mVisited.add(source.index);
         }
 
+        public Cell getSource() {
+            return mSource;
+        }
+
         public CellPath getPathTo(Cell target) {
 
             CellPath tmp = mPathCache.get(target.index);
@@ -653,29 +674,32 @@ public class Grid extends Entity {
             }
 
             Cell current;
-            float newCost;
+            float cost;
             while (!mFrontier.isEmpty()) {
+                // get cell with shortest length in priority queue
                 current = getCell( mFrontier.poll().cellIndex );
 
+                // build path for this cell and cache it
+                tmp = buildCellPath(mHistory, current.index);
+                mPathCache.put(current.index, tmp);
+
                 if (current.equals(target)) {
-                    tmp = buildCellPath(mHistory, target.index);
-                    mPathCache.put(target.index, tmp);
                     return tmp;
                 }
 
                 for (Cell n : getCellNeighbors(current)) {
                     if (n==null) continue;
 
-                    newCost = mCosts.get(current.index) + /* cost to next cell = */ 1 ;
+                    cost = mCosts.get(current.index) + /* cost to next cell = */ 1 ;
 
-                    if ( !mVisited.contains(n.index) || newCost< mCosts.get(n.index) ) {
-                        mCosts.put(n.index, newCost);
-                        mFrontier.add( new CellSortable(n.index, newCost + heuristic(n, target)) );
+                    if ( !mVisited.contains(n.index) || cost< mCosts.get(n.index) ) {
+                        mCosts.put(n.index, cost);
+                        // not using heuristic cost here since we have a changing target
+                        mFrontier.add( new CellSortable(n.index, cost) );
                         mHistory.put(n.index, current.index);
                         mVisited.add(n.index);
                     }
                 }
-
             }
             return null;
         }

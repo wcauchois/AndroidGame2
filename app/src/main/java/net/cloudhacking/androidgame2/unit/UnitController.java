@@ -3,7 +3,6 @@ package net.cloudhacking.androidgame2.unit;
 import net.cloudhacking.androidgame2.PilotLevel;
 import net.cloudhacking.androidgame2.engine.Grid;
 import net.cloudhacking.androidgame2.engine.InputManager;
-import net.cloudhacking.androidgame2.engine.Level;
 import net.cloudhacking.androidgame2.engine.Signal;
 import net.cloudhacking.androidgame2.engine.element.Group;
 import net.cloudhacking.androidgame2.engine.element.shape.PixelLines;
@@ -112,14 +111,13 @@ public class UnitController
             case UPDATE:
                 if (!mDownSelect) return false;
 
+                // find nearest cell to drag point and update path as it changes
                 Grid.Cell nearest = mGrid.nearestCell(mLevel.cam2scene(e.getPos()));
                 if (nearest != mLastNearest) {
                     mLastNearest = nearest;
                     mCurrentPath = mPathFinder.getPathTo(nearest);
                     if (mCurrentPath != null) {
                         mPathAnim.setVertices(mCurrentPath.getPathVertices());
-                        d("generated new path to: "+nearest);
-                        d("generated path: "+mCurrentPath);
                     }
                 }
                 return true;

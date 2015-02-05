@@ -11,6 +11,8 @@ import java.nio.FloatBuffer;
  */
 public class PixelLines extends Renderable {
 
+    // TODO: this does not work properly, need to figure out GL_LINES works...
+
     private FloatBuffer mVertexBuffer;
     private int mLength;
 
