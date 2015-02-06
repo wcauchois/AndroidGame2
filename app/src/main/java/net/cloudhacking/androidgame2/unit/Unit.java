@@ -4,7 +4,7 @@ import net.cloudhacking.androidgame2.engine.Grid;
 import net.cloudhacking.androidgame2.engine.element.Animated;
 import net.cloudhacking.androidgame2.engine.utils.SpriteAsset;
 
-import java.util.LinkedList;
+import java.util.LinkedHashSet;
 
 /**
  * Created by Andrew on 1/28/2015.
@@ -20,7 +20,7 @@ public abstract class Unit extends Animated {
     private float mHP;
     private float mMoveSpeed;
 
-    private LinkedList<Unit> mTargetedBy;
+    private LinkedHashSet<Unit> mTargetedBy;
     private Unit mTarget;
 
     public Unit(SpriteAsset asset) {
@@ -29,7 +29,7 @@ public abstract class Unit extends Animated {
         mLocation = null;
         mHP = DEFAULT_HP;
         mMoveSpeed = DEFAULT_MOVESPEED;
-        mTargetedBy = new LinkedList<Unit>();
+        mTargetedBy = new LinkedHashSet<Unit>();
         mTarget = null;
     }
 
@@ -86,13 +86,13 @@ public abstract class Unit extends Animated {
         mMoveSpeed = speed;
     }
 
-    public LinkedList<Unit> getTargetedBy() {
+    public LinkedHashSet<Unit> getTargetedBy() {
         return mTargetedBy;
     }
 
     public void target(Unit other) {
         clearTarget();
-        other.getTargetedBy().addLast(this);
+        other.getTargetedBy().add(this);
         mTarget = other;
     }
 

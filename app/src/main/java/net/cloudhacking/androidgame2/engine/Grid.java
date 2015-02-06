@@ -69,7 +69,7 @@ public class Grid extends Entity {
     }
 
 
-    /**********************************************************************************************/
+    //----------------------------------------------------------------------------------------------
 
     public static enum CellState {
         // If we end up having different terrain types we'll need to
@@ -150,7 +150,7 @@ public class Grid extends Entity {
     }
 
 
-    /**********************************************************************************************/
+    //----------------------------------------------------------------------------------------------
 
     public class CellSelector implements Signal.Listener<InputManager.ClickEvent> {
 
@@ -186,7 +186,8 @@ public class Grid extends Entity {
 
     public Signal<Cell> cellSelector = new Signal<Cell>();
 
-    /**********************************************************************************************/
+
+    //----------------------------------------------------------------------------------------------
 
     private PointF mPos;    // typically this should be (0,0) to correspond with the
                             // top-left corner of the scene
@@ -323,7 +324,7 @@ public class Grid extends Entity {
     }
 
 
-    /**********************************************************************************************/
+    //----------------------------------------------------------------------------------------------
     // ref: http://www.redblobgames.com/pathfinding/tower-defense/
     //      http://www.redblobgames.com/pathfinding/a-star/implementation.html#sec-1-4
 
@@ -620,6 +621,8 @@ public class Grid extends Entity {
         return null;
     }
 
+
+    //----------------------------------------------------------------------------------------------
 
     /**
      * Class used for active path-finding.  It caches the shortest paths to points progressively

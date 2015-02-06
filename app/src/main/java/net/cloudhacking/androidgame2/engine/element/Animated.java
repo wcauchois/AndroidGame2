@@ -37,12 +37,33 @@ public class Animated extends Renderable {
 
 
     public static final Animation NULL_ANIMATION = new Animation() {
-        @Override public boolean isAnimating() { return false; }
-        @Override public int getCurrentFrameIndex() { return 0; }
+        @Override
+        public boolean isAnimating() {
+            return false;
+        }
+        @Override
+        public int getCurrentFrameIndex() {
+            return 0;
+        }
     };
 
 
-    /**********************************************************************************************/
+    // queues animation that constantly returns the same frame number
+    public void setPermanentSpriteFrame(final int index) {
+        queueAnimation(new Animated.Animation() {
+            @Override
+            public boolean isAnimating() {
+                return true;
+            }
+            @Override
+            public int getCurrentFrameIndex() {
+                return index;
+            }
+        }, true, true);
+    }
+
+
+    //----------------------------------------------------------------------------------------------
 
     private Sprite mSprite;
     private Animation mAnimation;
@@ -113,11 +134,9 @@ public class Animated extends Renderable {
 
 
 
-    /**********************************************************************************************/
+    //----------------------------------------------------------------------------------------------
+    // simple implementation of Animation
 
-    /**
-     * Simple implementation of Animation
-     */
     public static class AnimationSequence extends Animation {
 
         private int[] mAnimationSeq;

@@ -3,7 +3,6 @@ package net.cloudhacking.androidgame2;
 import net.cloudhacking.androidgame2.engine.Grid;
 import net.cloudhacking.androidgame2.engine.InputManager;
 import net.cloudhacking.androidgame2.engine.Level;
-import net.cloudhacking.androidgame2.engine.element.Animated;
 import net.cloudhacking.androidgame2.engine.element.Image;
 import net.cloudhacking.androidgame2.engine.element.TileMap;
 import net.cloudhacking.androidgame2.engine.utils.TiledImporter;
@@ -62,14 +61,7 @@ public class PilotLevel extends Level {
         // init level things
 
         mChar = new GridUnit(Assets.MINI_CHARS);
-        mChar.queueAnimation(new Animated.Animation() {
-            @Override public boolean isAnimating() {
-                return true;
-            }
-            @Override public int getCurrentFrameIndex() {
-                return 102; // 103rd sprite frame
-            }
-        }, true, false);
+        mChar.setPermanentSpriteFrame(102);
         mChar.setToCell(grid.getCell(10, 10));
         mGridUnitController.addUnit(mChar);
         add(mChar);
