@@ -225,7 +225,7 @@ public class Renderable extends Entity {
         setInactive();
     }
 
-    public void unhide() {
+    public void show() {
         setVisibility(true);
         setActive();
     }

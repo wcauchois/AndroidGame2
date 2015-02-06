@@ -90,6 +90,10 @@ public abstract class Unit extends Animated {
         return mTargetedBy;
     }
 
+    public boolean isTargetedBy(Unit other) {
+        return mTargetedBy.contains(other);
+    }
+
     public void target(Unit other) {
         clearTarget();
         other.getTargetedBy().add(this);

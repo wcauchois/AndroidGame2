@@ -6,9 +6,14 @@ import android.util.SparseIntArray;
 import net.cloudhacking.androidgame2.Assets;
 import net.cloudhacking.androidgame2.engine.element.Animated;
 import net.cloudhacking.androidgame2.engine.element.Entity;
+import net.cloudhacking.androidgame2.engine.element.Renderable;
 import net.cloudhacking.androidgame2.engine.element.TileMap;
+import net.cloudhacking.androidgame2.engine.element.shape.PixelLines;
+import net.cloudhacking.androidgame2.engine.gl.BasicGLScript;
+import net.cloudhacking.androidgame2.engine.utils.BufferUtils;
 import net.cloudhacking.androidgame2.engine.utils.PointF;
 
+import java.nio.FloatBuffer;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
@@ -40,36 +45,6 @@ public class Grid extends Entity {
      *       the path or not.
      */
 
-
-
-    /**
-     * Animated selection icon that appears on the grid when you select a cell
-     */
-    public final SelectorIcon SELECTOR_ICON = new SelectorIcon();
-
-    public static class SelectorIcon extends Animated {
-
-        private final float BLINK_FREQ = 2;
-
-        public SelectorIcon() {
-            super(Assets.SELECTOR_8PX);
-            setVisibility(false);
-        }
-
-        public void startAnimationAt(PointF target) {
-            setPos(target);
-            setActive();
-            setVisibility(true);
-            queueAnimation(
-                    new AnimationSequence(new int[] {1, 0}, 1, BLINK_FREQ),
-                    true, true
-            );
-        }
-
-    }
-
-
-    //----------------------------------------------------------------------------------------------
 
     public static enum CellState {
         // If we end up having different terrain types we'll need to
@@ -306,7 +281,6 @@ public class Grid extends Entity {
         }
     }
 
-
     public Cell nearestCell(PointF scenePoint) {
         if (scenePoint.x < mPos.x || scenePoint.x > mPos.x + getWidth() ||
             scenePoint.y < mPos.y || scenePoint.y > mPos.y + getHeight() )
@@ -319,22 +293,14 @@ public class Grid extends Entity {
         return mGrid[ coordToIndex(ix, iy) ];
     }
 
-    public PointF cellToScene(Cell cell) {
-        return mPos.add(cell.getRelativeCenter().toVec());
-    }
-
 
     //----------------------------------------------------------------------------------------------
+    // path-finding
+    //
     // ref: http://www.redblobgames.com/pathfinding/tower-defense/
     //      http://www.redblobgames.com/pathfinding/a-star/implementation.html#sec-1-4
 
-    /**
-     * Flood map
-     */
     private Cell[] neighbors = new Cell[4];
-    private boolean[] mReachable;
-    private Cell mFloodSource;
-
     private Cell[] getCellNeighbors(Cell c) {
         if ( c.ix-1 >= 0 && !c.isOccupied() ) {
             neighbors[0] = getCell(c.ix-1, c.iy);
@@ -359,6 +325,13 @@ public class Grid extends Entity {
 
         return neighbors;
     }
+
+
+    /**
+     * Flood map to check for all reachable cells
+     */
+    private boolean[] mReachable;
+    private Cell mFloodSource;
 
     public boolean[] generateFloodMap(Cell source) {
         mFloodSource = source;
@@ -723,7 +696,215 @@ public class Grid extends Entity {
             return null;
         }
 
+    }
+
+
+    //----------------------------------------------------------------------------------------------
+    // helpful visual elements for grids
+
+    /**
+     * Animated selection icon that appears on the grid when you select a cell
+     */
+    public static class SelectorIcon extends Animated {
+
+        private final float BLINK_FREQ = 2;
+
+        public SelectorIcon() {
+            super(Assets.SELECTOR_8PX);
+            setVisibility(false);
+        }
+
+        public void startAnimationAt(PointF target) {
+            setPos(target);
+            setActive();
+            setVisibility(true);
+            queueAnimation(
+                    new AnimationSequence(new int[] {1, 0}, 1, BLINK_FREQ),
+                    true, true
+            );
+        }
 
     }
 
+
+    /**
+     * GL lined grid to overlay on
+     */
+    public static class GridOverlay extends PixelLines {
+
+        public GridOverlay(Grid grid, float[] color) {
+            super(color);
+            int cw = grid.getCellWidth(), ch = grid.getCellHeight();
+            int cols = grid.getColumns(), rows = grid.getRows();
+
+            int vertexCount = 2*(cols-1) + 2*(rows-1);
+            float[] vertices  = new float[2*vertexCount];
+
+            int idx = 0;
+
+            // columns
+            int h = rows*ch;
+            for (int i=1; i<cols; i++) {
+                // top
+                vertices[idx++] = i*cw;
+                vertices[idx++] = 0;
+                // bottom
+                vertices[idx++] = i*cw;
+                vertices[idx++] = h;
+            }
+
+            // rows
+            int w = cols*cw;
+            for (int i=1; i<rows; i++) {
+                // left
+                vertices[idx++] = 0;
+                vertices[idx++] = i*ch;
+                // right
+                vertices[idx++] = w;
+                vertices[idx++] = i*ch;
+            }
+
+            setVertices(vertices);
+        }
+
+    }
+
+
+    /**
+     * Animates a CellPath
+     */
+    public static class CellPathAnim extends Renderable {
+
+        private CellPath mPath;
+
+        private float mThickness;
+        private FloatBuffer mVertexBuffer;
+        private int mVertexCount;
+        private boolean mNeedBufferUpdate;
+
+        public CellPathAnim(float thickness, float[] color) {
+            this(null, thickness, color);
+            setInactive();
+            setVisibility(false);
+        }
+
+        public CellPathAnim(CellPath path, float thickness, float[] color) {
+            super(0,0,0,0);
+            mPath = path;
+            mThickness = thickness;
+            setColor(color);
+            mNeedBufferUpdate = true;
+        }
+
+        public void setPath(CellPath path) {
+            setActive();
+            setVisibility(true);
+            mPath = path;
+            mNeedBufferUpdate = true;
+        }
+
+        public void setThickness(float thickness) {
+            mThickness = thickness;
+            mNeedBufferUpdate = true;
+        }
+
+        public void setColor(float[] color) {
+            setColorM(new float[] {0,0,0,0});
+            setColorA(color);
+        }
+
+
+        /**
+         * Drawing the actual path...
+         */
+
+        private int getNextDir(Cell cur, Cell next) {
+            int curX = cur.ix, curY = cur.iy;
+            int nextX = next.ix, nextY = next.iy;
+
+            if (nextX < curX && nextY == curY) return 0;  // left
+            if (nextX == curX && nextY < curY) return 1;  // up
+            if (nextX > curX && nextY == curY) return 2;  // right
+                                               return 3;  // down
+        }
+
+        // rotates these vertices based on direction of path
+        private float rotateX(float x, float y, int dir) {
+            switch (dir) {
+                case 0: return +y;
+                case 1: return +x;
+                case 2: return -y;
+                case 3: return -x;
+            }
+            return 0;
+        }
+        private float rotateY(float x, float y, int dir) {
+            switch (dir) {
+                case 0: return +x;
+                case 1: return +y;
+                case 2: return -x;
+                case 3: return -y;
+            }
+            return 0;
+        }
+
+
+        private void updateVertices() {
+            if (mPath == null) return;
+
+            final float ht = mThickness/2;
+            mVertexCount = 4*(mPath.length()-1);
+            float[] vertices = new float[2*mVertexCount];
+
+            int idx=0;
+            int curCellIndex=0;
+            Cell last = mPath.peek();
+            PointF cenLast, cenCur;
+            int dir;
+
+            for (Cell cur : mPath.getLinkedList()) {
+
+                if (curCellIndex>0) {
+                    dir = getNextDir(last, cur);
+
+                    cenLast = last.getCenter();
+                    cenCur  = cur.getCenter();
+
+                    // bottom-left
+                    vertices[idx++] = cenLast.x + rotateX(-ht, +ht, dir);
+                    vertices[idx++] = cenLast.y + rotateY(-ht, +ht, dir);
+                    // bottom-right
+                    vertices[idx++] = cenLast.x + rotateX(+ht, +ht, dir);
+                    vertices[idx++] = cenLast.y + rotateY(+ht, +ht, dir);
+                    // top-left
+                    vertices[idx++] = cenCur.x + rotateX(-ht, -ht, dir);
+                    vertices[idx++] = cenCur.y + rotateY(-ht, -ht, dir);
+                    // top-right
+                    vertices[idx++] = cenCur.x + rotateX(+ht, -ht, dir);
+                    vertices[idx++] = cenCur.y + rotateY(+ht, -ht, dir);
+                }
+
+                last = cur;
+                curCellIndex++;
+            }
+
+            mVertexBuffer = BufferUtils.makeFloatBuffer(vertices);
+        }
+
+        @Override
+        public void update() {
+            if (mNeedBufferUpdate) {
+                updateVertices();
+                mNeedBufferUpdate = false;
+            }
+            super.update();
+        }
+
+        @Override
+        public void draw(BasicGLScript gls) {
+            super.draw(gls);
+            gls.drawTriangleStrip(mVertexBuffer, 0, mVertexCount);
+        }
+
+    }
 }

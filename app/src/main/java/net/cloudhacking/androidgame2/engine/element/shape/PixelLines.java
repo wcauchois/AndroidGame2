@@ -11,10 +11,13 @@ import java.nio.FloatBuffer;
  */
 public class PixelLines extends Renderable {
 
-    // TODO: this does not work properly, need to figure out how GL_LINES works...
+    /**
+     * Note: Each pair of vertices in the vertex buffer must define the
+     * end-points of each line segment.
+     */
 
     private FloatBuffer mVertexBuffer;
-    private int mLength;
+    private int mVertexCount;
 
     public PixelLines(float[] color) {
         this(new float[] {}, color);
@@ -27,7 +30,7 @@ public class PixelLines extends Renderable {
     }
 
     public void setVertices(float[] vertices) {
-        mLength = vertices.length;
+        mVertexCount = vertices.length/2;
         mVertexBuffer = BufferUtils.makeFloatBuffer(vertices);
     }
 
@@ -38,9 +41,9 @@ public class PixelLines extends Renderable {
 
     @Override
     public void draw(BasicGLScript gls) {
-        if (mLength==0) return;
+        if (mVertexCount == 0) return;
         super.draw(gls);
-        gls.drawLines(mVertexBuffer, 0, mLength);
+        gls.drawLines(mVertexBuffer, 0, mVertexCount);
     }
 
 

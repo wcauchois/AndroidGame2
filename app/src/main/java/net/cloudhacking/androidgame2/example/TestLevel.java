@@ -51,15 +51,6 @@ public class TestLevel extends Level {
         mGrid = (Grid) add(Grid.createFromTileMap(mTileMapL1));
         grid.mapToState(imported.getCollisionMap(), Grid.CellState.EMPTY, Grid.CellState.OCCUPIED);
 
-        mGrid.cellSelector.connect( new Signal.Listener<Grid.Cell>() {
-            @Override
-            public boolean onSignal(Grid.Cell cell) {
-                mGrid.SELECTOR_ICON.startAnimationAt(cell.getCenter());
-                addToFront(mGrid.SELECTOR_ICON);
-                return false;
-            }
-        });
-
         mFactory = new TestCreepFactory(mGrid);
         add(mFactory);
 

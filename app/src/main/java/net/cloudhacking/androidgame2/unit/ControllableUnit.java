@@ -14,7 +14,8 @@ public class ControllableUnit extends SelectableUnit {
         MOVE,
         ATTACK,
         DEFEND,
-        STOP
+        STOP,
+        NULL
     }
 
 
@@ -35,7 +36,7 @@ public class ControllableUnit extends SelectableUnit {
             onStart();
         }
 
-        public void onStart() {}
+        protected void onStart() {}
 
         public ActionType getType() {
             return mType;
@@ -46,7 +47,7 @@ public class ControllableUnit extends SelectableUnit {
             onInterrupt();
         }
 
-        public void onInterrupt() {}
+        protected void onInterrupt() {}
 
         public void update() {}
 
@@ -54,9 +55,8 @@ public class ControllableUnit extends SelectableUnit {
             return mFinished;
         }
 
-        public static final Action NULL = new Action(ActionType.STOP) {
-            @Override
-            public boolean isFinished() { return true; }
+        public static final Action NULL = new Action(ActionType.NULL) {
+            @Override public boolean isFinished() { return true; }
         };
     }
 
@@ -94,6 +94,7 @@ public class ControllableUnit extends SelectableUnit {
     }
 
     public void forceAction(Action action) {
+        mCurrentAction.interrupt();
         mCurrentAction = action;
         mCurrentAction.start();
     }

@@ -22,14 +22,17 @@ public class SelectableUnit extends Unit {
 
     public void select() {
         mSelected = true;
+        onSelect();
     }
 
     public void unSelect() {
-        mSelected = true;
+        mSelected = false;
     }
 
     public boolean isSelected() {
         return mSelected;
     }
+
+    protected void onSelect() {}
 
 }
