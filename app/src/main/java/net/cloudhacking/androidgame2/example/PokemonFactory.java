@@ -23,7 +23,7 @@ public class PokemonFactory extends SpriteFactory {
 
     private class PokemonSprite extends SpriteSpawn {
 
-        private class PokemonAnimation implements Animation {
+        private class PokemonAnimation extends Animation {
 
             private Grid.CellPath mPath;
             private boolean mDestinationReached;
@@ -59,9 +59,6 @@ public class PokemonFactory extends SpriteFactory {
 
                 if (mPath.peek() == null) mDestinationReached = true;
             }
-
-            @Override
-            public void reset() {}
 
             @Override
             public boolean isAnimating() {

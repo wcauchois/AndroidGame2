@@ -9,32 +9,110 @@ import java.util.LinkedList;
  */
 public class ControllableUnit extends SelectableUnit {
 
-    public enum Action {
-        MOVE, ATTACK, DEFEND, STOP
+    // can add more to this
+    public static enum ActionType {
+        MOVE,
+        ATTACK,
+        DEFEND,
+        STOP
     }
 
+
+    /**
+     * Use this class to move, target, queue animations, etc
+     */
+    public static class Action {
+        protected ActionType mType;
+        protected boolean mFinished;
+
+        public Action(ActionType type) {
+            mType = type;
+            mFinished = true;
+        }
+
+        public void start() {
+            mFinished = false;
+            onStart();
+        }
+
+        public void onStart() {}
+
+        public ActionType getType() {
+            return mType;
+        }
+
+        public void interrupt() {
+            mFinished = true;
+            onInterrupt();
+        }
+
+        public void onInterrupt() {}
+
+        public void update() {}
+
+        public boolean isFinished() {
+            return mFinished;
+        }
+
+        public static final Action NULL = new Action(ActionType.STOP) {
+            @Override
+            public boolean isFinished() { return true; }
+        };
+    }
+
+
     private Action mCurrentAction;
+    private Action mDefaultAction;
     private LinkedList<Action> mActionQueue;
 
     public ControllableUnit(SpriteAsset asset) {
         super(asset);
         mActionQueue = new LinkedList<Action>();
-        mCurrentAction = Action.STOP;
+        mCurrentAction = Action.NULL;
+        mDefaultAction = Action.NULL;
     }
 
+    public ActionType getCurrentAction() {
+        return mCurrentAction.getType();
+    }
 
-    public void queueAction(Action action, boolean force) {
+    public void setDefaultAction(Action action) {
+        mDefaultAction = action;
+    }
+
+    public void queueAction(Action action, boolean interrupt) {
+        if (interrupt) {
+            mCurrentAction.interrupt();
+            mActionQueue.addFirst(action);
+            return;
+        }
         mActionQueue.addLast(action);
     }
 
-    public void doAction(Action action) {
-        switch(action) {}
+    public void queueAction(Action action) {
+        queueAction(action, false);
+    }
+
+    public void forceAction(Action action) {
+        mCurrentAction = action;
+        mCurrentAction.start();
+    }
+
+    private void doNextAction() {
+        mCurrentAction = mActionQueue.pollFirst();
+        if (mCurrentAction == null) {
+            mCurrentAction = mDefaultAction;
+        }
+        mCurrentAction.start();
     }
 
     @Override
     public void update() {
-        // update current action or switch to next action
-        mCurrentAction = mActionQueue.pollFirst();
+        if (mCurrentAction.isFinished()) {
+            doNextAction();
+        } else {
+            mCurrentAction.update();
+        }
         super.update();
     }
 

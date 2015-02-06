@@ -158,12 +158,20 @@ public class Renderable extends Entity {
         mVelocity = velocity;
     }
 
+    public void setVelocity(float x, float y) {
+        mVelocity.set(x, y);
+    }
+
     public Vec2 getAcceleration() {
         return mAcceleration;
     }
 
     public void setAcceleration(Vec2 acceleration) {
         mAcceleration = acceleration;
+    }
+
+    public void setAcceleration(float x, float y) {
+        mAcceleration.set(x, y);
     }
 
     public float getRotation() {
@@ -210,6 +218,16 @@ public class Renderable extends Entity {
 
     public float[] getModelMatrix() {
         return mModelMatrix;
+    }
+
+    public void hide() {
+        setVisibility(false);
+        setInactive();
+    }
+
+    public void unhide() {
+        setVisibility(true);
+        setActive();
     }
 
 

@@ -5,22 +5,21 @@ import net.cloudhacking.androidgame2.engine.Grid;
 import net.cloudhacking.androidgame2.engine.InputManager;
 import net.cloudhacking.androidgame2.engine.Signal;
 import net.cloudhacking.androidgame2.engine.element.Group;
-import net.cloudhacking.androidgame2.engine.element.shape.PixelLines;
 import net.cloudhacking.androidgame2.engine.utils.CellPathAnim;
 
 /**
  * Created by Andrew on 1/31/2015.
  */
-public class UnitController
-        extends Group<ControllableUnit>
+public class GridUnitController
+        extends Group<GridUnit>
         implements Signal.Listener
 {
 
     private Grid mGrid;
     private PilotLevel mLevel;
-    private SelectableUnit mSelected;
+    private GridUnit mSelected;
 
-    public UnitController(PilotLevel level) {
+    public GridUnitController(PilotLevel level) {
         mLevel = level;
         mGrid = level.grid;
         mLevel.add(mGrid.SELECTOR_ICON);
@@ -28,16 +27,15 @@ public class UnitController
 
         mSelected = null;
         mDownSelect = false;
-        mPathAnim = new CellPathAnim(2.0f, new float[] {1,0,0,1});
-        mLastNearest = null;
-        mLevel.add(mPathAnim);
+
+        initPathFinder();
     }
 
-    public void select(ControllableUnit u) {
+    public void select(GridUnit u) {
         if (mSelected != null) mSelected.unSelect();
         mSelected = u;
         mSelected.select();
-
+        mGrid.SELECTOR_ICON.unhide();
     }
 
     public void clearSelection() {
@@ -50,11 +48,19 @@ public class UnitController
     //----------------------------------------------------------------------------------------------
     // Selection Handling
 
+    private void initPathFinder() {
+        mPathFinder = mGrid.getPathFinder();
+        mPathFinderAnim = new CellPathAnim(3.0f, new float[] {1,0,0,1});
+        mPathFinderAnim.hide();
+        mLastNearest = null;
+        mLevel.add(mPathFinderAnim);
+    }
+
     private boolean mDownSelect;
     private Grid.PathFinder mPathFinder;
     private Grid.CellPath mCurrentPath;
     private Grid.Cell mLastNearest;
-    private CellPathAnim mPathAnim;
+    private CellPathAnim mPathFinderAnim;
 
     @Override
     public boolean onSignal(Object o) {
@@ -74,22 +80,23 @@ public class UnitController
             case DOWN:
                 Grid.Cell nearest = mGrid.nearestCell(mLevel.cam2scene(e.getPos()));
 
-                for (ControllableUnit u : mEntities) {
+                for (GridUnit u : mEntities) {
                     if (u.getLocation() == nearest) {
                         select(u);
                         mDownSelect = true;
-                        mPathFinder = mGrid.getPathFinder(u.getLocation());
+                        mPathFinder.setSource(mSelected.getLocation());
 
-                        mLevel.bringToFront(mPathAnim);
-                        mLevel.bringToFront(u);
+                        //mLevel.bringToFront(mPathFinderAnim);
+                        mGrid.SELECTOR_ICON.unhide();
                         mGrid.SELECTOR_ICON.startAnimationAt(nearest.getCenter());
                         mLevel.bringToFront(mGrid.SELECTOR_ICON);
+                        bringToFront(mSelected);
 
                         getScene().getCameraController().setDisabled(true);
                         return true;
                     }
                 }
-                if (mSelected != null) mSelected.unSelect();
+                clearSelection();
                 return false;
 
             case UP:
@@ -104,37 +111,38 @@ public class UnitController
         // if click down hits a unit in this group, an ensuing click up will select it,
         // otherwise a drag will highlight a path from the current location of the unit
         // to the target of the drag.
+        if (!mDownSelect) return false;
+
         switch (e.getType()) {
             case START:
-                if (mDownSelect) {
-                    return true;
-                }
-                break;
+                return true;
 
             case UPDATE:
-                if (!mDownSelect) return false;
-
                 // find nearest cell to drag point and update path as it changes
                 Grid.Cell nearest = mGrid.nearestCell(mLevel.cam2scene(e.getPos()));
                 if (nearest != mLastNearest) {
                     mLastNearest = nearest;
-                    mCurrentPath = mPathFinder.getPathTo(nearest);
-                    if (mCurrentPath != null) {
-                        mPathAnim.setPath(mCurrentPath);
+                    Grid.CellPath test = mPathFinder.getPathTo(nearest);
+                    if (test != null) {
+                        mCurrentPath = test;
+                        mPathFinderAnim.unhide();
+                        mPathFinderAnim.setPath(mCurrentPath);
                     }
                 }
                 return true;
 
             case END:
                 mDownSelect = false;
+                mPathFinder.clear();
+                mPathFinderAnim.hide();
+                mGrid.SELECTOR_ICON.hide();
                 getScene().getCameraController().setDisabled(false);
+
+                mSelected.moveOnPath(mCurrentPath);
                 return true;
 
-            default:
-                break;
-
         }
-        return false;
+        return true;
     }
 
 

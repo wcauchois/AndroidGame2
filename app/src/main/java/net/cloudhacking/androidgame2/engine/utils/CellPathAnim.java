@@ -108,20 +108,20 @@ public class CellPathAnim extends Renderable {
                 // rotate these vertices based
 
                 // bottom-left
-                vertices[idx++] = cenLast.x + rotateX(-ht, 0, dir);
-                vertices[idx++] = cenLast.y + rotateY(-ht, 0, dir);
+                vertices[idx++] = cenLast.x + rotateX(-ht, +ht, dir);
+                vertices[idx++] = cenLast.y + rotateY(-ht, +ht, dir);
 
                 // bottom-right
-                vertices[idx++] = cenLast.x + rotateX(+ht, 0, dir);
-                vertices[idx++] = cenLast.y + rotateY(+ht, 0, dir);
+                vertices[idx++] = cenLast.x + rotateX(+ht, +ht, dir);
+                vertices[idx++] = cenLast.y + rotateY(+ht, +ht, dir);
 
                 // top-left
-                vertices[idx++] = cenCur.x + rotateX(-ht, 0, dir);
-                vertices[idx++] = cenCur.y + rotateY(-ht, 0, dir);
+                vertices[idx++] = cenCur.x + rotateX(-ht, -ht, dir);
+                vertices[idx++] = cenCur.y + rotateY(-ht, -ht, dir);
 
                 // top-right
-                vertices[idx++] = cenCur.x + rotateX(+ht, 0, dir);
-                vertices[idx++] = cenCur.y + rotateY(+ht, 0, dir);
+                vertices[idx++] = cenCur.x + rotateX(+ht, -ht, dir);
+                vertices[idx++] = cenCur.y + rotateY(+ht, -ht, dir);
             }
 
             last = cur;

@@ -30,7 +30,7 @@ public class TestCreepFactory extends SpriteFactory {
         //Image mPathMap;
         private Grid.Cell mStart;
 
-        private class TestCreepAnimation implements Animation {
+        private class TestCreepAnimation extends Animation {
 
             Grid.CellPathSet mCellPath;
 

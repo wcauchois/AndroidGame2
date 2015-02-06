@@ -27,12 +27,12 @@ public class Animated extends Renderable {
      */
 
 
-    public static interface Animation {
-        public void start();
-        public void reset();
-        public void update();
-        public boolean isAnimating();
-        public int getCurrentFrameIndex();
+    abstract public static class Animation {
+        public void start() {}
+        public void reset() {}
+        public void update() {}
+        abstract public boolean isAnimating();
+        abstract public int getCurrentFrameIndex();
     }
 
 
@@ -124,7 +124,7 @@ public class Animated extends Renderable {
     /**
      * Simple implementation of Animation
      */
-    public static class AnimationSequence implements Animation {
+    public static class AnimationSequence extends Animation {
 
         private int[] mAnimationSeq;
         private int mDefaultFrameIndex;

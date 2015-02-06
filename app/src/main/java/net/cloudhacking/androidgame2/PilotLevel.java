@@ -3,25 +3,21 @@ package net.cloudhacking.androidgame2;
 import net.cloudhacking.androidgame2.engine.Grid;
 import net.cloudhacking.androidgame2.engine.InputManager;
 import net.cloudhacking.androidgame2.engine.Level;
-import net.cloudhacking.androidgame2.engine.Signal;
 import net.cloudhacking.androidgame2.engine.element.Animated;
 import net.cloudhacking.androidgame2.engine.element.Image;
 import net.cloudhacking.androidgame2.engine.element.TileMap;
-import net.cloudhacking.androidgame2.engine.element.shape.Circle;
-import net.cloudhacking.androidgame2.engine.element.shape.Line;
 import net.cloudhacking.androidgame2.engine.utils.PointF;
 import net.cloudhacking.androidgame2.engine.utils.TiledImporter;
-import net.cloudhacking.androidgame2.engine.utils.Vec2;
-import net.cloudhacking.androidgame2.unit.ControllableUnit;
-import net.cloudhacking.androidgame2.unit.UnitController;
+import net.cloudhacking.androidgame2.unit.GridUnit;
+import net.cloudhacking.androidgame2.unit.GridUnitController;
 
 /**
  * Created by research on 1/29/15.
  */
 public class PilotLevel extends Level {
 
-    private UnitController mUnitController;
-    private ControllableUnit mMothership, mChar;
+    private GridUnitController mUnitController;
+    private GridUnit mChar;
 
     public PointF cam2scene(PointF camPt) {
         return getScene().getActiveCamera().cameraToScene(camPt);
@@ -34,7 +30,7 @@ public class PilotLevel extends Level {
 
         // import background tile data from json map exported from Tiled
         TiledImporter.TiledObject imported
-                = TiledImporter.loadMaps(Resources.BIG_MAP);
+                = TiledImporter.loadMaps(Resources.JSON_MAP_MICRO);
 
         // create tile maps
         TileMap mTileMapL1 = new TileMap( Assets.MICRO_TILES, imported.getLayers().get(0) );
@@ -63,35 +59,23 @@ public class PilotLevel extends Level {
         grid.mapToState(imported.getCollisionMap(), Grid.CellState.EMPTY, Grid.CellState.OCCUPIED);
 
 
-        mUnitController = new UnitController(this);
+        mUnitController = new GridUnitController(this);
         inputManager.click.connect(mUnitController);
         inputManager.drag.connect(mUnitController);
         add(mUnitController);
 
-        mMothership = new ControllableUnit(Assets.MOTHERSHIP);
-        mMothership.moveToCell( grid.getCell(50,50) );
-        mMothership.setAlpha(0.5f);
-        mMothership.setVelocity(new Vec2(0, 10));
-        mUnitController.add(mMothership);
-
-        mChar = new ControllableUnit(Assets.MINI_CHARS);
+        mChar = new GridUnit(Assets.MINI_CHARS);
         mChar.queueAnimation(new Animated.Animation() {
-            public void start() {}
-            public void reset() {}
-            public void update() {}
-
             @Override
             public boolean isAnimating() {
                 return true;
             }
-
             @Override
             public int getCurrentFrameIndex() {
                 return 102;
             }
-
         }, true, false);
-        mChar.moveToCell( grid.getCell(50,30) );
+        mChar.moveToCell( grid.getCell(10,10) );
         mUnitController.add(mChar);
 
 

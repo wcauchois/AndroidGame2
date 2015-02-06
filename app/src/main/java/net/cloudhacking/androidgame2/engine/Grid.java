@@ -66,11 +66,6 @@ public class Grid extends Entity {
             );
         }
 
-        public void hide() {
-            setVisibility(false);
-            setInactive();
-        }
-
     }
 
 
@@ -625,11 +620,14 @@ public class Grid extends Entity {
 
 
     /**
-     * Class used for active path-finding animation.  It keeps caches the shortest path to each
-     * point as the user drags their finger across the screen so that we can animated the path
+     * Class used for active path-finding.  It caches the shortest paths to points progressively
+     * as the user drags their finger across the screen so that we can animated the path
      * that a unit would potentially take across the map.
      */
 
+    public PathFinder getPathFinder() {
+        return new PathFinder();
+    }
     public PathFinder getPathFinder(Cell source) {
         return new PathFinder(source);
     }
@@ -645,16 +643,30 @@ public class Grid extends Entity {
 
         private SparseArray<CellPath> mPathCache;
 
-        public PathFinder(Cell source) {
-            mSource = source;
-
+        public PathFinder() {
             mFrontier = new PriorityQueue<CellSortable>();
             mVisited = new HashSet<Integer>();
             mCosts = new SparseArray<Float>();
             mHistory = new SparseIntArray();
-
             mPathCache = new SparseArray<CellPath>();
+        }
 
+        public PathFinder(Cell source) {
+            this();
+            setSource(source);
+        }
+
+        public void clear() {
+            mPathCache.clear();
+            mFrontier.clear();
+            mHistory.clear();
+            mCosts.clear();
+            mVisited.clear();
+        }
+
+        public void setSource(Cell source) {
+            clear();
+            mSource = source;
             mFrontier.add(new CellSortable(source.index, 0f));
             mHistory.put(source.index, -1);
             mCosts.put(source.index, 0f);
@@ -666,9 +678,10 @@ public class Grid extends Entity {
         }
 
         public CellPath getPathTo(Cell target) {
+            if (mSource == null || target.isOccupied()) return null;
 
+            // try cache
             CellPath tmp = mPathCache.get(target.index);
-
             if (tmp != null) {
                 return tmp;
             }
@@ -676,16 +689,12 @@ public class Grid extends Entity {
             Cell current;
             float cost;
             while (!mFrontier.isEmpty()) {
-                // get cell with shortest length in priority queue
+                // get cell with shortest length in priority queue,
+                // then build path for this cell and cache the path
                 current = getCell( mFrontier.poll().cellIndex );
 
-                // build path for this cell and cache it
                 tmp = buildCellPath(mHistory, current.index);
                 mPathCache.put(current.index, tmp);
-
-                if (current.equals(target)) {
-                    return tmp;
-                }
 
                 for (Cell n : getCellNeighbors(current)) {
                     if (n==null) continue;
@@ -699,6 +708,11 @@ public class Grid extends Entity {
                         mHistory.put(n.index, current.index);
                         mVisited.add(n.index);
                     }
+                }
+
+                // need to update neighbors before returning path for target
+                if (current.equals(target)) {
+                    return tmp;
                 }
             }
             return null;
