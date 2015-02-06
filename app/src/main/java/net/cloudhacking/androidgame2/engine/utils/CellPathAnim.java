@@ -2,6 +2,7 @@ package net.cloudhacking.androidgame2.engine.utils;
 
 import net.cloudhacking.androidgame2.engine.Grid;
 import net.cloudhacking.androidgame2.engine.element.Renderable;
+import net.cloudhacking.androidgame2.engine.gl.BasicGLScript;
 
 import java.nio.FloatBuffer;
 
@@ -14,7 +15,14 @@ public class CellPathAnim extends Renderable {
 
     private float mThickness;
     private FloatBuffer mVertexBuffer;
+    private int mVertexCount;
     private boolean mNeedBufferUpdate;
+
+    public CellPathAnim(float thickness, float[] color) {
+        this(null, thickness, color);
+        setInactive();
+        setVisibility(false);
+    }
 
     public CellPathAnim(Grid.CellPath path, float thickness, float[] color) {
         super(0,0,0,0);
@@ -24,6 +32,17 @@ public class CellPathAnim extends Renderable {
         mNeedBufferUpdate = true;
     }
 
+    public void setPath(Grid.CellPath path) {
+        setActive();
+        setVisibility(true);
+        mPath = path;
+        mNeedBufferUpdate = true;
+    }
+
+    public void setThickness(float thickness) {
+        mThickness = thickness;
+        mNeedBufferUpdate = true;
+    }
 
     public void setColor(float[] color) {
         setColorM(new float[] {0,0,0,0});
@@ -43,23 +62,6 @@ public class CellPathAnim extends Renderable {
         if (nextX == curX && nextY < curY) return 1;  // up
         if (nextX > curX && nextY == curY) return 2;  // right
                                            return 3;  // down
-    }
-
-    private int getTurn(int lastDir, int nextDir) {
-        // final int STRAIGHT=0, RIGHT=1, BACK=2, LEFT=3;
-        return (-lastDir + nextDir) % 4;
-    }
-
-    private float getFancyY(int turn, float fancy) {
-        switch (turn) {
-            case 1:
-                return +fancy;
-            case 0:
-                return 0;
-            case 3:
-                return -fancy;
-        }
-        return 0;
     }
 
     private float rotateX(float x, float y, int dir) {
@@ -82,88 +84,69 @@ public class CellPathAnim extends Renderable {
         return 0;
     }
 
-    private PointF getCellWallPt(Grid.Cell c, int lastDir) {
-        float hw = c.getWidth()/2, hh = c.getHeight()/2;
-        PointF center = c.getCenter();
-        switch (lastDir) {
-            case 0:
-                return new PointF(center.x + hw, center.y);
-            case 1:
-                return new PointF(center.x, center.y + hh);
-            case 2:
-                return new PointF(center.x - hw, center.y);
-            case 3:
-                return new PointF(center.x, center.y -hh);
-        }
-        return new PointF();
-    }
 
-
-    private void updateVertices() throws Exception {
-
-        final int vertexCount = 2*(mPath.length()+1);
-        float[] vertices = new float[2*vertexCount];
+    private void updateVertices() {
 
         final float ht = mThickness/2;
-        final float fancy = ht*(float)Math.tan(22.5);
+        mVertexCount = 4*(mPath.length()-1);
+        float[] vertices = new float[2*mVertexCount];
 
+        int idx=0;
         int curCellIndex=0;
-        int idx = 0;
-        int lastDir=-1, nextDir, lastTurn, turn=-1;
+        Grid.Cell last = mPath.peek();
+        PointF cenLast, cenCur;
+        int dir;
 
-        Grid.Cell lastCell=null;
-        PointF center;
-        float fancyY;
+        for (Grid.Cell cur : mPath.getLinkedList()) {
 
-        for (Grid.Cell c : mPath.getLinkedList()) {
+            if (curCellIndex>0) {
+                dir = getNextDir(last, cur);
 
-            // on first loop...
-            if (lastCell==null) {
-                lastCell = c;
-                continue;
-            } else {
-                nextDir = getNextDir(lastCell, c);
+                cenLast = last.getCenter();
+                cenCur  = cur.getCenter();
+
+                // rotate these vertices based
+
+                // bottom-left
+                vertices[idx++] = cenLast.x + rotateX(-ht, 0, dir);
+                vertices[idx++] = cenLast.y + rotateY(-ht, 0, dir);
+
+                // bottom-right
+                vertices[idx++] = cenLast.x + rotateX(+ht, 0, dir);
+                vertices[idx++] = cenLast.y + rotateY(+ht, 0, dir);
+
+                // top-left
+                vertices[idx++] = cenCur.x + rotateX(-ht, 0, dir);
+                vertices[idx++] = cenCur.y + rotateY(-ht, 0, dir);
+
+                // top-right
+                vertices[idx++] = cenCur.x + rotateX(+ht, 0, dir);
+                vertices[idx++] = cenCur.y + rotateY(+ht, 0, dir);
             }
 
-            // Do triangle strip vertices in left-right order w.r.t the
-            // direction of the path.
-
-            if (curCellIndex==1) {
-                // populate vertices for first part at center of source cell
-                center = c.getCenter();
-                vertices[idx++] = center.x + rotateX(-ht, 0, nextDir);
-                vertices[idx++] = center.y + rotateY(-ht, 0, nextDir);
-                vertices[idx++] = center.x + rotateX(+ht, 0, nextDir);
-                vertices[idx++] = center.y + rotateY(+ht, 0, nextDir);
-
-                turn = 0;
-
-            } else {
-
-                turn = getTurn(lastDir, nextDir);
-                if (turn == 2) {
-                    throw new Exception("invalid path for animation");
-                }
-
-                // last cell
-                center = getCellWallPt(lastCell, lastDir);
-                fancyY = getFancyY(turn, fancy);
-                vertices[idx++] = center.x + rotateX(-ht, +fancyY, lastDir);
-                vertices[idx++] = center.y + rotateY(-ht, +fancyY, lastDir);
-                vertices[idx++] = center.x + rotateX(+ht, -fancyY, lastDir);
-                vertices[idx++] = center.y + rotateY(+ht, -fancyY, lastDir);
-
-                // TODO: finish this
-
-            }
-
-            lastCell = c;
-            lastDir = nextDir;
-            lastTurn = turn;
+            last = cur;
             curCellIndex++;
         }
 
         mVertexBuffer = BufferUtils.makeFloatBuffer(vertices);
+    }
+
+
+
+    @Override
+    public void update() {
+        if (mNeedBufferUpdate) {
+            updateVertices();
+            mNeedBufferUpdate = false;
+        }
+        super.update();
+    }
+
+
+    @Override
+    public void draw(BasicGLScript gls) {
+        super.draw(gls);
+        gls.drawTriangleStrip(mVertexBuffer, 0, mVertexCount);
     }
 
 

@@ -6,6 +6,7 @@ import net.cloudhacking.androidgame2.engine.InputManager;
 import net.cloudhacking.androidgame2.engine.Signal;
 import net.cloudhacking.androidgame2.engine.element.Group;
 import net.cloudhacking.androidgame2.engine.element.shape.PixelLines;
+import net.cloudhacking.androidgame2.engine.utils.CellPathAnim;
 
 /**
  * Created by Andrew on 1/31/2015.
@@ -27,7 +28,7 @@ public class UnitController
 
         mSelected = null;
         mDownSelect = false;
-        mPathAnim = new PixelLines(new float[] {1,0,0,1});
+        mPathAnim = new CellPathAnim(2.0f, new float[] {1,0,0,1});
         mLastNearest = null;
         mLevel.add(mPathAnim);
     }
@@ -53,7 +54,7 @@ public class UnitController
     private Grid.PathFinder mPathFinder;
     private Grid.CellPath mCurrentPath;
     private Grid.Cell mLastNearest;
-    private PixelLines mPathAnim;
+    private CellPathAnim mPathAnim;
 
     @Override
     public boolean onSignal(Object o) {
@@ -77,10 +78,12 @@ public class UnitController
                     if (u.getLocation() == nearest) {
                         select(u);
                         mDownSelect = true;
-                        mGrid.SELECTOR_ICON.startAnimationAt(nearest.getCenter());
                         mPathFinder = mGrid.getPathFinder(u.getLocation());
-                        mLevel.bringToFront(mGrid.SELECTOR_ICON);
+
                         mLevel.bringToFront(mPathAnim);
+                        mLevel.bringToFront(u);
+                        mGrid.SELECTOR_ICON.startAnimationAt(nearest.getCenter());
+                        mLevel.bringToFront(mGrid.SELECTOR_ICON);
 
                         getScene().getCameraController().setDisabled(true);
                         return true;
@@ -117,7 +120,7 @@ public class UnitController
                     mLastNearest = nearest;
                     mCurrentPath = mPathFinder.getPathTo(nearest);
                     if (mCurrentPath != null) {
-                        mPathAnim.setVertices(mCurrentPath.getPathVertices());
+                        mPathAnim.setPath(mCurrentPath);
                     }
                 }
                 return true;
