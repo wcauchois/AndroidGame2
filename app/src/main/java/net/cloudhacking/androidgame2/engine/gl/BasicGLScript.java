@@ -130,7 +130,7 @@ public class BasicGLScript extends GLScript {
      *
      * @param vertices FloatBuffer containing XY coordinates of vertices and UV coordinates of
      *                 texture vertices.  Each coordinate takes up two positions in the buffer.
-     *                 The XY and UV coordinates alternate such that the XY coordinates start
+     *                 The XY and UV coordinates interleave such that the XY coordinates start
      *                 at the zero-th position and occur every 4 positions, and the UV coordinates
      *                 start at the second position and also occur every 4 positions.
      */

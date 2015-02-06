@@ -6,7 +6,6 @@ import net.cloudhacking.androidgame2.engine.Level;
 import net.cloudhacking.androidgame2.engine.element.Animated;
 import net.cloudhacking.androidgame2.engine.element.Image;
 import net.cloudhacking.androidgame2.engine.element.TileMap;
-import net.cloudhacking.androidgame2.engine.utils.PointF;
 import net.cloudhacking.androidgame2.engine.utils.TiledImporter;
 import net.cloudhacking.androidgame2.unit.GridUnit;
 import net.cloudhacking.androidgame2.unit.GridUnitController;
@@ -16,12 +15,8 @@ import net.cloudhacking.androidgame2.unit.GridUnitController;
  */
 public class PilotLevel extends Level {
 
-    private GridUnitController mUnitController;
+    private GridUnitController mGridUnitController;
     private GridUnit mChar;
-
-    public PointF cam2scene(PointF camPt) {
-        return getScene().getActiveCamera().cameraToScene(camPt);
-    }
 
     @Override
     public void create() {
@@ -51,66 +46,33 @@ public class PilotLevel extends Level {
 
         size = mTileMapL1.getRect();
 
-
         // set up game grid from tile map size; set collision map
         grid = (Grid) add(Grid.createFromTileMap(mTileMapL1));
 
         // map collision map to occupied
         grid.mapToState(imported.getCollisionMap(), Grid.CellState.EMPTY, Grid.CellState.OCCUPIED);
 
+        mGridUnitController = new GridUnitController(this);
+        inputManager.click.connect(mGridUnitController);
+        inputManager.drag.connect(mGridUnitController);
+        add(mGridUnitController);
 
-        mUnitController = new GridUnitController(this);
-        inputManager.click.connect(mUnitController);
-        inputManager.drag.connect(mUnitController);
-        add(mUnitController);
+
+        //------------------------------------------------------------------------------------------
+        // init level things
 
         mChar = new GridUnit(Assets.MINI_CHARS);
         mChar.queueAnimation(new Animated.Animation() {
-            @Override
-            public boolean isAnimating() {
+            @Override public boolean isAnimating() {
                 return true;
             }
-            @Override
-            public int getCurrentFrameIndex() {
-                return 102;
+            @Override public int getCurrentFrameIndex() {
+                return 102; // 103rd sprite frame
             }
         }, true, false);
-        mChar.moveToCell( grid.getCell(10,10) );
-        mUnitController.add(mChar);
-
-
-        /*float[] red = new float[] {1,0,0,1};
-
-        final Circle circle = new Circle(40, 5, red);
-        circle.setVisibility(false);
-        addToFront(circle);
-
-        final Line line = new Line(new PointF(), new PointF(), 5, red);
-        line.setVisibility(false);
-        addToFront(line);
-
-        inputManager.drag.connect(0, new Signal.Listener<InputManager.DragEvent>() {
-            @Override
-            public boolean onSignal(InputManager.DragEvent dragEvent) {
-                switch (dragEvent.getType()) {
-                    case UPDATE:
-                        line.setVisibility(true);
-                        circle.setVisibility(true);
-                        line.setEndPoints(cam2scene(dragEvent.getOrigin()),
-                                          cam2scene(dragEvent.getPos())
-                        );
-                        circle.setPos(cam2scene(dragEvent.getPos()));
-                        break;
-                    case END:
-                        line.setVisibility(false);
-                        circle.setVisibility(false);
-                        break;
-                }
-                return false;
-            }
-        });*/
-
-
+        mChar.setToCell(grid.getCell(10, 10));
+        mGridUnitController.addUnit(mChar);
+        add(mChar);
 
     }
 

@@ -45,7 +45,7 @@ public abstract class Unit extends Animated {
         mLocation = loc;
     }
 
-    public void moveToCell(Grid.Cell loc) {
+    public void setToCell(Grid.Cell loc) {
         mLocation = loc;
         setPos(loc.getCenter());
     }

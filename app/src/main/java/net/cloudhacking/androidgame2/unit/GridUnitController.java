@@ -1,33 +1,48 @@
 package net.cloudhacking.androidgame2.unit;
 
-import net.cloudhacking.androidgame2.PilotLevel;
 import net.cloudhacking.androidgame2.engine.Grid;
 import net.cloudhacking.androidgame2.engine.InputManager;
+import net.cloudhacking.androidgame2.engine.Level;
 import net.cloudhacking.androidgame2.engine.Signal;
-import net.cloudhacking.androidgame2.engine.element.Group;
+import net.cloudhacking.androidgame2.engine.element.Entity;
 import net.cloudhacking.androidgame2.engine.utils.CellPathAnim;
+
+import java.util.LinkedHashSet;
 
 /**
  * Created by Andrew on 1/31/2015.
  */
-public class GridUnitController
-        extends Group<GridUnit>
-        implements Signal.Listener
-{
+public class GridUnitController extends Entity implements Signal.Listener {
 
     private Grid mGrid;
-    private PilotLevel mLevel;
+    private Level mLevel;
     private GridUnit mSelected;
 
-    public GridUnitController(PilotLevel level) {
+    private LinkedHashSet<GridUnit> mUnits;
+
+    public GridUnit addUnit(GridUnit u) {
+        mUnits.add(u);
+        return u;
+    }
+
+    public GridUnit removeUnit(GridUnit u) {
+        mUnits.remove(u);
+        return u;
+    }
+
+    public boolean controls(GridUnit u) {
+        return mUnits.contains(u);
+    }
+
+
+    public GridUnitController(Level level) {
         mLevel = level;
         mGrid = level.grid;
         mLevel.add(mGrid.SELECTOR_ICON);
         mGrid.SELECTOR_ICON.hide();
-
+        mUnits = new LinkedHashSet<GridUnit>();
         mSelected = null;
         mDownSelect = false;
-
         initPathFinder();
     }
 
@@ -80,19 +95,19 @@ public class GridUnitController
             case DOWN:
                 Grid.Cell nearest = mGrid.nearestCell(mLevel.cam2scene(e.getPos()));
 
-                for (GridUnit u : mEntities) {
+                for (GridUnit u : mUnits) {
                     if (u.getLocation() == nearest) {
                         select(u);
                         mDownSelect = true;
                         mPathFinder.setSource(mSelected.getLocation());
 
-                        //mLevel.bringToFront(mPathFinderAnim);
                         mGrid.SELECTOR_ICON.unhide();
                         mGrid.SELECTOR_ICON.startAnimationAt(nearest.getCenter());
+                        //mLevel.bringToFront(mPathFinderAnim);
+                        mLevel.bringToFront(mSelected);
                         mLevel.bringToFront(mGrid.SELECTOR_ICON);
-                        bringToFront(mSelected);
 
-                        getScene().getCameraController().setDisabled(true);
+                        mLevel.getScene().getCameraController().setDisabled(true);
                         return true;
                     }
                 }
@@ -101,7 +116,7 @@ public class GridUnitController
 
             case UP:
                 mDownSelect = false;
-                getScene().getCameraController().setDisabled(false);
+                mLevel.getScene().getCameraController().setDisabled(false);
 
         }
         return false;
@@ -136,7 +151,7 @@ public class GridUnitController
                 mPathFinder.clear();
                 mPathFinderAnim.hide();
                 mGrid.SELECTOR_ICON.hide();
-                getScene().getCameraController().setDisabled(false);
+                mLevel.getScene().getCameraController().setDisabled(false);
 
                 mSelected.moveOnPath(mCurrentPath);
                 return true;
@@ -148,10 +163,9 @@ public class GridUnitController
 
     @Override
     public void update() {
-        for (Unit u : mEntities) {
+        for (Unit u : mUnits) {
             u.setLocation(mGrid.nearestCell(u.getPos()));
         }
-        super.update();
     }
 
 }

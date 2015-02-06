@@ -17,9 +17,6 @@ public class GridUnit extends ControllableUnit {
         forceAction(new GridMove(path));
     }
 
-
-    // temp variables
-    private static final float SPEED = 30 /* pixels per second */ ;
     private static final float TARGET_REACHED_THRESHOLD = 1 /* pixels */ ;
 
     public class GridMove extends Action {
@@ -32,8 +29,8 @@ public class GridUnit extends ControllableUnit {
             mDestinationReached = false;
         }
 
-        private Vec2 getVelocityVecTowards(Grid.Cell next, float speed) {
-            return getPos().vecTowards(next.getCenter()).setNorm(speed);
+        private Vec2 getVelocityVecTowards(Grid.Cell next) {
+            return getPos().vecTowards(next.getCenter()).setNorm(getMoveSpeed());
         }
 
         @Override
@@ -49,7 +46,7 @@ public class GridUnit extends ControllableUnit {
             if (next == null) {
                 mDestinationReached = true;
             } else {
-                setVelocity(getVelocityVecTowards(next, SPEED));
+                setVelocity(getVelocityVecTowards(next));
             }
         }
 
@@ -68,7 +65,7 @@ public class GridUnit extends ControllableUnit {
                 if (next == null) {
                     mDestinationReached = true;
                 } else {
-                    setVelocity(getVelocityVecTowards(next, SPEED));
+                    setVelocity(getVelocityVecTowards(next));
                 }
             }
         }

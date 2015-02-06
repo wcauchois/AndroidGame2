@@ -37,15 +37,8 @@ public class Animated extends Renderable {
 
 
     public static final Animation NULL_ANIMATION = new Animation() {
-        public void start() {}
-        public void reset() {}
-        public void update() {}
-
-        @Override
-        public boolean isAnimating() { return false; }
-
-        @Override
-        public int getCurrentFrameIndex() { return 0; }
+        @Override public boolean isAnimating() { return false; }
+        @Override public int getCurrentFrameIndex() { return 0; }
     };
 
 
@@ -78,6 +71,7 @@ public class Animated extends Renderable {
     public void queueAnimation(Animation animation, boolean loop, boolean force) {
         if (force) {
             mAnimation = animation;
+            mAnimation.start();
         } else {
             mNextAnimation = animation;
         }

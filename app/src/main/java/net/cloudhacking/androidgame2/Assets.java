@@ -1,6 +1,5 @@
 package net.cloudhacking.androidgame2;
 
-import net.cloudhacking.androidgame2.engine.utils.Asset;
 import net.cloudhacking.androidgame2.engine.utils.NinePatchAsset;
 import net.cloudhacking.androidgame2.engine.utils.SpriteAsset;
 
@@ -9,8 +8,7 @@ import net.cloudhacking.androidgame2.engine.utils.SpriteAsset;
  */
 public class Assets {
 
-    public static final Asset TEST_TOWER_SPRITE     = new Asset("tower_animation_test.png");
-
+    public static final SpriteAsset TEST_TOWER      = new SpriteAsset("tower_animation_test.png", 32, 32);
     public static final SpriteAsset MOTHERSHIP      = new SpriteAsset("mothership.png");
     public static final SpriteAsset TEST_TILESET    = new SpriteAsset("simple_tileset.png", 32, 32);
     public static final SpriteAsset SELECTOR_8PX    = new SpriteAsset("cell_selector_8px.png", 12, 12);

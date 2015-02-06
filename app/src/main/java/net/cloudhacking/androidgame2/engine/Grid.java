@@ -81,6 +81,7 @@ public class Grid extends Entity {
         public int ix;
         public int iy;
         public int index;
+        private PointF mCenter;
         private CellState mState;
 
         // from flood map
@@ -91,6 +92,7 @@ public class Grid extends Entity {
             this.ix = ix;
             this.iy = iy;
             this.index = ix + iy * mColumns;
+            mCenter = getRelativeCenter().add(mPos.toVec());
             mState = CellState.EMPTY;
             mReachableNeighbor = null;
             mDistToSource = -1;
@@ -114,7 +116,7 @@ public class Grid extends Entity {
         }
 
         public PointF getCenter() {
-            return getRelativeCenter().add(mPos.toVec());
+            return mCenter.copy();
         }
 
         public float getWidth() {

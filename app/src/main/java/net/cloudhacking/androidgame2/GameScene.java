@@ -29,7 +29,7 @@ public class GameScene extends Scene {
         // TODO: connect all listeners to input manager here
         // TODO: in order to organize hit test order
         inputManager.click.connect(0, ui.root);
-        inputManager.click.connect(1, level.grid.getClickListener());
+        //inputManager.click.connect(1, level.grid.getClickListener());
 
 
         getActiveCamera().setBoundaryRect(level.getSize());
