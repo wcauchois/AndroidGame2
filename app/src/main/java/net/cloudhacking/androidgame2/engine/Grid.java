@@ -11,6 +11,7 @@ import net.cloudhacking.androidgame2.engine.element.TileMap;
 import net.cloudhacking.androidgame2.engine.element.shape.PixelLines;
 import net.cloudhacking.androidgame2.engine.gl.BasicGLScript;
 import net.cloudhacking.androidgame2.engine.utils.BufferUtils;
+import net.cloudhacking.androidgame2.engine.utils.Color;
 import net.cloudhacking.androidgame2.engine.utils.PointF;
 
 import java.nio.FloatBuffer;
@@ -732,7 +733,7 @@ public class Grid extends Entity {
      */
     public static class GridOverlay extends PixelLines {
 
-        public GridOverlay(Grid grid, float[] color) {
+        public GridOverlay(Grid grid, Color color) {
             super(color);
             int cw = grid.getCellWidth(), ch = grid.getCellHeight();
             int cols = grid.getColumns(), rows = grid.getRows();
@@ -782,13 +783,13 @@ public class Grid extends Entity {
         private int mVertexCount;
         private boolean mNeedBufferUpdate;
 
-        public CellPathAnim(float thickness, float[] color) {
+        public CellPathAnim(float thickness, Color color) {
             this(null, thickness, color);
             setInactive();
             setVisibility(false);
         }
 
-        public CellPathAnim(CellPath path, float thickness, float[] color) {
+        public CellPathAnim(CellPath path, float thickness, Color color) {
             super(0,0,0,0);
             mPath = path;
             mThickness = thickness;
@@ -808,9 +809,9 @@ public class Grid extends Entity {
             mNeedBufferUpdate = true;
         }
 
-        public void setColor(float[] color) {
-            setColorM(new float[] {0,0,0,0});
-            setColorA(color);
+        public void setColor(Color c) {
+            setColorM(Color.CLEAR);
+            setColorA(c);
         }
 
 

@@ -3,6 +3,7 @@ package net.cloudhacking.androidgame2.engine.element.shape;
 import net.cloudhacking.androidgame2.engine.element.Renderable;
 import net.cloudhacking.androidgame2.engine.gl.BasicGLScript;
 import net.cloudhacking.androidgame2.engine.utils.BufferUtils;
+import net.cloudhacking.androidgame2.engine.utils.Color;
 
 import java.nio.FloatBuffer;
 
@@ -19,11 +20,11 @@ public class PixelLines extends Renderable {
     private FloatBuffer mVertexBuffer;
     private int mVertexCount;
 
-    public PixelLines(float[] color) {
+    public PixelLines(Color color) {
         this(new float[] {}, color);
     }
 
-    public PixelLines(float[] vertices, float[] color) {
+    public PixelLines(float[] vertices, Color color) {
         super(0, 0, 0, 0);
         setVertices(vertices);
         setColor(color);
@@ -34,9 +35,9 @@ public class PixelLines extends Renderable {
         mVertexBuffer = BufferUtils.makeFloatBuffer(vertices);
     }
 
-    public void setColor(float[] color) {
-        setColorM(new float[]{0, 0, 0, 0});
-        setColorA(color);
+    public void setColor(Color c) {
+        setColorM(Color.CLEAR);
+        setColorA(c);
     }
 
     @Override

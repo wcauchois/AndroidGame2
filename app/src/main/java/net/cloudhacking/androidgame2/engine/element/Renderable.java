@@ -3,6 +3,7 @@ package net.cloudhacking.androidgame2.engine.element;
 import android.graphics.RectF;
 
 import net.cloudhacking.androidgame2.engine.gl.BasicGLScript;
+import net.cloudhacking.androidgame2.engine.utils.Color;
 import net.cloudhacking.androidgame2.engine.utils.GameTime;
 import net.cloudhacking.androidgame2.engine.utils.MatrixUtils;
 import net.cloudhacking.androidgame2.engine.utils.PointF;
@@ -34,8 +35,8 @@ public class Renderable extends Entity {
     private float mRotationSpeed;
     private boolean mRotatable;
 
-    private float[] mColorM;
-    private float[] mColorA;
+    private Color mColorM;
+    private Color mColorA;
 
     private float[] mModelMatrix;
 
@@ -56,8 +57,8 @@ public class Renderable extends Entity {
         mRotationSpeed = 0f;
         mRotatable = false;
 
-        mColorM = new float[] {1, 1, 1, 1};
-        mColorA = new float[] {0, 0, 0, 0};
+        mColorM = Color.WHITE;
+        mColorA = Color.CLEAR;
 
         mModelMatrix = new float[16];
     }
@@ -196,24 +197,24 @@ public class Renderable extends Entity {
         mRotatable = bool;
     }
 
-    public float[] getColorM() {
-        return mColorM.clone();
+    public Color getColorM() {
+        return mColorM;
     }
 
-    public void setColorM(float[] vm) {
-        mColorM = vm.clone();
+    public void setColorM(Color c) {
+        mColorM = c;
     }
 
     public void setAlpha(float a) {
-        mColorM[3] = a;
+        Color.setAlpha(mColorM, a);
     }
 
-    public float[] getColorA() {
-        return mColorA.clone();
+    public Color getColorA() {
+        return mColorA;
     }
 
-    public void setColorA(float[] va) {
-        mColorA = va.clone();
+    public void setColorA(Color c) {
+        mColorA = c;
     }
 
     public float[] getModelMatrix() {
@@ -233,13 +234,13 @@ public class Renderable extends Entity {
 
     @Override
     public void draw(BasicGLScript gls) {
-        updateMotion();
         gls.setLighting(mColorM, mColorA);
         gls.uModel.setValueM4(mModelMatrix);
     }
 
     @Override
     public void update() {
+        updateMotion();
         updateMatrix();
     }
 

@@ -21,7 +21,7 @@ public class JsonMap extends Loggable implements TileMap.Map {
     private int height;
 
     public JsonMap(Resource resource) {
-        loadFromResource(resource.getId());
+        loadFromResource(resource);
     }
 
 
@@ -42,8 +42,8 @@ public class JsonMap extends Loggable implements TileMap.Map {
     }
 
 
-    public void loadFromResource(int resourceId) {
-        String resourceString = ResourceUtils.readTextFileFromRawResource(resourceId);
+    public void loadFromResource(Resource resource) {
+        String resourceString = ResourceUtils.readTextFileFromRawResource(resource);
         try {
             JSONObject object = new JSONObject(resourceString);
             JSONArray tilesArray = object.getJSONArray("tiles");

@@ -8,12 +8,14 @@ import net.cloudhacking.androidgame2.engine.element.TileMap;
 import net.cloudhacking.androidgame2.engine.utils.TiledImporter;
 import net.cloudhacking.androidgame2.unit.GridUnit;
 import net.cloudhacking.androidgame2.unit.GridUnitController;
+import net.cloudhacking.androidgame2.unit.mothership.MothershipController;
 
 /**
  * Created by research on 1/29/15.
  */
 public class PilotLevel extends Level {
 
+    private MothershipController mMothershipController;
     private GridUnitController mGridUnitController;
     private GridUnit mChar;
 
@@ -51,6 +53,11 @@ public class PilotLevel extends Level {
         // map collision map to occupied
         grid.mapToState(imported.getCollisionMap(), Grid.CellState.EMPTY, Grid.CellState.OCCUPIED);
 
+        /*mMothershipController = new MothershipController(this);
+        inputManager.click.connect(mMothershipController);
+        inputManager.drag.connect(mMothershipController);
+        add(mMothershipController);*/
+
         mGridUnitController = new GridUnitController(this);
         inputManager.click.connect(mGridUnitController);
         inputManager.drag.connect(mGridUnitController);
@@ -65,6 +72,8 @@ public class PilotLevel extends Level {
         mChar.setToCell(grid.getCell(10, 10));
         mGridUnitController.addUnit(mChar);
         add(mChar);
+
+        //mMothershipController.setPos(grid.getCell(10, 10));
 
     }
 

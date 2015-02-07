@@ -1,5 +1,7 @@
 package net.cloudhacking.androidgame2.engine.gl;
 
+import net.cloudhacking.androidgame2.engine.utils.Color;
+
 import java.nio.FloatBuffer;
 
 /**
@@ -109,6 +111,11 @@ public class BasicGLScript extends GLScript {
     /**
      * Set lighting uniforms
      */
+    public void setLighting(Color m, Color a) {
+        uColorM.setValue4f(m.r, m.g, m.b, m.a);
+        uColorA.setValue4f(a.r, a.g, a.b, a.a);
+    }
+
     public void setLighting(float[] vm, float[] va) {
         setLighting(vm[0], vm[1], vm[2], vm[3], va[0], va[1], va[2], va[3]);
     }

@@ -76,7 +76,7 @@ public class TiledImporter extends Loggable {
 
 
     public static TiledObject loadMaps(Resource jsonFile) {
-        String jsonString = ResourceUtils.readTextFileFromRawResource(jsonFile.getId());
+        String jsonString = ResourceUtils.readTextFileFromRawResource(jsonFile);
         ArrayList<Map> maps = new ArrayList<Map>();
         int[] collision = null;
 

@@ -5,6 +5,7 @@ import net.cloudhacking.androidgame2.engine.InputManager;
 import net.cloudhacking.androidgame2.engine.Level;
 import net.cloudhacking.androidgame2.engine.Signal;
 import net.cloudhacking.androidgame2.engine.element.Entity;
+import net.cloudhacking.androidgame2.engine.utils.Color;
 import net.cloudhacking.androidgame2.unit.ControllableUnit.ActionType;
 
 import java.util.LinkedHashSet;
@@ -76,7 +77,7 @@ public class GridUnitController extends Entity implements Signal.Listener {
 
 
     //----------------------------------------------------------------------------------------------
-    // Selection Handling
+    // selection and unit movement handling
 
     private boolean mDownSelect;
     private Grid.PathFinder mPathFinder;
@@ -91,11 +92,11 @@ public class GridUnitController extends Entity implements Signal.Listener {
         mPathFinderStarted = false;
         mLastNearest = null;
 
-        mGridOverlay = new Grid.GridOverlay(mGrid, new float[] {1,1,1,0.5f});
+        mGridOverlay = new Grid.GridOverlay(mGrid, new Color(1,1,1,0.5f));
         mLevel.add(mGridOverlay);
         mGridOverlay.hide();
 
-        mPathFinderAnim = new Grid.CellPathAnim(3.0f, new float[] {1,0,0,1});
+        mPathFinderAnim = new Grid.CellPathAnim(3.0f, Color.RED);
         mLevel.add(mPathFinderAnim);
         mPathFinderAnim.hide();
     }

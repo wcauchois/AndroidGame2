@@ -5,6 +5,7 @@ import android.util.FloatMath;
 import net.cloudhacking.androidgame2.engine.element.Renderable;
 import net.cloudhacking.androidgame2.engine.gl.BasicGLScript;
 import net.cloudhacking.androidgame2.engine.utils.BufferUtils;
+import net.cloudhacking.androidgame2.engine.utils.Color;
 import net.cloudhacking.androidgame2.engine.utils.PointF;
 
 import java.nio.FloatBuffer;
@@ -25,19 +26,19 @@ public class Circle extends Renderable {
     private boolean mNeedBufferUpdate;
 
 
-    public Circle(float radius, float thickness, float[] color) {
+    public Circle(float radius, float thickness, Color color) {
         this(new PointF(), radius, thickness, color);
     }
 
-    public Circle(PointF center, float radius, float thickness, float[] color) {
+    public Circle(PointF center, float radius, float thickness, Color c) {
         super(0, 0, 0, 0);
         mCenter = center;
         mRadius = radius;
         mThickness = thickness;
         setPos(mCenter);
-        setColorM(new float[]{0, 0, 0, 0});
-        setColorA(color);
-        mNeedBufferUpdate = true;
+        setColorM(Color.CLEAR);
+        setColorA(c);
+        updateVertices();
     }
 
     public PointF getCenter() {

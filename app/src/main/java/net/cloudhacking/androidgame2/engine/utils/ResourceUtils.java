@@ -14,11 +14,11 @@ import java.io.InputStreamReader;
  */
 public class ResourceUtils extends Loggable {
 
-    public static String readTextFileFromRawResource(final int resourceId) {
+    public static String readTextFileFromRawResource(final Resource resource) {
 
         InputStream is = GameSkeleton.getInstance()
                                      .getResources()
-                                     .openRawResource(resourceId);
+                                     .openRawResource(resource.getId());
         InputStreamReader isr = new InputStreamReader(is);
         BufferedReader bufferedReader = new BufferedReader(isr);
 

@@ -4,6 +4,7 @@ import net.cloudhacking.androidgame2.engine.element.Renderable;
 import net.cloudhacking.androidgame2.engine.gl.BasicGLScript;
 import net.cloudhacking.androidgame2.engine.gl.QuadDrawer;
 import net.cloudhacking.androidgame2.engine.utils.BufferUtils;
+import net.cloudhacking.androidgame2.engine.utils.Color;
 import net.cloudhacking.androidgame2.engine.utils.PointF;
 
 import java.nio.FloatBuffer;
@@ -34,7 +35,7 @@ public class Line extends Renderable {
         sVertexBuffer = BufferUtils.makeFloatBuffer(vertices);
     }
 
-    public Line(PointF start, PointF end, float thickness, float[] color) {
+    public Line(PointF start, PointF end, float thickness, Color color) {
         super(0,0,0,0);
         setPos(start);
         setWidth(1);
@@ -44,9 +45,9 @@ public class Line extends Renderable {
         setColor(color);
     }
 
-    public void setColor(float[] color) {
-        setColorM(new float[] {0,0,0,0});
-        setColorA(color);
+    public void setColor(Color c) {
+        setColorM(Color.CLEAR);
+        setColorA(c);
     }
 
     public void setThickness(float thickness) {
