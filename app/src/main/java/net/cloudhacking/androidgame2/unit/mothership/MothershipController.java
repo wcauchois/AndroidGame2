@@ -50,6 +50,8 @@ public class MothershipController extends Entity implements Signal.Listener {
     //----------------------------------------------------------------------------------------------
     // selection and movement handling
 
+    // TODO: Should probably make some kind of drag and dropper thing
+
     private boolean mDownSelect;
     private Grid.GridOverlay mGridOverlay;
     private Line mDragLine;

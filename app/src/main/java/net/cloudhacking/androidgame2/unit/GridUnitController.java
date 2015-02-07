@@ -154,15 +154,13 @@ public class GridUnitController extends Entity implements Signal.Listener {
                         return true;
                     }
                 }
-                return false;
-
-            case CANCEL:
                 break;
 
             case UP:
                 if (!mDownSelect) clearSelection();
                 mDownSelect = false;
                 mLevel.getScene().getCameraController().setDisabled(false);
+                break;
         }
         return false;
     }
@@ -204,7 +202,7 @@ public class GridUnitController extends Entity implements Signal.Listener {
                 mLevel.bringToFront(mSelectorIcon);
                 return true;
         }
-        return true;
+        return false;
     }
 
 }
