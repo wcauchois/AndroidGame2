@@ -61,7 +61,6 @@ public class CDLevel extends Level {
         inputManager.drag.connect(mController);
         add(mController);
 
-
         //------------------------------------------------------------------------------------------
         // init level things
 

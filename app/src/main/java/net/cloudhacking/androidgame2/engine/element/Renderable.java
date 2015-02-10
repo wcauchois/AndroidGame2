@@ -32,9 +32,10 @@ public class Renderable extends Entity {
     private Vec2 mAcceleration;
 
     private float mRotation;
+    private float mDefaultRotation;
     private float mRotationSpeed;
     private boolean mRotatable;
-    private static final float TWOPI = 2*(float)Math.PI;
+    private static final float TWO_PI = 2*(float)Math.PI;
 
     private Color mColorM;
     private Color mColorA;
@@ -55,6 +56,7 @@ public class Renderable extends Entity {
         mAcceleration = new Vec2();
 
         mRotation = 0f;
+        mDefaultRotation = 0f;
         mRotationSpeed = 0f;
         mRotatable = false;
 
@@ -81,7 +83,7 @@ public class Renderable extends Entity {
     }
 
     public void movePos(float x, float y) {
-        movePos( new Vec2(x, y) );
+        movePos(new Vec2(x, y));
     }
 
     public float getWidth() {
@@ -177,12 +179,16 @@ public class Renderable extends Entity {
     }
 
     public float getRotation() {
-        return mRotation;
+        return mRotation - mDefaultRotation;
     }
 
     public void setRotation(float rotation) {
-        mRotation = rotation % TWOPI;
+        mRotation = rotation + mDefaultRotation;
         mRotatable = true;
+    }
+
+    public void setDefaultRotation(float rotation) {
+        mDefaultRotation = rotation;
     }
 
     public float getRotationSpeed() {
@@ -264,6 +270,7 @@ public class Renderable extends Entity {
         mPos.move(mVelocity.scale(delta));
 
         mRotation += mRotationSpeed * delta;
+        mRotation %= TWO_PI;
     }
 
 

@@ -2,8 +2,6 @@ package net.cloudhacking.androidgame2.unit.mothership;
 
 import net.cloudhacking.androidgame2.CDLevel;
 import net.cloudhacking.androidgame2.engine.Grid;
-import net.cloudhacking.androidgame2.engine.InputManager;
-import net.cloudhacking.androidgame2.engine.Level;
 import net.cloudhacking.androidgame2.engine.element.shape.Circle;
 import net.cloudhacking.androidgame2.engine.element.shape.ColorBlock;
 import net.cloudhacking.androidgame2.engine.element.shape.Line;
