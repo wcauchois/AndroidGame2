@@ -28,8 +28,6 @@ public abstract class UnitController
     }
 
 
-    abstract protected SelectionHandler.SelectionController getControllerFor(Unit unit);
-
     @Override
     public boolean onSignal(Object o) {
         if (o instanceof InputManager.Event) {
@@ -37,6 +35,16 @@ public abstract class UnitController
         }
         return false;
     }
+
+    public SelectionHandler.SelectionController select(Unit u) {
+        if (mSelected != null) mSelected.unSelect();
+        mSelected = u;
+        mSelected.select();
+        return getControllerFor(u);
+    }
+
+    abstract protected SelectionHandler.SelectionController getControllerFor(Unit unit);
+
 
     public Unit addUnit(Unit u) {
         mLevel.add(u);
@@ -48,13 +56,6 @@ public abstract class UnitController
         mLevel.fastRemove(u);
         mUnits.remove(u);
         return u;
-    }
-
-    public SelectionHandler.SelectionController select(Unit u) {
-        if (mSelected != null) mSelected.unSelect();
-        mSelected = u;
-        mSelected.select();
-        return getControllerFor(u);
     }
 
     public Unit getSelected() {

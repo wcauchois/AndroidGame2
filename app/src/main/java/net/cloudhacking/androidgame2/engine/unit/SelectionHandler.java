@@ -54,8 +54,6 @@ public class SelectionHandler extends Loggable {
         switch(e.getType()) {
             case DOWN:
                 for (Unit u : mUnitController.getControlledUnits()) {
-                    d("unit: " + u);
-                    d("selectable: "+u.isSelectable()+", containsPt: "+u.containsPt(scenePt));
                     if (u.isSelectable() && u.containsPt(scenePt)) {
                         mSelectionController = mUnitController.select(u);
                         mDownSelect = true;

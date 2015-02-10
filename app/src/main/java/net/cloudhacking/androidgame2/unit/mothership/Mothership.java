@@ -10,14 +10,9 @@ import net.cloudhacking.androidgame2.unit.ControllableUnit;
  * Created by Andrew on 2/6/2015.
  */
 public class Mothership extends ControllableUnit {
-    private static final float TARGET_REACHED_THRESHOLD = 1 /* pixels */ ;
-
-    private final static float MAX_V = 10.0f;
-    private final static float ACCEL = 1.0f;
-
-    private final static float STOP_DISTANCE
-            = (float)( 0.5f*(-ACCEL) * Math.pow(MAX_V/ACCEL, 2) + Math.pow(MAX_V, 2)/ACCEL );
-
+    private static final float TARGET_REACHED_THRESHOLD = 1.5f /* pixels */ ;
+    private static final float MAX_V = 10.0f;
+    private static final float ROT_SPEED = 1.0f;
 
     private float mClickRadius;
 
@@ -29,6 +24,7 @@ public class Mothership extends ControllableUnit {
         super(Assets.MOTHERSHIP);
         setScale(.3f); // temp
         mClickRadius = 1.414f*getScaledWidth()/2;
+        setMoveSpeed(MAX_V);
     }
 
     @Override
@@ -45,7 +41,8 @@ public class Mothership extends ControllableUnit {
 
     private class Move extends Action {
         private Grid.Cell mTarget;
-        private Vec2 mAccelVec;
+        private float mRotGoal;
+        private float mRotDir;
 
         public Move(Grid.Cell target) {
             super(ActionType.MOVE);
@@ -58,24 +55,30 @@ public class Mothership extends ControllableUnit {
                 mFinished = true;
                 return;
             }
+            Vec2 dir = getPos().vecTowards(mTarget.getCenter());
+            setVelocity(dir.setNorm(getMoveSpeed()));
 
-            mAccelVec = getPos().vecTowards(mTarget.getCenter());
-            setAcceleration(mAccelVec);
+            float twoPI = 2*(float)Math.PI;
+            float rotCur = getRotation();
+            mRotGoal = (dir.angle()+(float)Math.PI/2) % twoPI;
+            mRotDir = (mRotGoal-rotCur) % twoPI > Math.PI ? -1 : 1;
+            d("rot cur: " + rotCur);
+            d("rot goal: " + mRotGoal);
+            d("rot dir: " + mRotDir);
+            setRotationSpeed(mRotDir * ROT_SPEED);
         }
 
         @Override
         public void update() {
-            if (getVelocity().norm() > MAX_V) {
-                setAcceleration(0, 0);
+            if (mRotDir > 0) {
+                if (mRotGoal - getRotation() < 0) setRotationSpeed(0);
+            } else {
+                if (mRotGoal - getRotation() > 2*(float)Math.PI) setRotationSpeed(0);
             }
-
             float d = getPos().distTo(mTarget.getCenter());
-            if (d < STOP_DISTANCE) {
-                setAcceleration(mAccelVec.negate());
-            }
             if (d < TARGET_REACHED_THRESHOLD) {
-                setAcceleration(0, 0);
                 setVelocity(0, 0);
+                setRotationSpeed(0);
                 mFinished = true;
             }
         }

@@ -1,6 +1,5 @@
 package net.cloudhacking.androidgame2.unit.gridUnit;
 
-import net.cloudhacking.androidgame2.ColonyDrop;
 import net.cloudhacking.androidgame2.engine.Grid;
 import net.cloudhacking.androidgame2.engine.element.shape.Circle;
 import net.cloudhacking.androidgame2.engine.utils.Color;
@@ -12,7 +11,7 @@ import net.cloudhacking.androidgame2.unit.ControllableUnit;
  * Created by Andrew on 2/6/2015.
  */
 public class GridUnit extends ControllableUnit {
-    private static final float TARGET_REACHED_THRESHOLD = 1 /* pixels */ ;
+    private static final float TARGET_REACHED_THRESHOLD = 1.5f /* pixels */ ;
 
     private Grid.Cell mLocation;
 

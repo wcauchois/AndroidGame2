@@ -4,6 +4,7 @@ import net.cloudhacking.androidgame2.engine.Grid;
 import net.cloudhacking.androidgame2.engine.InputManager;
 import net.cloudhacking.androidgame2.engine.Level;
 import net.cloudhacking.androidgame2.engine.element.shape.Circle;
+import net.cloudhacking.androidgame2.engine.element.shape.ColorBlock;
 import net.cloudhacking.androidgame2.engine.element.shape.Line;
 import net.cloudhacking.androidgame2.engine.unit.SelectionHandler;
 import net.cloudhacking.androidgame2.engine.utils.Color;
@@ -22,22 +23,22 @@ public class MothershipController extends SelectionHandler.SelectionController<M
 
     private Grid.GridOverlay mGridOverlay;
     private Line mDragLine;
-    private Circle mDragReticle;
+    private ColorBlock mDragReticle;
 
     public MothershipController(Level level) {
         mLevel = level;
         mGrid = level.grid;
         mMothership = new Mothership();
 
-        mSelectionAnim =
-                new Circle(mMothership.getClickRadius(), 2f, Color.WHITE);
+        Color grey = new Color(1,1,1,0.5f);
+        mSelectionAnim = new Circle(mMothership.getClickRadius(), 2f, grey);
         mSelectionAnim.hide();
         mLevel.add(mMothership);
         mLevel.add(mSelectionAnim);
 
-        mDragLine = new Line(new PointF(), new PointF(), 1, Color.RED);
-        mDragReticle = new Circle(8, 1, Color.BLUE);
-        mGridOverlay = new Grid.GridOverlay(mGrid, new Color(1,1,1,0.5f));
+        mDragLine = new Line(new PointF(), new PointF(), 1, grey);
+        mDragReticle = new ColorBlock(8, 8, grey);
+        mGridOverlay = new Grid.GridOverlay(mGrid, grey);
         mDragLine.hide();
         mDragReticle.hide();
         mGridOverlay.hide();
@@ -62,12 +63,17 @@ public class MothershipController extends SelectionHandler.SelectionController<M
         mGridOverlay.show();
         mLevel.bringToFront(mDragLine);
         mLevel.bringToFront(mDragReticle);
+
+        PointF cellPt = mGrid.nearestCell(scenePt).getCenter();
+        mDragReticle.setPos(cellPt);
+        mDragLine.setEndPoints(mMothership.getPos(), cellPt);
     }
 
     @Override
     protected void onUpdateDrag(Mothership unused, PointF scenePt) {
-        mDragReticle.setPos(scenePt);
-        mDragLine.setEndPoints(mMothership.getPos(), scenePt);
+        PointF cellPt = mGrid.nearestCell(scenePt).getCenter();
+        mDragReticle.setPos(cellPt);
+        mDragLine.setEndPoints(mMothership.getPos(), cellPt);
     }
 
     @Override

@@ -35,16 +35,21 @@ public class Group<E extends Entity> extends Entity {
 
     @Override
     public void update() {
-        // add items queued for action during update
-        for (E e : mAddQueue) add(e);
-        for (E e : mBTFQueue) bringToFront(e);
-        for (E e : mRemQueue) fastRemove(e);
 
         for (Entity e : mEntities) {
             if (e != null && e.exists() && e.isActive()) {
                 e.update();
             }
         }
+
+        // add items queued for action during update
+        for (E e : mAddQueue) {
+            add(e);
+            e.update();
+        }
+        for (E e : mBTFQueue) bringToFront(e);
+        for (E e : mRemQueue) fastRemove(e);
+
         mAddQueue.clear();
         mBTFQueue.clear();
         mRemQueue.clear();

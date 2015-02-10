@@ -34,6 +34,7 @@ public class Renderable extends Entity {
     private float mRotation;
     private float mRotationSpeed;
     private boolean mRotatable;
+    private static final float TWOPI = 2*(float)Math.PI;
 
     private Color mColorM;
     private Color mColorA;
@@ -180,7 +181,7 @@ public class Renderable extends Entity {
     }
 
     public void setRotation(float rotation) {
-        mRotation = rotation;
+        mRotation = rotation % TWOPI;
         mRotatable = true;
     }
 
