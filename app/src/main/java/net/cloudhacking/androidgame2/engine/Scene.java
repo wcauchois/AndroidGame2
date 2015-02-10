@@ -1,34 +1,23 @@
 package net.cloudhacking.androidgame2.engine;
 
-import android.graphics.Rect;
-
 import net.cloudhacking.androidgame2.engine.element.Entity;
 import net.cloudhacking.androidgame2.engine.element.Group;
-import net.cloudhacking.androidgame2.engine.gl.Camera;
-import net.cloudhacking.androidgame2.engine.utils.PointF;
+import net.cloudhacking.androidgame2.engine.gl.BasicGLScript;
+import net.cloudhacking.androidgame2.engine.ui.UI;
 
 /**
  * Created by Andrew on 1/15/2015.
  */
 public abstract class Scene extends Group<Entity> {
 
-    /**
-     * This class represents the most encompassing group of in-game entities and other groups. Its
-     * draw() and update() methods will be called directly from the main game thread.
-     */
-
     abstract public Scene create();
     abstract public void destroy();
 
-
-    protected InputManager inputManager;
-    protected CameraController cameraController;
-
+    public Level level;
+    public UI ui;
     private boolean mCreated;
 
     public Scene() {
-        inputManager = GameSkeleton.getInstance().getInputManager();
-        cameraController = GameSkeleton.getInstance().getCameraController();
         mCreated = false;
     }
 
@@ -43,34 +32,14 @@ public abstract class Scene extends Group<Entity> {
     }
 
 
-    /**
-     * Some convenience functions
-     */
-
-    public InputManager getInputManager() {
-        return inputManager;
+    public void update() {
+        level.update();
+        ui.update();
     }
 
-    public CameraController getCameraController() {
-        return cameraController;
+    public void draw(BasicGLScript gls) {
+        level.draw(gls);
+        ui.draw(gls);
     }
-
-    public Camera getActiveCamera() {
-        return cameraController.getActiveCamera();
-    }
-
-    public PointF activeCameraToScene(PointF cameraTouch) {
-        return getActiveCamera().cameraToScene(cameraTouch);
-    }
-
-    public Camera getUICamera() {
-        return cameraController.getUICamera();
-    }
-
-    public Rect getViewport() {
-        return GameSkeleton.getInstance().getViewport();
-    }
-
-
 
 }

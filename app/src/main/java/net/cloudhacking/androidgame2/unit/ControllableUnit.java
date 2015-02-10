@@ -7,7 +7,7 @@ import java.util.LinkedList;
 /**
  * Created by research on 1/30/15.
  */
-public class ControllableUnit extends SelectableUnit {
+public class ControllableUnit extends CDUnit {
 
     // can add more to this
     public static enum ActionType {

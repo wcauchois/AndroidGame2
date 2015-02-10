@@ -1,4 +1,4 @@
-package net.cloudhacking.androidgame2.unit;
+package net.cloudhacking.androidgame2.engine.unit;
 
 import net.cloudhacking.androidgame2.engine.Grid;
 import net.cloudhacking.androidgame2.engine.element.Animated;
@@ -11,14 +11,9 @@ import java.util.LinkedHashSet;
  */
 public abstract class Unit extends Animated {
 
-    private static final float DEFAULT_HP = 1.0f;
-    private static final float DEFAULT_MOVESPEED = 50;
-
     private boolean mAlive;
-    private Grid.Cell mLocation;
-
-    private float mHP;
-    private float mMoveSpeed;
+    private boolean mSelected;
+    private boolean mSelectable;
 
     private LinkedHashSet<Unit> mTargetedBy;
     private Unit mTarget;
@@ -26,64 +21,52 @@ public abstract class Unit extends Animated {
     public Unit(SpriteAsset asset) {
         super(asset);
         mAlive = true;
-        mLocation = null;
-        mHP = DEFAULT_HP;
-        mMoveSpeed = DEFAULT_MOVESPEED;
+        mSelected = false;
+        mSelectable = true;
         mTargetedBy = new LinkedHashSet<Unit>();
         mTarget = null;
     }
+
+    protected void onDeath() {}
+
+    protected void onRevival() {}
+
+    protected void onSelect() {}
 
     public boolean isAlive() {
         return mAlive;
     }
 
-    public Grid.Cell getLocation() {
-        return mLocation;
-    }
-
-    public void setLocation(Grid.Cell loc) {
-        mLocation = loc;
-    }
-
-    public void setToCell(Grid.Cell loc) {
-        mLocation = loc;
-        setPos(loc.getCenter());
-    }
-
     public void kill() {
         mAlive = false;
+        onDeath();
     }
 
     public void revive() {
         mAlive = true;
+        onRevival();
     }
 
-    public float getHP() {
-        return mHP;
+    public void setSelectable(boolean bool) {
+        mSelectable = bool;
+        if (!bool) unSelect();
     }
 
-    public void setHP(float hp) {
-        mHP = hp;
+    public boolean isSelectable() {
+        return mSelectable;
     }
 
-    public void doDamage(float dmg) {
-        mHP = Math.max(mHP-dmg, 0);
-        if (mHP <= 0) {
-            kill();
-            onDeath();
-        }
+    public void select() {
+        mSelected = true;
+        onSelect();
     }
 
-    public void onDeath() {
-
+    public void unSelect() {
+        mSelected = false;
     }
 
-    public float getMoveSpeed() {
-        return mMoveSpeed;
-    }
-
-    public void setMoveSpeed(float speed) {
-        mMoveSpeed = speed;
+    public boolean isSelected() {
+        return mSelected;
     }
 
     public LinkedHashSet<Unit> getTargetedBy() {
@@ -105,6 +88,12 @@ public abstract class Unit extends Animated {
             mTarget.getTargetedBy().remove(this);
             mTarget = null;
         }
+    }
+
+    public void setHoverColor(boolean bool) {
+        // triggered on click-down, set to false on click-up/cancel
+        // when unit is "hovered" on by a touch event, set highlight around unit or
+        // something.
     }
 
 }

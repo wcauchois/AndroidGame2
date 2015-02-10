@@ -134,7 +134,7 @@ public class Grid extends Entity {
         public boolean onSignal(InputManager.ClickEvent e) {
             switch(e.getType()) {
                 case UP:
-                    mSelected = nearestCell(getScene().activeCameraToScene(e.getPos()));
+                    mSelected = nearestCell(GameSkeleton.activeCameraToScene(e.getPos()));
 
                     if (mSelected == null) {
                         return false;
@@ -715,8 +715,7 @@ public class Grid extends Entity {
 
         public void startAnimationAt(PointF target) {
             setPos(target);
-            setActive();
-            setVisibility(true);
+            show();
             queueAnimation(
                     new AnimationSequence(new int[] {1, 0}, 1, BLINK_FREQ),
                     true, true

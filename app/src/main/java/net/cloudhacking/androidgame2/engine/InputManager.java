@@ -6,6 +6,7 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 
+import net.cloudhacking.androidgame2.engine.gl.Camera;
 import net.cloudhacking.androidgame2.engine.utils.Loggable;
 import net.cloudhacking.androidgame2.engine.utils.PointF;
 import net.cloudhacking.androidgame2.engine.utils.Vec2;
@@ -38,16 +39,15 @@ public class InputManager
         }
     }
 
-
     private ScaleGestureDetector mScaleDetector;
     private GestureDetector mGestureDetector;
 
     private List<Event> mQueuedEvents = new ArrayList<Event>();
 
-    // TODO: have UIclick and SCENEclick, check UIclick first, then convert
-    // TODO: coords and check SCENEclick.
-    //public Signal<ClickEvent> clickScene = new Signal<ClickEvent>();
-    //public Signal<ClickEvent> clickUI = new Signal<ClickEvent>();
+    // for click and drag; dispatch to UI first then dispatch
+    //                     converted coordinate.
+    public Signal<ClickEvent> clickUI = new Signal<ClickEvent>();
+    public Signal<DragEvent> dragUI = new Signal<DragEvent>();
     public Signal<ClickEvent> click = new Signal<ClickEvent>();
     public Signal<DragEvent> drag = new Signal<DragEvent>();
     public Signal<ScaleEvent> scale = new Signal<ScaleEvent>();
@@ -111,7 +111,7 @@ public class InputManager
     }
 
     public abstract class PositionedEvent extends Event {
-        private PointF mPos;
+        protected PointF mPos;
 
         public PointF getPos() {
             return mPos;
@@ -137,9 +137,9 @@ public class InputManager
 
         @Override
         public void doDispatch() {
-            // TODO: dispatch to UI, then scene
-            //if (clickUI.dispatch(this) { return; }
-            //clickScene.dispatch(this_with_converted_coord);
+            if (clickUI.dispatch(this)) return;
+
+            mPos = GameSkeleton.getActiveCamera().cameraToScene(mPos);
             click.dispatch(this);
         }
     }
@@ -171,6 +171,9 @@ public class InputManager
 
         @Override
         public void doDispatch() {
+            if (dragUI.dispatch(this)) return;
+
+            mPos = GameSkeleton.getActiveCamera().cameraToScene(mPos);
             drag.dispatch(this);
         }
     }

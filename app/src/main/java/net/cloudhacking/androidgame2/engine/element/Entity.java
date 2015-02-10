@@ -17,7 +17,7 @@ public class Entity extends Loggable {
     private boolean mActive;
     private boolean mExists;
 
-    private Group mParent;
+    private Group<Entity> mParent;
 
     public Entity () {
         mVisible  = true;

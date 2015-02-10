@@ -21,25 +21,33 @@ public class Group<E extends Entity> extends Entity {
                                        // update, then it will need to queue the add using
                                        // queueAdd(E e) in order to prevent a concurrent
                                        // modification exception.
+    protected ArrayList<E> mBTFQueue;       // bring-to-front queue
+    protected ArrayList<E> mRemQueue;       // remove-queue
 
     public Group() {
         mEntities = new ArrayList<E>();
-        mAddQueue = new ArrayList<E>();
         length = 0;
+
+        mAddQueue = new ArrayList<E>();
+        mBTFQueue = new ArrayList<E>();
+        mRemQueue = new ArrayList<E>();
     }
 
     @Override
     public void update() {
+        // add items queued for action during update
+        for (E e : mAddQueue) add(e);
+        for (E e : mBTFQueue) bringToFront(e);
+        for (E e : mRemQueue) fastRemove(e);
+
         for (Entity e : mEntities) {
             if (e != null && e.exists() && e.isActive()) {
                 e.update();
             }
         }
-
-        // add items queued for add during update
-        for (E e : mAddQueue) add(e);
-
         mAddQueue.clear();
+        mBTFQueue.clear();
+        mRemQueue.clear();
     }
 
     @Override
@@ -126,6 +134,11 @@ public class Group<E extends Entity> extends Entity {
         }
     }
 
+    public E queueRemove(E e) {
+        mRemQueue.add(e);
+        return e;
+    }
+
 
     public void clear() {
         E e;
@@ -142,7 +155,7 @@ public class Group<E extends Entity> extends Entity {
     }
 
 
-    public Entity bringToFront(E e) {
+    public E bringToFront(E e) {
         if (mEntities.contains(e)) {
             mEntities.remove(e);
             mEntities.add(e);
@@ -152,7 +165,12 @@ public class Group<E extends Entity> extends Entity {
         }
     }
 
-    public Entity sentToBack(E e) {
+    public E queueBringToFront(E e) {
+        mBTFQueue.add(e);
+        return e;
+    }
+
+    public E sentToBack(E e) {
         if (mEntities.contains(e)) {
             mEntities.remove(e);
             mEntities.add(0, e);

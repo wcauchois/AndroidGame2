@@ -14,6 +14,7 @@ import net.cloudhacking.androidgame2.engine.gl.TextRenderer;
 import net.cloudhacking.androidgame2.engine.utils.AssetCache;
 import net.cloudhacking.androidgame2.engine.utils.GameTime;
 import net.cloudhacking.androidgame2.engine.utils.LoggableActivity;
+import net.cloudhacking.androidgame2.engine.utils.PointF;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -38,44 +39,55 @@ public abstract class GameSkeleton
 
     private Bundle mSavedInstanceState;
     private GLSurfaceView mView;
-    private float mScreenDensity;
-    private Rect mViewport;
-    private BasicGLScript mBasicGLScript;
-    private Scene mScene;
-    private InputManager mInputManager;
-    private CameraController mCameraController;
+    protected float mScreenDensity;
+    protected Rect mViewport;
+    protected BasicGLScript mBasicGLScript;
+    protected Scene mScene;
+    protected InputManager mInputManager;
+    protected CameraController mCameraController;
 
 
     public static GameSkeleton getInstance() {
         return sInstance;
     }
 
-    public BasicGLScript getGLScript() {
-        return mBasicGLScript;
-    }
-
-    public Rect getViewport() {
-        return mViewport;
-    }
-
-    public float getScreenDensity() {
-        return mScreenDensity;
-    }
-
-    public Scene getScene() {
-        return mScene;
-    }
-
     public void setScene(Scene scene) {
         mScene = scene;
     }
 
-    public InputManager getInputManager() {
-        return mInputManager;
+
+    // convenient access...
+
+    public static BasicGLScript getGLScript() {
+        return sInstance.mBasicGLScript;
     }
 
-    public CameraController getCameraController() {
-        return mCameraController;
+    public static Rect getViewport() {
+        return sInstance.mViewport;
+    }
+
+    public static float getScreenDensity() {
+        return sInstance.mScreenDensity;
+    }
+
+    public static Scene getScene() {
+        return sInstance.mScene;
+    }
+
+    public static InputManager getInputManager() {
+        return sInstance.mInputManager;
+    }
+
+    public static CameraController getCameraController() {
+        return sInstance.mCameraController;
+    }
+
+    public static Camera getActiveCamera() {
+        return getCameraController().getActiveCamera();
+    }
+
+    public static PointF activeCameraToScene(PointF point) {
+        return getActiveCamera().cameraToScene(point);
     }
 
     abstract public Scene onInitGame(Bundle savedInstanceState);

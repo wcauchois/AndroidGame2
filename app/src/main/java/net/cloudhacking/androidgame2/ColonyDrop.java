@@ -9,7 +9,7 @@ import net.cloudhacking.androidgame2.engine.GameSkeleton;
 /**
  * Created by Andrew on 1/17/2015.
  */
-public class TDGame extends GameSkeleton {
+public class ColonyDrop extends GameSkeleton {
 
     // TODO: create config/preferences system
     private static final float SCROLL_SPEED = 1.1f;

@@ -231,6 +231,11 @@ public class Renderable extends Entity {
         setActive();
     }
 
+    public boolean containsPt(PointF p) {
+        float x=mPos.x, y = mPos.y, w=getScaledWidth(), h=getScaledHeight();
+        return p.x >= x && p.x <= x+w && p.y >= y && p.y <= y+h;
+    }
+
 
     @Override
     public void draw(BasicGLScript gls) {

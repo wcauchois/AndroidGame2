@@ -3,6 +3,7 @@ package net.cloudhacking.androidgame2.engine.element;
 import net.cloudhacking.androidgame2.engine.gl.BasicGLScript;
 import net.cloudhacking.androidgame2.engine.utils.AssetCache;
 import net.cloudhacking.androidgame2.engine.utils.GameTime;
+import net.cloudhacking.androidgame2.engine.utils.PointF;
 import net.cloudhacking.androidgame2.engine.utils.SpriteAsset;
 
 /**
@@ -86,6 +87,12 @@ public class Animated extends Renderable {
 
     public Sprite getSprite() {
         return mSprite;
+    }
+
+    @Override
+    public boolean containsPt(PointF p) {
+        float x=getPos().x, y=getPos().y, hw=getScaledWidth()/2, hh=getScaledHeight()/2;
+        return p.x > x-hw && p.x < x+hw && p.y > y-hh && p.y < y+hh;
     }
 
 

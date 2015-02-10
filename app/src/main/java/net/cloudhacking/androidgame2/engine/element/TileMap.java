@@ -152,7 +152,7 @@ public class TileMap extends PreRenderable {
     public PreRenderedTexture preRender() {
 
         FrameBufferObject fbo = new FrameBufferObject();
-        BasicGLScript gls = GameSkeleton.getInstance().getGLScript();
+        BasicGLScript gls = GameSkeleton.getGLScript();
 
         int w = (int)getWidth();
         int h = (int)getHeight();

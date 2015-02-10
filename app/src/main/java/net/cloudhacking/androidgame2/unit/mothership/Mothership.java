@@ -31,6 +31,7 @@ public class Mothership extends ControllableUnit {
         mClickRadius = 1.414f*getScaledWidth()/2;
     }
 
+    @Override
     public boolean containsPt(PointF touch) {
         return (getPos().distTo(touch) < mClickRadius);
     }

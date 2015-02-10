@@ -1,10 +1,12 @@
-package net.cloudhacking.androidgame2.unit;
+package net.cloudhacking.androidgame2.unit.gridUnit;
 
+import net.cloudhacking.androidgame2.ColonyDrop;
 import net.cloudhacking.androidgame2.engine.Grid;
 import net.cloudhacking.androidgame2.engine.element.shape.Circle;
 import net.cloudhacking.androidgame2.engine.utils.Color;
 import net.cloudhacking.androidgame2.engine.utils.SpriteAsset;
 import net.cloudhacking.androidgame2.engine.utils.Vec2;
+import net.cloudhacking.androidgame2.unit.ControllableUnit;
 
 /**
  * Created by Andrew on 2/6/2015.
@@ -12,12 +14,28 @@ import net.cloudhacking.androidgame2.engine.utils.Vec2;
 public class GridUnit extends ControllableUnit {
     private static final float TARGET_REACHED_THRESHOLD = 1 /* pixels */ ;
 
+    private Grid.Cell mLocation;
+
     public GridUnit(SpriteAsset asset) {
         super(asset);
+        mLocation = null;
     }
 
     public void moveOnPath(Grid.CellPath path) {
         forceAction(new GridMove(path));
+    }
+
+    public Grid.Cell getLocation() {
+        return mLocation;
+    }
+
+    public void setLocation(Grid.Cell loc) {
+        mLocation = loc;
+    }
+
+    public void setToCell(Grid.Cell loc) {
+        mLocation = loc;
+        setPos(loc.getCenter());
     }
 
 
@@ -59,6 +77,8 @@ public class GridUnit extends ControllableUnit {
                 mDestinationAnim.setPos(mPath.getDestination().getCenter());
                 mDestinationAnim.show();
             }
+
+            GridUnit.this.setSelectable(false);
         }
 
         @Override
@@ -67,6 +87,7 @@ public class GridUnit extends ControllableUnit {
                 setVelocity(0, 0);
                 mFinished = true;
                 mDestinationAnim.hide();
+                GridUnit.this.setSelectable(true);
                 return;
             }
 
@@ -92,6 +113,7 @@ public class GridUnit extends ControllableUnit {
         @Override
         public void onInterrupt() {
             getParent().remove(mDestinationAnim);
+            GridUnit.this.setSelectable(true);
         }
 
     }
