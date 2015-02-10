@@ -13,19 +13,14 @@ import net.cloudhacking.androidgame2.engine.gl.Camera;
 public abstract class Level extends Group<Entity> {
 
     private Camera mCamera;
-    public Grid grid;
-    protected RectF size;
 
     public Level() {
         mCamera = GameSkeleton.getActiveCamera();
     }
 
-
     abstract public void create();
 
-    public RectF getSize() {
-        return size;
-    }
+    abstract public RectF getSize();
 
 
     @Override

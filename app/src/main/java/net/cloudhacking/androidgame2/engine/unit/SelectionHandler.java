@@ -12,6 +12,8 @@ import net.cloudhacking.androidgame2.engine.utils.PointF;
  */
 public class SelectionHandler extends Loggable {
 
+    // TODO: when touch reaches edge of screen while dragging, pan camera in that direction.
+
     public static class SelectionController<U extends Unit> extends Entity {
         protected void onClickDown(U selected, PointF scenePt) {}
         protected void onClickCancel(U selected, PointF scenePt) {}

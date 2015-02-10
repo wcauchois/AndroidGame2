@@ -1,5 +1,6 @@
 package net.cloudhacking.androidgame2.unit.mothership;
 
+import net.cloudhacking.androidgame2.CDLevel;
 import net.cloudhacking.androidgame2.engine.Grid;
 import net.cloudhacking.androidgame2.engine.InputManager;
 import net.cloudhacking.androidgame2.engine.Level;
@@ -15,7 +16,7 @@ import net.cloudhacking.androidgame2.engine.utils.PointF;
  */
 public class MothershipController extends SelectionHandler.SelectionController<Mothership> {
 
-    private Level mLevel;
+    private CDLevel mLevel;
     private Grid mGrid;
 
     private Mothership mMothership;
@@ -25,9 +26,9 @@ public class MothershipController extends SelectionHandler.SelectionController<M
     private Line mDragLine;
     private ColorBlock mDragReticle;
 
-    public MothershipController(Level level) {
+    public MothershipController(CDLevel level) {
         mLevel = level;
-        mGrid = level.grid;
+        mGrid = level.getGrid();
         mMothership = new Mothership();
 
         Color grey = new Color(1,1,1,0.5f);

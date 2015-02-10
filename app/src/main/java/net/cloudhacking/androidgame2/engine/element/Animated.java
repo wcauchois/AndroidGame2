@@ -34,19 +34,12 @@ public class Animated extends Renderable {
         public void update() {}
         abstract public boolean isAnimating();
         abstract public int getCurrentFrameIndex();
+
+        public static final Animation NULL = new Animation() {
+            @Override public boolean isAnimating() { return false; }
+            @Override public int getCurrentFrameIndex() { return 0; }
+        };
     }
-
-
-    public static final Animation NULL_ANIMATION = new Animation() {
-        @Override
-        public boolean isAnimating() {
-            return false;
-        }
-        @Override
-        public int getCurrentFrameIndex() {
-            return 0;
-        }
-    };
 
 
     // queues animation that constantly returns the same frame number
@@ -82,7 +75,7 @@ public class Animated extends Renderable {
         setWidth(mSprite.getWidth());
         setHeight(mSprite.getHeight());
 
-        mAnimation = NULL_ANIMATION;
+        mAnimation = Animation.NULL;
     }
 
     public Sprite getSprite() {
@@ -100,6 +93,7 @@ public class Animated extends Renderable {
         if (force) {
             mAnimation = animation;
             mAnimation.start();
+            mNextAnimation = null;
         } else {
             mNextAnimation = animation;
         }
@@ -127,7 +121,7 @@ public class Animated extends Renderable {
             mAnimation.start();
 
         } else {
-            mAnimation = NULL_ANIMATION;
+            mAnimation = Animation.NULL;
         }
 
         super.update();

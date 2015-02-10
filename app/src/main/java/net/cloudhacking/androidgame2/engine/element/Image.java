@@ -159,14 +159,13 @@ public class Image extends Renderable implements WidgetBackground {
         gls.drawQuad(mVertexBuffer);
     }
 
-
-    public boolean overlapsPoint(PointF p) {
+    @Override
+    public boolean containsPt(PointF p) {
         // This test assumes a square bounding box where the position point
         // is at its center, which is the case with this class.
         PointF c=getPos();
         float hsw = getScaledWidth()/2, hsh = getScaledHeight()/2;
 
-        return p.x >= c.x-hsw && p.x <= c.x+hsw &&
-               p.y >= c.y-hsh && p.y <= c.y+hsh;
+        return p.x > c.x-hsw && p.x < c.x+hsw && p.y > c.y-hsh && p.y < c.y+hsh;
     }
 }

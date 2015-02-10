@@ -84,6 +84,7 @@ public class GridUnit extends ControllableUnit {
         public void update() {
             if (mDestinationReached) {
                 setVelocity(0, 0);
+                setPos(getLocation().getCenter()); // fix for: sometimes units end up offset by 1px
                 mFinished = true;
                 mDestinationAnim.hide();
                 GridUnit.this.setSelectable(true);

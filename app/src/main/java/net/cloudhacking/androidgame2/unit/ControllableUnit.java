@@ -111,9 +111,8 @@ public class ControllableUnit extends CDUnit {
     public void update() {
         if (mCurrentAction.isFinished()) {
             doNextAction();
-        } else {
-            mCurrentAction.update();
         }
+        mCurrentAction.update();
         super.update();
     }
 

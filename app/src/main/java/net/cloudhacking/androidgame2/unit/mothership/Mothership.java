@@ -22,7 +22,7 @@ public class Mothership extends ControllableUnit {
 
     public Mothership() {
         super(Assets.MOTHERSHIP);
-        setScale(.3f); // temp
+        //setScale(.3f); // temp
         mClickRadius = 1.414f*getScaledWidth()/2;
         setMoveSpeed(MAX_V);
     }

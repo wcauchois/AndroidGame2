@@ -1,5 +1,7 @@
 package net.cloudhacking.androidgame2;
 
+import android.graphics.RectF;
+
 import net.cloudhacking.androidgame2.engine.Grid;
 import net.cloudhacking.androidgame2.engine.InputManager;
 import net.cloudhacking.androidgame2.engine.Level;
@@ -12,7 +14,10 @@ import net.cloudhacking.androidgame2.unit.gridUnit.GridUnit;
 /**
  * Created by research on 1/29/15.
  */
-public class PilotLevel extends Level {
+public class CDLevel extends Level {
+
+    private Grid mGrid;
+    private RectF mSize;
 
     private CDUnitController mController;
     private GridUnit mChar;
@@ -24,7 +29,7 @@ public class PilotLevel extends Level {
 
         // import background tile data from json map exported from Tiled
         TiledImporter.TiledObject imported
-                = TiledImporter.loadMaps(Resources.JSON_MAP_MICRO);
+                = TiledImporter.loadMaps(Resources.BIG_MAP);
 
         // create tile maps
         TileMap mTileMapL1 = new TileMap( Assets.MICRO_TILES, imported.getLayers().get(0) );
@@ -43,13 +48,13 @@ public class PilotLevel extends Level {
         tileMapTerrain.setInactive();
         add(tileMapTerrain);
 
-        size = mTileMapL1.getRect();
+        mSize = mTileMapL1.getRect();
 
         // set up game grid from tile map size; set collision map
-        grid = (Grid) add(Grid.createFromTileMap(mTileMapL1));
+        mGrid = (Grid) add(Grid.createFromTileMap(mTileMapL1));
 
         // map collision map to occupied
-        grid.mapToState(imported.getCollisionMap(), Grid.CellState.EMPTY, Grid.CellState.OCCUPIED);
+        mGrid.mapToState(imported.getCollisionMap(), Grid.CellState.EMPTY, Grid.CellState.OCCUPIED);
 
         mController = new CDUnitController(this);
         inputManager.click.connect(mController);
@@ -62,11 +67,20 @@ public class PilotLevel extends Level {
 
         mChar = new GridUnit(Assets.MINI_CHARS);
         mChar.setPermanentSpriteFrame(102);
-        mChar.setToCell(grid.getCell(10, 10));
+        mChar.setToCell(mGrid.getCell(50, 50));
         mController.addUnit(mChar);
 
-        mController.getMothershipController().setPos(grid.getCell(10, 10));
+        mController.getMothershipController().setPos(mGrid.getCell(50, 50));
 
+    }
+
+    public Grid getGrid() {
+        return mGrid;
+    }
+
+    @Override
+    public RectF getSize() {
+        return mSize;
     }
 
 }

@@ -14,6 +14,7 @@ public abstract class Unit extends Animated {
     private boolean mAlive;
     private boolean mSelected;
     private boolean mSelectable;
+    private boolean mTargetable;
 
     private LinkedHashSet<Unit> mTargetedBy;
     private Unit mTarget;
@@ -23,6 +24,7 @@ public abstract class Unit extends Animated {
         mAlive = true;
         mSelected = false;
         mSelectable = true;
+        mTargetable = true;
         mTargetedBy = new LinkedHashSet<Unit>();
         mTarget = null;
     }
@@ -69,6 +71,19 @@ public abstract class Unit extends Animated {
         return mSelected;
     }
 
+    public void setTargetable(boolean bool) {
+        mTargetable = bool;
+        if (!bool) {
+            for (Unit other : mTargetedBy) {
+                other.clearTarget();
+            }
+        }
+    }
+
+    public boolean isTargetable() {
+        return mTargetable;
+    }
+
     public LinkedHashSet<Unit> getTargetedBy() {
         return mTargetedBy;
     }
@@ -79,6 +94,7 @@ public abstract class Unit extends Animated {
 
     public void target(Unit other) {
         clearTarget();
+        if (!other.isTargetable()) return;
         other.getTargetedBy().add(this);
         mTarget = other;
     }

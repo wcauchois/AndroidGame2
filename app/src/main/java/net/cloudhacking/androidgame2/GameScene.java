@@ -16,7 +16,7 @@ public class GameScene extends Scene {
         ColonyDrop.getInputManager().clickUI.connect(ui.root);
 
         // init level
-        level = new PilotLevel();
+        level = new CDLevel();
         level.create();
 
         ColonyDrop.getActiveCamera().setBoundaryRect(level.getSize());
@@ -24,8 +24,6 @@ public class GameScene extends Scene {
     }
 
     @Override
-    public void destroy() {
-
-    }
+    public void destroy() {}
 
 }

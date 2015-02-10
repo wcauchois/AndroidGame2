@@ -1,6 +1,6 @@
 package net.cloudhacking.androidgame2.unit;
 
-import net.cloudhacking.androidgame2.engine.Level;
+import net.cloudhacking.androidgame2.CDLevel;
 import net.cloudhacking.androidgame2.engine.unit.SelectionHandler;
 import net.cloudhacking.androidgame2.engine.unit.Unit;
 import net.cloudhacking.androidgame2.engine.unit.UnitController;
@@ -17,7 +17,7 @@ public class CDUnitController extends UnitController {
     private MothershipController mMothershipController;
     private GridUnitController mGridUnitController;
 
-    public CDUnitController(Level level) {
+    public CDUnitController(CDLevel level) {
         super(level);
         mMothershipController = new MothershipController(level);
         add(mMothershipController);
@@ -35,7 +35,6 @@ public class CDUnitController extends UnitController {
         if (unit instanceof GridUnit) {
             return mGridUnitController;
         }
-
         return null;
     }
 

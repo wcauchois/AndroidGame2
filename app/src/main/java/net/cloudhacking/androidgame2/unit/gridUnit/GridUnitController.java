@@ -1,7 +1,7 @@
 package net.cloudhacking.androidgame2.unit.gridUnit;
 
+import net.cloudhacking.androidgame2.CDLevel;
 import net.cloudhacking.androidgame2.engine.Grid;
-import net.cloudhacking.androidgame2.engine.Level;
 import net.cloudhacking.androidgame2.engine.unit.SelectionHandler;
 import net.cloudhacking.androidgame2.engine.utils.Color;
 import net.cloudhacking.androidgame2.engine.utils.PointF;
@@ -12,7 +12,7 @@ import net.cloudhacking.androidgame2.engine.utils.PointF;
 public class GridUnitController extends SelectionHandler.SelectionController<GridUnit> {
 
     private Grid mGrid;
-    private Level mLevel;
+    private CDLevel mLevel;
     private GridUnit mLastSelected;
 
     private Grid.SelectorIcon mSelectorIcon;
@@ -23,9 +23,9 @@ public class GridUnitController extends SelectionHandler.SelectionController<Gri
     private Grid.GridOverlay mGridOverlay;
 
 
-    public GridUnitController(Level level) {
+    public GridUnitController(CDLevel level) {
         mLevel = level;
-        mGrid = level.grid;
+        mGrid = level.getGrid();
         mPathFinder = mGrid.getPathFinder();
         mLastSelected = null;
         mLastNearest = null;
