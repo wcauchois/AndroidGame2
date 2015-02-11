@@ -2,9 +2,9 @@ package net.cloudhacking.androidgame2.engine.ui;
 
 import android.graphics.RectF;
 
-import net.cloudhacking.androidgame2.engine.InputManager;
 import net.cloudhacking.androidgame2.engine.gl.BasicGLScript;
 import net.cloudhacking.androidgame2.engine.element.Group;
+import net.cloudhacking.androidgame2.engine.ui.UITouchHandler.WidgetController;
 import net.cloudhacking.androidgame2.engine.utils.PointF;
 
 /**
@@ -13,11 +13,12 @@ import net.cloudhacking.androidgame2.engine.utils.PointF;
 public abstract class Widget extends Group<Widget> {
 
     protected RectF mBounds;
+    private boolean mTouchable;
+    // TODO: private boolean mDraggable;
+    private WidgetController mController;
     private WidgetBackground mBackground;
     private boolean mFitToBG;
     private boolean mNeedUpdate;
-
-    private boolean mTouchable;
 
 
     public Widget(RectF bounds, WidgetBackground bg) {
@@ -25,7 +26,8 @@ public abstract class Widget extends Group<Widget> {
         mBackground = bg;
         mFitToBG = false;
         mNeedUpdate = true;
-        mTouchable = true;
+        mTouchable = false;
+        mController = null;
     }
 
     public Widget(float x, float y, WidgetBackground bg) {
@@ -34,11 +36,10 @@ public abstract class Widget extends Group<Widget> {
         mBackground = bg;
         mFitToBG = true;
         mNeedUpdate = true;
-        mTouchable = true;
+        mTouchable = false;
+        mController = null;
     }
 
-
-    protected void onClick() {}
 
     public void setBounds(RectF bounds) {
         mBounds = bounds;
@@ -82,14 +83,27 @@ public abstract class Widget extends Group<Widget> {
         return mBounds.contains(p.x, p.y);
     }
 
-    public boolean handleClick(InputManager.ClickEvent e) {
-        if ( this.containsPt(e.getPos()) ) {
-            onClick();
-            for (Widget w : mEntities) if (w.handleClick(e)) return true;
-            return true;
+
+    //----------------------------------------------------------------------------------------------
+
+    public Widget getWidgetOnTouch(PointF touch) {
+        for (Widget w : mEntities) {
+            if (w.isTouchable() && w.containsPt(touch)) {
+                return w.getWidgetOnTouch(touch);
+            }
         }
-        return false;
+        return this;
     }
+
+    public void setController(WidgetController controller) {
+        mController = controller;
+    }
+
+    // called from UITouchHandler when this widget is selected
+    public WidgetController getController() {
+        return mController;
+    }
+
 
     @Override
     public void update() {

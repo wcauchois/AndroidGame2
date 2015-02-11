@@ -2,10 +2,6 @@ package net.cloudhacking.androidgame2.engine.ui;
 
 import android.graphics.RectF;
 
-import net.cloudhacking.androidgame2.engine.InputManager;
-import net.cloudhacking.androidgame2.engine.utils.PointF;
-import net.cloudhacking.androidgame2.engine.Signal;
-
 /**
  * Created by wcauchois on 1/21/15.
  */
@@ -16,6 +12,8 @@ public class RootWidget extends Widget {
 
     public RootWidget(int width, int height) {
         super( new RectF(0, 0, width, height), null );
+        mRootWidth = width;
+        mRootHeight = height;
     }
 
     public void setRootSize(int sw, int sh) {

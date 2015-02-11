@@ -10,13 +10,13 @@ import net.cloudhacking.androidgame2.engine.utils.PointF;
  */
 public class UITouchHandler extends Loggable {
 
-    public static class WidgetController<W extends Widget> extends Entity {
-        protected void onClickDown(W selected, PointF scenePt) {}
-        protected void onClickCancel(W selected, PointF scenePt) {}
-        protected void onClickUp(W selected, PointF scenePt) {}
-        protected void onStartDrag(W selected, PointF scenePt) {}
-        protected void onUpdateDrag(W selected, PointF scenePt) {}
-        protected void onEndDrag(W selected, PointF scenePt) {}
+    public static class WidgetController extends Entity {
+        protected void onClickDown(PointF touchPt) {}
+        protected void onClickCancel(PointF touchPt) {}
+        protected void onClickUp(PointF touchPt) {}
+        protected void onStartDrag(PointF touchPt) {}
+        protected void onUpdateDrag(PointF touchPt) {}
+        protected void onEndDrag(PointF touchPt) {}
     }
 
     private UI mUI;
@@ -34,7 +34,7 @@ public class UITouchHandler extends Loggable {
 
     private boolean mDownSelect;
     private boolean mDragSelectionStarted;
-    private WidgetController<Widget> mWidgetController;
+    private WidgetController mWidgetController;
 
     public boolean processEvent(InputManager.Event e) {
         if (e instanceof InputManager.ClickEvent) {
@@ -46,54 +46,51 @@ public class UITouchHandler extends Loggable {
     }
 
     public boolean handleClickEvent(InputManager.ClickEvent e) {
-        PointF scenePt = e.getPos();
+        PointF touchPt = e.getPos();
         switch(e.getType()) {
             case DOWN:
-                for (Widget w : mUI.getRoot().getEntities()) {
-                    if (w.isTouchable() && w.containsPt(scenePt)) {
-                        mWidgetController = mRoot.select(u);
-                        mDownSelect = true;
-                        mWidgetController.onClickDown(mUnitController.getSelected(), scenePt);
-                        return true;
-                    }
-                }
+                mWidgetController = mUI.selectWidgetOnTouch(touchPt);
+                if (mWidgetController == null) return false;
+                mDownSelect = true;
+                mWidgetController.onClickDown(touchPt);
                 break;
 
             case CANCEL:
-                mWidgetController.onClickCancel(mUnitController.getSelected(), scenePt);
+                if (!mDownSelect) return false;
+                mWidgetController.onClickCancel(touchPt);
                 break;
 
             case UP:
                 if (!mDownSelect) {
-                    mUnitController.clearSelection();
+                    mUI.clearSelection();
                     return false;
                 }
                 mDownSelect = false;
-                mWidgetController.onClickUp(mUnitController.getSelected(), scenePt);
+                mWidgetController.onClickUp(touchPt);
                 break;
         }
-        return false;
+        return true;
     }
 
     public boolean handleDragEvent(InputManager.DragEvent e) {
         if (!mDownSelect) {
             return false;
         }
-        PointF scenePt = e.getPos();
+        PointF touchPt = e.getPos();
         switch (e.getType()) {
             case START:
                 mDragSelectionStarted = true;
-                mWidgetController.onStartDrag(mUnitController.getSelected(), scenePt);
+                mWidgetController.onStartDrag(touchPt);
                 break;
 
             case UPDATE:
                 if (!mDragSelectionStarted) return false;
-                mWidgetController.onUpdateDrag(mUnitController.getSelected(), scenePt);
+                mWidgetController.onUpdateDrag(touchPt);
                 break;
 
             case END:
                 if (!mDragSelectionStarted) return false;
-                mWidgetController.onEndDrag(mUnitController.getSelected(), scenePt);
+                mWidgetController.onEndDrag(touchPt);
                 mDownSelect = false;
                 break;
         }

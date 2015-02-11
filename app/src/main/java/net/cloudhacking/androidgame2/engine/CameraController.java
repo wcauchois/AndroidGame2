@@ -91,6 +91,9 @@ public class CameraController extends Loggable implements Signal.Listener {
 
 
     public void update() {
-        if (!mDisabled) mActiveCamera.update();
+        if (!mDisabled) {
+
+            mActiveCamera.update();
+        }
     }
 }

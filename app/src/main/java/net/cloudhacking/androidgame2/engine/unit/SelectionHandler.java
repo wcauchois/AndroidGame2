@@ -67,6 +67,7 @@ public class SelectionHandler extends Loggable {
                 break;
 
             case CANCEL:
+                if (!mDownSelect) return false;
                 mSelectionController.onClickCancel(mUnitController.getSelected(), scenePt);
                 break;
 

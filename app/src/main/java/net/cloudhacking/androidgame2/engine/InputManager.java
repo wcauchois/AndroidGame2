@@ -48,8 +48,10 @@ public class InputManager
     //                     converted coordinate.
     public Signal<ClickEvent> clickUI = new Signal<ClickEvent>();
     public Signal<DragEvent> dragUI = new Signal<DragEvent>();
+
     public Signal<ClickEvent> click = new Signal<ClickEvent>();
     public Signal<DragEvent> drag = new Signal<DragEvent>();
+    // TODO: public Signal<FlingEvent> fling = new Signal<FlingEvent>();
     public Signal<ScaleEvent> scale = new Signal<ScaleEvent>();
 
     public InputManager(Context context) {
@@ -76,8 +78,8 @@ public class InputManager
     public void processEvents() {
         synchronized (mQueuedEvents) {
             for (Event e : mQueuedEvents) {
-                e.doDispatch();
                 if (LOG) logEvent(e);
+                e.doDispatch();
             }
             mQueuedEvents.clear();
         }
@@ -138,7 +140,6 @@ public class InputManager
         @Override
         public void doDispatch() {
             if (clickUI.dispatch(this)) return;
-
             mPos = GameSkeleton.getActiveCamera().cameraToScene(mPos);
             click.dispatch(this);
         }
@@ -172,7 +173,6 @@ public class InputManager
         @Override
         public void doDispatch() {
             if (dragUI.dispatch(this)) return;
-
             mPos = GameSkeleton.getActiveCamera().cameraToScene(mPos);
             drag.dispatch(this);
         }

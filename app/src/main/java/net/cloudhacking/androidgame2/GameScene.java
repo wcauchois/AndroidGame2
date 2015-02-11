@@ -18,6 +18,7 @@ public class GameScene extends Scene {
         setUI( new GameUI(viewport.width(), viewport.height()) );
         getUI().create();
         ColonyDrop.getInputManager().clickUI.connect( getUI() );
+        ColonyDrop.getInputManager().dragUI.connect( getUI() );
 
         // init level
         setLevel( new CDLevel() );
