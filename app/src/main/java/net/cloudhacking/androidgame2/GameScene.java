@@ -3,6 +3,7 @@ package net.cloudhacking.androidgame2;
 import android.graphics.Rect;
 
 import net.cloudhacking.androidgame2.engine.Scene;
+import net.cloudhacking.androidgame2.ui.GameUI;
 
 /**
  * Created by Andrew on 1/28/2015.

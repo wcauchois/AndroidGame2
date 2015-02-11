@@ -9,16 +9,21 @@ import net.cloudhacking.androidgame2.engine.element.Group;
 /**
  * Created by Andrew on 1/26/2015.
  */
-public class UI extends Group<RootWidget> implements Signal.Listener {
+public abstract class UI extends Group<RootWidget> implements Signal.Listener {
 
     public Signal<Widget> widgetSelector = new Signal<Widget>();
 
+    abstract public UITouchHandler.WidgetController getControllerFor(Widget w);
+
+
     private UICamera mCamera;
     private RootWidget mRoot;
+    private UITouchHandler mHandler;
 
     public UI(int rootWidth, int rootHeight) {
         mCamera = GameSkeleton.getCameraController().getUICamera();
         mRoot = add( new RootWidget(rootWidth, rootHeight) );
+        mHandler = new UITouchHandler(mRoot);
     }
 
     public RootWidget getRoot() {
@@ -30,8 +35,8 @@ public class UI extends Group<RootWidget> implements Signal.Listener {
 
     @Override
     public boolean onSignal(Object o) {
-        if (o instanceof InputManager.ClickEvent) {
-            return mRoot.processEvent((InputManager.ClickEvent) o);
+        if (o instanceof InputManager.Event) {
+            return mHandler.processEvent((InputManager.Event) o);
         }
         return false;
     }

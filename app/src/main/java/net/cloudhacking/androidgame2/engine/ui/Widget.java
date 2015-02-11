@@ -17,12 +17,15 @@ public abstract class Widget extends Group<Widget> {
     private boolean mFitToBG;
     private boolean mNeedUpdate;
 
+    private boolean mTouchable;
+
 
     public Widget(RectF bounds, WidgetBackground bg) {
         mBounds = bounds;
         mBackground = bg;
         mFitToBG = false;
         mNeedUpdate = true;
+        mTouchable = true;
     }
 
     public Widget(float x, float y, WidgetBackground bg) {
@@ -31,6 +34,7 @@ public abstract class Widget extends Group<Widget> {
         mBackground = bg;
         mFitToBG = true;
         mNeedUpdate = true;
+        mTouchable = true;
     }
 
 
@@ -63,6 +67,14 @@ public abstract class Widget extends Group<Widget> {
     public void setBackgroundImage(WidgetBackground bg) {
         mBackground = bg;
         mNeedUpdate = true;
+    }
+
+    public void setTouchable(boolean bool) {
+        mTouchable = bool;
+    }
+
+    public boolean isTouchable() {
+        return mTouchable;
     }
 
 
