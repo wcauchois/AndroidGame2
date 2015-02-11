@@ -15,9 +15,8 @@ public class FPSCounter extends Widget {
 
     private static TextRenderer.TextProps mProps = new TextRenderer.TextProps();
 
-    public FPSCounter(BindLocation loc) {
-        super(new Image(TextRenderer.getInstance().getTexture("FPS: 00", mProps)),
-                loc, ScaleType.FIXED);
+    public FPSCounter(float x, float y) {
+        super(x, y, new Image(TextRenderer.getInstance().getTexture("FPS: 00", mProps)) );
         mStart = System.nanoTime();
         mFrames = 0;
     }

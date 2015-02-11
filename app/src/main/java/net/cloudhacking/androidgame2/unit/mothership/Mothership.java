@@ -2,7 +2,6 @@ package net.cloudhacking.androidgame2.unit.mothership;
 
 import net.cloudhacking.androidgame2.Assets;
 import net.cloudhacking.androidgame2.engine.Grid;
-import net.cloudhacking.androidgame2.engine.element.Renderable;
 import net.cloudhacking.androidgame2.engine.utils.PointF;
 import net.cloudhacking.androidgame2.engine.utils.Vec2;
 import net.cloudhacking.androidgame2.unit.CDUnit;
@@ -68,7 +67,6 @@ public class Mothership extends ControllableUnit {
                 mFinished = true;
             }
         }
-
     }
 
 

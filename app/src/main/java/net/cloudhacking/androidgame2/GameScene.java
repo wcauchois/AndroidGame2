@@ -1,5 +1,7 @@
 package net.cloudhacking.androidgame2;
 
+import android.graphics.Rect;
+
 import net.cloudhacking.androidgame2.engine.Scene;
 
 /**
@@ -9,17 +11,18 @@ public class GameScene extends Scene {
 
     @Override
     public Scene create() {
+        Rect viewport = ColonyDrop.getViewport();
 
         // init UI
-        ui = new GameUI();
-        ui.create();
-        ColonyDrop.getInputManager().clickUI.connect(ui.root);
+        setUI( new GameUI(viewport.width(), viewport.height()) );
+        getUI().create();
+        ColonyDrop.getInputManager().clickUI.connect( getUI() );
 
         // init level
-        level = new CDLevel();
-        level.create();
+        setLevel( new CDLevel() );
+        getLevel().create();
+        ColonyDrop.getActiveCamera().setBoundaryRect( getLevel().getSize() );
 
-        ColonyDrop.getActiveCamera().setBoundaryRect(level.getSize());
         return this;
     }
 

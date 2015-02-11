@@ -13,7 +13,7 @@ public class UICamera extends Camera {
 
     public void onSurfaceChange(int width, int height) {
         focusOn( (float)width/2, (float)height/2 );
-        Widget.setRootSize(width, height);
+        // TODO: should implement some way to probably check ui size after surface change
         super.update();
     }
 

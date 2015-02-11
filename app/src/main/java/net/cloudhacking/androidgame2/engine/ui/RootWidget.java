@@ -9,33 +9,39 @@ import net.cloudhacking.androidgame2.engine.Signal;
 /**
  * Created by wcauchois on 1/21/15.
  */
-public class RootWidget extends Widget implements Signal.Listener<InputManager.ClickEvent> {
+public class RootWidget extends Widget {
 
-    public RootWidget() {
-        // set rect to be 100% width and 100% height
-        super(new RectF(0, 0, Widget.getRootWidth(), Widget.getRootHeight()));
+    private int mRootWidth;
+    private int mRootHeight;
+
+    public void setRootSize(int sw, int sh) {
+        mRootWidth = sw;
+        mRootHeight = sh;
+        setBounds( new RectF(0, 0, sw, sh) );
     }
 
-    @Override
-    public boolean onSignal(InputManager.ClickEvent event) {
+    public int getRootWidth() {
+        return mRootWidth;
+    }
+
+    public int getRootHeight() {
+        return mRootHeight;
+    }
+
+
+    public RootWidget(int width, int height) {
+        super( new RectF(0, 0, width, height), null );
+    }
+
+    public boolean processEvent(InputManager.ClickEvent event) {
         switch(event.getType()) {
             case UP:
-                PointF pt = event.getPos();
-                PointF relPt = new PointF(pt.x / Widget.getRootWidth(),
-                                          pt.y / Widget.getRootHeight()
-                );
-
                 for (Widget w : mEntities) {
-                    if (w instanceof TouchWidget) {
-                        if (((TouchWidget) w).handleClick(relPt, new RectF(0, 0, 1, 1))) {
-                            return true;
-                        }
-                    }
+                    if (w.handleClick(event)) return true;
                 }
-
-            default:
-                return false;
+                break;
         }
+        return false;
     }
 
 }

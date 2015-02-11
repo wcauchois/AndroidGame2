@@ -1,6 +1,5 @@
 package net.cloudhacking.androidgame2.engine.unit;
 
-import net.cloudhacking.androidgame2.engine.Grid;
 import net.cloudhacking.androidgame2.engine.element.Animated;
 import net.cloudhacking.androidgame2.engine.utils.SpriteAsset;
 

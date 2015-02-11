@@ -29,12 +29,8 @@ public class CDUnitController extends UnitController {
 
     @Override
     protected SelectionHandler.SelectionController getControllerFor(Unit unit) {
-        if (unit instanceof Mothership) {
-            return mMothershipController;
-        }
-        if (unit instanceof GridUnit) {
-            return mGridUnitController;
-        }
+        if (unit instanceof Mothership) return mMothershipController;
+        if (unit instanceof GridUnit)   return mGridUnitController;
         return null;
     }
 

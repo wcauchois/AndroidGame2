@@ -13,8 +13,26 @@ public abstract class Scene extends Group<Entity> {
     abstract public Scene create();
     abstract public void destroy();
 
-    public Level level;
-    public UI ui;
+    private Level mLevel;
+    private UI mUI;
+
+    public void setLevel(Level level) {
+        mLevel = level;
+    }
+
+    public Level getLevel() {
+        return mLevel;
+    }
+
+    public void setUI(UI ui) {
+        mUI = ui;
+    }
+
+    public UI getUI() {
+        return mUI;
+    }
+
+
     private boolean mCreated;
 
     public Scene() {
@@ -33,13 +51,13 @@ public abstract class Scene extends Group<Entity> {
 
 
     public void update() {
-        level.update();
-        ui.update();
+        mLevel.update();
+        mUI.update();
     }
 
     public void draw(BasicGLScript gls) {
-        level.draw(gls);
-        ui.draw(gls);
+        mLevel.draw(gls);
+        mUI.draw(gls);
     }
 
 }

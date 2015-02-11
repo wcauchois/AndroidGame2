@@ -11,13 +11,9 @@ public class ControllableUnit extends CDUnit {
 
     // can add more to this
     public static enum ActionType {
-        MOVE,
-        ATTACK,
-        DEFEND,
-        STOP,
-        NULL
+        MOVE, BUILD, ATTACK, DEFEND, STOP, NULL
     }
-
+    
 
     /**
      * Use this class to move, target, queue animations, etc
@@ -97,6 +93,7 @@ public class ControllableUnit extends CDUnit {
         mCurrentAction.interrupt();
         mCurrentAction = action;
         mCurrentAction.start();
+        mActionQueue.clear();
     }
 
     private void doNextAction() {
