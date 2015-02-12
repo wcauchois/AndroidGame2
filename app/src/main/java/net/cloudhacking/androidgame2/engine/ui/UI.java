@@ -5,15 +5,14 @@ import net.cloudhacking.androidgame2.engine.Signal;
 import net.cloudhacking.androidgame2.engine.gl.BasicGLScript;
 import net.cloudhacking.androidgame2.engine.GameSkeleton;
 import net.cloudhacking.androidgame2.engine.element.Group;
+import net.cloudhacking.androidgame2.engine.ui.widget.RootWidget;
+import net.cloudhacking.androidgame2.engine.ui.widget.Widget;
 import net.cloudhacking.androidgame2.engine.utils.PointF;
 
 /**
  * Created by Andrew on 1/26/2015.
  */
 public abstract class UI extends Group<RootWidget> implements Signal.Listener {
-
-    public Signal<Widget> widgetSelector = new Signal<Widget>();
-
 
     private UICamera mCamera;
     private RootWidget mRoot;

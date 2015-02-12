@@ -3,7 +3,7 @@ package net.cloudhacking.androidgame2.engine.utils;
 import net.cloudhacking.androidgame2.engine.element.Image;
 import net.cloudhacking.androidgame2.engine.gl.TextRenderer;
 import net.cloudhacking.androidgame2.engine.gl.Texture;
-import net.cloudhacking.androidgame2.engine.ui.Widget;
+import net.cloudhacking.androidgame2.engine.ui.widget.Widget;
 
 /**
  * Created by Andrew on 1/26/2015.

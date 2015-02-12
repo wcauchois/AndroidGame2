@@ -5,7 +5,7 @@ import android.util.FloatMath;
 import net.cloudhacking.androidgame2.engine.element.Renderable;
 import net.cloudhacking.androidgame2.engine.gl.BasicGLScript;
 import net.cloudhacking.androidgame2.engine.utils.BufferUtils;
-import net.cloudhacking.androidgame2.engine.utils.Color;
+import net.cloudhacking.androidgame2.engine.gl.GLColor;
 import net.cloudhacking.androidgame2.engine.utils.PointF;
 
 import java.nio.FloatBuffer;
@@ -43,18 +43,18 @@ public class FilledCircle extends Renderable {
 
     private float mRadius;
 
-    public FilledCircle(float radius, Color color) {
+    public FilledCircle(float radius, GLColor color) {
         this(new PointF(), radius, color);
     }
 
-    public FilledCircle(PointF center, float radius, Color c) {
+    public FilledCircle(PointF center, float radius, GLColor c) {
         super(0,0,0,0);
         setPos(center);
         mRadius = radius;
         setScale(mRadius);
-        setWidth(2);
-        setHeight(2);
-        setColorM(Color.CLEAR);
+        setActualWidth(2);
+        setActualHeight(2);
+        setColorM(GLColor.CLEAR);
         setColorA(c);
     }
 

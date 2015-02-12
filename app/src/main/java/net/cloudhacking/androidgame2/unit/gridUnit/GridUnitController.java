@@ -3,7 +3,7 @@ package net.cloudhacking.androidgame2.unit.gridUnit;
 import net.cloudhacking.androidgame2.CDLevel;
 import net.cloudhacking.androidgame2.engine.Grid;
 import net.cloudhacking.androidgame2.engine.unit.SelectionHandler;
-import net.cloudhacking.androidgame2.engine.utils.Color;
+import net.cloudhacking.androidgame2.engine.gl.GLColor;
 import net.cloudhacking.androidgame2.engine.utils.PointF;
 
 /**
@@ -31,8 +31,8 @@ public class GridUnitController extends SelectionHandler.SelectionController<Gri
         mLastNearest = null;
 
         mSelectorIcon = new Grid.SelectorIcon();
-        mGridOverlay = new Grid.GridOverlay(mGrid, new Color(1,1,1,0.5f));
-        mPathFinderAnim = new Grid.CellPathAnim(3.0f, Color.RED);
+        mGridOverlay = new Grid.GridOverlay(mGrid, new GLColor(1,1,1,0.5f));
+        mPathFinderAnim = new Grid.CellPathAnim(3.0f, GLColor.RED);
         mLevel.add(mSelectorIcon);
         mLevel.add(mPathFinderAnim);
         mLevel.add(mGridOverlay);

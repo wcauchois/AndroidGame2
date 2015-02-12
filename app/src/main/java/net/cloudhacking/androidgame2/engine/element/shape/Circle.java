@@ -5,7 +5,7 @@ import android.util.FloatMath;
 import net.cloudhacking.androidgame2.engine.element.Renderable;
 import net.cloudhacking.androidgame2.engine.gl.BasicGLScript;
 import net.cloudhacking.androidgame2.engine.utils.BufferUtils;
-import net.cloudhacking.androidgame2.engine.utils.Color;
+import net.cloudhacking.androidgame2.engine.gl.GLColor;
 import net.cloudhacking.androidgame2.engine.utils.PointF;
 
 import java.nio.FloatBuffer;
@@ -26,17 +26,17 @@ public class Circle extends Renderable {
     private boolean mNeedBufferUpdate;
 
 
-    public Circle(float radius, float thickness, Color color) {
+    public Circle(float radius, float thickness, GLColor color) {
         this(new PointF(), radius, thickness, color);
     }
 
-    public Circle(PointF center, float radius, float thickness, Color c) {
+    public Circle(PointF center, float radius, float thickness, GLColor c) {
         super(0, 0, 0, 0);
         mCenter = center;
         mRadius = radius;
         mThickness = thickness;
         setPos(mCenter);
-        setColorM(Color.CLEAR);
+        setColorM(GLColor.CLEAR);
         setColorA(c);
         updateVertices();
     }
@@ -66,8 +66,8 @@ public class Circle extends Renderable {
 
     private void updateVertices() {
         float d = 2*mRadius + mThickness;
-        setWidth(d);
-        setHeight(d);
+        setActualWidth(d);
+        setActualHeight(d);
 
         float innerR = mRadius-(mThickness/2);
         float outerR = mRadius+(mThickness/2);

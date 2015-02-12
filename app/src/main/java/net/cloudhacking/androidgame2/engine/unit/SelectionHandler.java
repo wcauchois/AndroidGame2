@@ -64,7 +64,7 @@ public class SelectionHandler extends Loggable {
                         return true;
                     }
                 }
-                break;
+                return false;
 
             case CANCEL:
                 if (!mDownSelect) return false;
@@ -81,7 +81,7 @@ public class SelectionHandler extends Loggable {
                 mCameraController.setDisabled(false);
                 break;
         }
-        return false;
+        return true;
     }
 
     public boolean handleDragEvent(InputManager.DragEvent e) {

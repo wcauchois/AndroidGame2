@@ -1,4 +1,4 @@
-package net.cloudhacking.androidgame2.engine.ui;
+package net.cloudhacking.androidgame2.engine.ui.widget;
 
 import android.graphics.RectF;
 
@@ -64,9 +64,17 @@ public abstract class Widget extends Group<Widget> {
         mNeedUpdate = true;
     }
 
+    public float getWidth() {
+        return mBounds.width();
+    }
+
     public void setHeight(float height) {
         mBounds.bottom = mBounds.top + height;
         mNeedUpdate = true;
+    }
+
+    public float getHeight() {
+        return mBounds.height();
     }
 
     public RectF getBounds() {
@@ -76,6 +84,10 @@ public abstract class Widget extends Group<Widget> {
     public void setBackgroundImage(WidgetBackground bg) {
         mBackground = bg;
         mNeedUpdate = true;
+    }
+
+    public WidgetBackground getBackground() {
+        return mBackground;
     }
 
     public void setTouchable(boolean bool) {

@@ -1,6 +1,6 @@
 package net.cloudhacking.androidgame2.ui;
 
-import net.cloudhacking.androidgame2.engine.ui.RootWidget;
+import net.cloudhacking.androidgame2.engine.ui.widget.RootWidget;
 import net.cloudhacking.androidgame2.engine.ui.UI;
 import net.cloudhacking.androidgame2.engine.utils.FPSCounter;
 

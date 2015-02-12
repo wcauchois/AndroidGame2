@@ -19,7 +19,15 @@ public class UITouchHandler extends Loggable {
         protected void onEndDrag(PointF touchPt) {}
     }
 
+
+    //----------------------------------------------------------------------------------------------
+
     private UI mUI;
+
+    private boolean mDownSelect;
+    private boolean mDragSelectionStarted;
+    private WidgetController mWidgetController;
+
 
     public UITouchHandler(UI ui) {
         mUI = ui;
@@ -28,13 +36,6 @@ public class UITouchHandler extends Loggable {
         mDragSelectionStarted = false;
         mWidgetController = new WidgetController();
     }
-
-
-    //----------------------------------------------------------------------------------------------
-
-    private boolean mDownSelect;
-    private boolean mDragSelectionStarted;
-    private WidgetController mWidgetController;
 
     public boolean processEvent(InputManager.Event e) {
         if (e instanceof InputManager.ClickEvent) {

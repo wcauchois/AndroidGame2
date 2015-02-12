@@ -6,7 +6,7 @@ import net.cloudhacking.androidgame2.engine.element.shape.Circle;
 import net.cloudhacking.androidgame2.engine.element.shape.ColorBlock;
 import net.cloudhacking.androidgame2.engine.element.shape.Line;
 import net.cloudhacking.androidgame2.engine.unit.SelectionHandler;
-import net.cloudhacking.androidgame2.engine.utils.Color;
+import net.cloudhacking.androidgame2.engine.gl.GLColor;
 import net.cloudhacking.androidgame2.engine.utils.PointF;
 
 /**
@@ -29,7 +29,7 @@ public class MothershipController extends SelectionHandler.SelectionController<M
         mGrid = level.getGrid();
         mMothership = new Mothership();
 
-        Color grey = new Color(1,1,1,0.5f);
+        GLColor grey = new GLColor(1,1,1,0.5f);
         mSelectionAnim = new Circle(mMothership.getClickRadius(), 2f, grey);
         mSelectionAnim.hide();
         mLevel.add(mMothership);

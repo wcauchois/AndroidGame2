@@ -2,7 +2,7 @@ package net.cloudhacking.androidgame2.unit.gridUnit;
 
 import net.cloudhacking.androidgame2.engine.Grid;
 import net.cloudhacking.androidgame2.engine.element.shape.Circle;
-import net.cloudhacking.androidgame2.engine.utils.Color;
+import net.cloudhacking.androidgame2.engine.gl.GLColor;
 import net.cloudhacking.androidgame2.engine.utils.SpriteAsset;
 import net.cloudhacking.androidgame2.engine.utils.Vec2;
 import net.cloudhacking.androidgame2.unit.ControllableUnit;
@@ -48,7 +48,7 @@ public class GridUnit extends ControllableUnit {
         public GridMove(Grid.CellPath path) {
             super(ActionType.MOVE);
             mPath = path;
-            mDestinationAnim = new Circle(4, 1, Color.GREEN);
+            mDestinationAnim = new Circle(4, 1, GLColor.GREEN);
             mDestinationAnim.hide();
             getParent().add(mDestinationAnim);
             getParent().bringToFront(GridUnit.this);

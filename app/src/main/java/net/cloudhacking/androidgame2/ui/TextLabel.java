@@ -1,7 +1,8 @@
-package net.cloudhacking.androidgame2.engine.ui;
+package net.cloudhacking.androidgame2.ui;
 
 import net.cloudhacking.androidgame2.engine.element.Image;
 import net.cloudhacking.androidgame2.engine.gl.TextRenderer;
+import net.cloudhacking.androidgame2.engine.ui.widget.Widget;
 
 /**
  * Created by wcauchois on 1/22/15.

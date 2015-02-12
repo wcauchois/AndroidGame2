@@ -1,4 +1,4 @@
-package net.cloudhacking.androidgame2.engine.ui;
+package net.cloudhacking.androidgame2.engine.ui.widget;
 
 import android.graphics.RectF;
 

@@ -3,7 +3,7 @@ package net.cloudhacking.androidgame2.engine.element;
 import android.graphics.RectF;
 
 import net.cloudhacking.androidgame2.engine.gl.BasicGLScript;
-import net.cloudhacking.androidgame2.engine.utils.Color;
+import net.cloudhacking.androidgame2.engine.gl.GLColor;
 import net.cloudhacking.androidgame2.engine.utils.GameTime;
 import net.cloudhacking.androidgame2.engine.utils.MatrixUtils;
 import net.cloudhacking.androidgame2.engine.utils.PointF;
@@ -37,8 +37,8 @@ public class Renderable extends Entity {
     private boolean mRotatable;
     private static final float TWO_PI = 2*(float)Math.PI;
 
-    private Color mColorM;
-    private Color mColorA;
+    private GLColor mColorM;
+    private GLColor mColorA;
 
     private float[] mModelMatrix;
 
@@ -60,8 +60,8 @@ public class Renderable extends Entity {
         mRotationSpeed = 0f;
         mRotatable = false;
 
-        mColorM = Color.WHITE;
-        mColorA = Color.CLEAR;
+        mColorM = GLColor.WHITE;
+        mColorA = GLColor.CLEAR;
 
         mModelMatrix = new float[16];
     }
@@ -94,8 +94,12 @@ public class Renderable extends Entity {
         return mWidth * mScale.y;
     }
 
-    public void setWidth(float width) {
+    public void setActualWidth(float width) {
         mWidth = width;
+    }
+
+    public void setWidth(float width) {
+        setScaleX( width/mWidth );
     }
 
     public float getHeight() {
@@ -106,8 +110,12 @@ public class Renderable extends Entity {
         return mHeight * mScale.x;
     }
 
-    public void setHeight(float height) {
+    public void setActualHeight(float height) {
         mHeight = height;
+    }
+
+    public void setHeight(float height) {
+        setScaleY( height/mHeight );
     }
 
     public RectF getRect() {
@@ -204,23 +212,23 @@ public class Renderable extends Entity {
         mRotatable = bool;
     }
 
-    public Color getColorM() {
+    public GLColor getColorM() {
         return mColorM;
     }
 
-    public void setColorM(Color c) {
+    public void setColorM(GLColor c) {
         mColorM = c;
     }
 
     public void setAlpha(float a) {
-        Color.setAlpha(mColorM, a);
+        GLColor.setAlpha(mColorM, a);
     }
 
-    public Color getColorA() {
+    public GLColor getColorA() {
         return mColorA;
     }
 
-    public void setColorA(Color c) {
+    public void setColorA(GLColor c) {
         mColorA = c;
     }
 

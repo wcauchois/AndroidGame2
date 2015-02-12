@@ -1,6 +1,9 @@
 package net.cloudhacking.androidgame2.engine.element;
 
+import android.graphics.RectF;
+
 import net.cloudhacking.androidgame2.engine.gl.BasicGLScript;
+import net.cloudhacking.androidgame2.engine.ui.widget.WidgetBackground;
 import net.cloudhacking.androidgame2.engine.utils.AssetCache;
 import net.cloudhacking.androidgame2.engine.utils.GameTime;
 import net.cloudhacking.androidgame2.engine.utils.PointF;
@@ -9,7 +12,7 @@ import net.cloudhacking.androidgame2.engine.utils.SpriteAsset;
 /**
  * Created by Andrew on 1/20/2015.
  */
-public class Animated extends Renderable {
+public class Animated extends Renderable implements WidgetBackground {
 
     /**
      * This is the basic animated game object class.  It draws itself by first setting the
@@ -72,8 +75,8 @@ public class Animated extends Renderable {
     public Animated(Sprite sprite) {
         super(0, 0, 0, 0);
         mSprite = sprite;
-        setWidth(mSprite.getWidth());
-        setHeight(mSprite.getHeight());
+        setActualWidth(mSprite.getWidth());
+        setActualHeight(mSprite.getHeight());
 
         mAnimation = Animation.NULL;
     }
@@ -102,6 +105,15 @@ public class Animated extends Renderable {
 
     public boolean isAnimating() {
         return mAnimation.isAnimating();
+    }
+
+    @Override
+    public void setToRect(RectF r) {
+        float w = r.width(), h = r.height();
+
+        setPos(new PointF(r.left + w / 2, r.top + h / 2));
+        setWidth(w);
+        setHeight(h);
     }
 
 

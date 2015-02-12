@@ -5,7 +5,7 @@ import android.graphics.RectF;
 import net.cloudhacking.androidgame2.engine.gl.BasicGLScript;
 import net.cloudhacking.androidgame2.engine.gl.QuadDrawer;
 import net.cloudhacking.androidgame2.engine.gl.Texture;
-import net.cloudhacking.androidgame2.engine.ui.WidgetBackground;
+import net.cloudhacking.androidgame2.engine.ui.widget.WidgetBackground;
 import net.cloudhacking.androidgame2.engine.utils.Asset;
 import net.cloudhacking.androidgame2.engine.utils.AssetCache;
 import net.cloudhacking.androidgame2.engine.utils.BufferUtils;
@@ -71,25 +71,6 @@ public class Image extends Renderable implements WidgetBackground {
         setHeight(h);
     }
 
-    // don't fuck with actual pixel width
-    private void setActualWidth(float width) {
-        super.setWidth(width);
-    }
-
-    private void setActualHeight(float height) {
-        super.setHeight(height);
-    }
-
-    @Override
-    public void setWidth(float width) {
-        setScaleX( width/getWidth() );
-    }
-
-    @Override
-    public void setHeight(float height) {
-        setScaleY( height/getHeight() );
-    }
-
     public void moveToOrigin() {
         setPos( getScaledWidth()/2 , getScaledHeight()/2 );
     }
@@ -116,7 +97,7 @@ public class Image extends Renderable implements WidgetBackground {
     public void setFrame(RectF frame) {
         mFrame = frame;
 
-        setActualWidth(frame.width() * mTexture.getWidth());
+        setWidth(frame.width() * mTexture.getWidth());
         setActualHeight(frame.height() * mTexture.getHeight());
 
         updateFrame();

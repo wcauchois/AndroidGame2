@@ -6,7 +6,7 @@ import android.graphics.RectF;
 import net.cloudhacking.androidgame2.engine.gl.BasicGLScript;
 import net.cloudhacking.androidgame2.engine.gl.QuadDrawer;
 import net.cloudhacking.androidgame2.engine.gl.Texture;
-import net.cloudhacking.androidgame2.engine.ui.WidgetBackground;
+import net.cloudhacking.androidgame2.engine.ui.widget.WidgetBackground;
 import net.cloudhacking.androidgame2.engine.utils.AssetCache;
 import net.cloudhacking.androidgame2.engine.utils.BufferUtils;
 import net.cloudhacking.androidgame2.engine.utils.NinePatchAsset;
@@ -42,26 +42,6 @@ public class NinePatch extends Renderable implements WidgetBackground {
         mVertexBuffer = BufferUtils.makeQuadFloatBuffer(9);
         setSize(width, height);
     }
-
-    private void setActualWidth(float width) {
-        super.setWidth(width);
-    }
-
-    private void setActualHeight(float height) {
-        super.setHeight(height);
-    }
-
-    @Override
-    public void setWidth(float w) {
-        setSize( w, getHeight() );
-    }
-
-    @Override
-    public void setHeight(float h) {
-        setSize( getWidth(), h );
-    }
-
-
 
 
     public void setSize(float w, float h) {

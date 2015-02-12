@@ -4,7 +4,7 @@ import net.cloudhacking.androidgame2.engine.element.Renderable;
 import net.cloudhacking.androidgame2.engine.gl.BasicGLScript;
 import net.cloudhacking.androidgame2.engine.gl.QuadDrawer;
 import net.cloudhacking.androidgame2.engine.utils.BufferUtils;
-import net.cloudhacking.androidgame2.engine.utils.Color;
+import net.cloudhacking.androidgame2.engine.gl.GLColor;
 
 import java.nio.FloatBuffer;
 
@@ -22,11 +22,11 @@ public class ColorBlock extends Renderable {
         mVertexBuffer = BufferUtils.makeFloatBuffer(vertices);
     }
 
-    public ColorBlock(float w, float h, Color color) {
+    public ColorBlock(float w, float h, GLColor color) {
         super(0,0,1,1);
         setScaleX(w);
         setScaleY(h);
-        setColorM(Color.CLEAR);
+        setColorM(GLColor.CLEAR);
         setColorA(color);
     }
 

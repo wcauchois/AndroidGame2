@@ -11,7 +11,7 @@ import net.cloudhacking.androidgame2.engine.element.TileMap;
 import net.cloudhacking.androidgame2.engine.element.shape.PixelLines;
 import net.cloudhacking.androidgame2.engine.gl.BasicGLScript;
 import net.cloudhacking.androidgame2.engine.utils.BufferUtils;
-import net.cloudhacking.androidgame2.engine.utils.Color;
+import net.cloudhacking.androidgame2.engine.gl.GLColor;
 import net.cloudhacking.androidgame2.engine.utils.PointF;
 
 import java.nio.FloatBuffer;
@@ -368,10 +368,7 @@ public class Grid extends Entity {
     }
 
 
-
-    /**
-     * A* implementation
-     */
+    //----------------------------------------------------------------------------------------------
 
     public class CellPath {
 
@@ -547,6 +544,11 @@ public class Grid extends Entity {
         }
     }
 
+
+    /**
+     * A* implementation
+     */
+
     // this fudge factor is supposed to break cost ties:
     //    http://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html#breaking-ties
     private final float EXPECTED_MAX_PATH_LENGTH = 100;
@@ -593,8 +595,6 @@ public class Grid extends Entity {
         return null;
     }
 
-
-    //----------------------------------------------------------------------------------------------
 
     /**
      * Class used for active path-finding.  It caches the shortest paths to points progressively
@@ -730,7 +730,7 @@ public class Grid extends Entity {
      */
     public static class GridOverlay extends PixelLines {
 
-        public GridOverlay(Grid grid, Color color) {
+        public GridOverlay(Grid grid, GLColor color) {
             super(color);
             int cw = grid.getCellWidth(), ch = grid.getCellHeight();
             int cols = grid.getColumns(), rows = grid.getRows();
@@ -780,13 +780,13 @@ public class Grid extends Entity {
         private int mVertexCount;
         private boolean mNeedBufferUpdate;
 
-        public CellPathAnim(float thickness, Color color) {
+        public CellPathAnim(float thickness, GLColor color) {
             this(null, thickness, color);
             setInactive();
             setVisibility(false);
         }
 
-        public CellPathAnim(CellPath path, float thickness, Color color) {
+        public CellPathAnim(CellPath path, float thickness, GLColor color) {
             super(0,0,0,0);
             mPath = path;
             mThickness = thickness;
@@ -806,8 +806,8 @@ public class Grid extends Entity {
             mNeedBufferUpdate = true;
         }
 
-        public void setColor(Color c) {
-            setColorM(Color.CLEAR);
+        public void setColor(GLColor c) {
+            setColorM(GLColor.CLEAR);
             setColorA(c);
         }
 

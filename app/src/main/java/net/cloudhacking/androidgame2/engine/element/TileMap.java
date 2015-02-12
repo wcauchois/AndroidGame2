@@ -81,8 +81,8 @@ public class TileMap extends PreRenderable {
         mRows = map.getHeight();
         mVertexBuffer = BufferUtils.makeQuadFloatBuffer(mRows * mColumns);
 
-        setWidth(mCellWidth * mColumns);
-        setHeight(mCellHeight * mRows);
+        setActualWidth(mCellWidth * mColumns);
+        setActualHeight(mCellHeight * mRows);
 
         updateVertices(map);
     }

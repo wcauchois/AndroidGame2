@@ -4,7 +4,6 @@ import android.graphics.Rect;
 import android.opengl.GLES20;
 
 import net.cloudhacking.androidgame2.engine.GameSkeleton;
-import net.cloudhacking.androidgame2.engine.utils.Color;
 import net.cloudhacking.androidgame2.engine.utils.Loggable;
 import net.cloudhacking.androidgame2.engine.utils.MatrixUtils;
 
@@ -125,7 +124,7 @@ public class FrameBufferObject extends Loggable {
         // model matrix isn't needed; set to identity
         gls.uModel.setValueM4(MatrixUtils.IDENTITY);
 
-        gls.setLighting(Color.WHITE, Color.CLEAR);
+        gls.setLighting(GLColor.WHITE, GLColor.CLEAR);
 
         // draw quads using the given vertex buffer
         gls.drawQuadSet(vbo, quadCount);

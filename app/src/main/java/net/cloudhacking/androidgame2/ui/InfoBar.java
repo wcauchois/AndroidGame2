@@ -3,9 +3,10 @@ package net.cloudhacking.androidgame2.ui;
 import android.graphics.RectF;
 
 import net.cloudhacking.androidgame2.Assets;
-import net.cloudhacking.androidgame2.engine.ui.RootWidget;
+import net.cloudhacking.androidgame2.engine.ui.widget.Button;
+import net.cloudhacking.androidgame2.engine.ui.widget.RootWidget;
 import net.cloudhacking.androidgame2.engine.ui.UITouchHandler;
-import net.cloudhacking.androidgame2.engine.ui.Widget;
+import net.cloudhacking.androidgame2.engine.ui.widget.Widget;
 import net.cloudhacking.androidgame2.engine.utils.PointF;
 
 /**
@@ -13,7 +14,7 @@ import net.cloudhacking.androidgame2.engine.utils.PointF;
  */
 public class InfoBar extends Widget {
 
-    private class Controller extends UITouchHandler.WidgetController {
+    private class InfoBarController extends UITouchHandler.WidgetController {
         @Override
         public void onClickUp(PointF touchPt) {
             d("info bar clicked!");
@@ -29,7 +30,10 @@ public class InfoBar extends Widget {
                Assets.UI_SIMPLE
         );
         setTouchable(true);
-        setController(new Controller());
+        setController(new InfoBarController());
+
+        //add( new Button() );
+
     }
 
 }
