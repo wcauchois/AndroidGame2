@@ -82,4 +82,8 @@ public class CDLevel extends Level {
         return mSize;
     }
 
+    public CDUnitController getUnitController() {
+        return mController;
+    }
+
 }

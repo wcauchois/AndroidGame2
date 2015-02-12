@@ -3,7 +3,6 @@ package net.cloudhacking.androidgame2.ui;
 import android.graphics.RectF;
 
 import net.cloudhacking.androidgame2.Assets;
-import net.cloudhacking.androidgame2.engine.element.NinePatch;
 import net.cloudhacking.androidgame2.engine.ui.RootWidget;
 import net.cloudhacking.androidgame2.engine.ui.UITouchHandler;
 import net.cloudhacking.androidgame2.engine.ui.Widget;
@@ -27,7 +26,7 @@ public class InfoBar extends Widget {
                          root.getRootHeight()-height+2,
                          root.getRootWidth()+4,
                          root.getRootHeight()+2),
-               new NinePatch(Assets.UI_SIMPLE)
+               Assets.UI_SIMPLE
         );
         setTouchable(true);
         setController(new Controller());

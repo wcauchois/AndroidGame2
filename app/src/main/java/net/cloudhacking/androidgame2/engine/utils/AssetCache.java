@@ -91,6 +91,7 @@ public class AssetCache extends Loggable {
     }
 
     public Texture getTexture(Asset asset, Texture.TextureOptions opts, boolean checkOpts) {
+        if (asset==null) return null;
 
         if (!mTextureCache.containsKey(asset)) {
             try {

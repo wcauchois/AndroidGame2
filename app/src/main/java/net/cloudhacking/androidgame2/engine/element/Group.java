@@ -16,13 +16,13 @@ public class Group<E extends Entity> extends Entity {
     protected ArrayList<E> mEntities;
     protected int length;
 
-    protected ArrayList<E> mAddQueue;  // If an entity which is an existing member of this group
-                                       // needs to add a new entity to this group during it's
-                                       // update, then it will need to queue the add using
-                                       // queueAdd(E e) in order to prevent a concurrent
-                                       // modification exception.
-    protected ArrayList<E> mBTFQueue;       // bring-to-front queue
-    protected ArrayList<E> mRemQueue;       // remove-queue
+    private ArrayList<E> mAddQueue;  // If an entity which is an existing member of this group
+                                     // needs to add a new entity to this group during it's
+                                     // update, then it will need to queue the add using
+                                     // queueAdd(E e) in order to prevent a concurrent
+                                     // modification exception.
+    private ArrayList<E> mBTFQueue;     // bring-to-front queue
+    private ArrayList<E> mRemQueue;     // remove-queue
 
     public Group() {
         mEntities = new ArrayList<E>();

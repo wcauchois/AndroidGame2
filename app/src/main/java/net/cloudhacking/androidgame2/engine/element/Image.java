@@ -55,9 +55,9 @@ public class Image extends Renderable implements WidgetBackground {
         setTexture(asset);
     }
 
-    public Image(Asset asset, int x, int y, int w, int h) {
+    public Image(Asset asset, RectF frame) {
         this(asset);
-        setFrame(x, y, w, h);
+        setFrame(frame);
     }
 
 

@@ -11,7 +11,7 @@ public class RootWidget extends Widget {
     private int mRootHeight;
 
     public RootWidget(int width, int height) {
-        super( new RectF(0, 0, width, height), null );
+        super( new RectF(0, 0, width, height) );
         mRootWidth = width;
         mRootHeight = height;
     }

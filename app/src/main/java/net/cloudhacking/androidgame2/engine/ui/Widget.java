@@ -2,9 +2,11 @@ package net.cloudhacking.androidgame2.engine.ui;
 
 import android.graphics.RectF;
 
+import net.cloudhacking.androidgame2.engine.element.NinePatch;
 import net.cloudhacking.androidgame2.engine.gl.BasicGLScript;
 import net.cloudhacking.androidgame2.engine.element.Group;
 import net.cloudhacking.androidgame2.engine.ui.UITouchHandler.WidgetController;
+import net.cloudhacking.androidgame2.engine.utils.NinePatchAsset;
 import net.cloudhacking.androidgame2.engine.utils.PointF;
 
 /**
@@ -20,24 +22,30 @@ public abstract class Widget extends Group<Widget> {
     private boolean mFitToBG;
     private boolean mNeedUpdate;
 
+    private static RectF moveRect(float x, float y, RectF orig) {
+        return new RectF(x, y, x+orig.width(), y+orig.height());
+    }
 
-    public Widget(RectF bounds, WidgetBackground bg) {
+
+    public Widget(RectF bounds, WidgetBackground bg, boolean fitWidgetToBackground) {
         mBounds = bounds;
         mBackground = bg;
-        mFitToBG = false;
+        mFitToBG = fitWidgetToBackground;
         mNeedUpdate = true;
         mTouchable = false;
         mController = null;
     }
 
     public Widget(float x, float y, WidgetBackground bg) {
-        RectF bgRect = bg.getRect();
-        mBounds = new RectF(x, y, x+bgRect.width(), y+bgRect.height());
-        mBackground = bg;
-        mFitToBG = true;
-        mNeedUpdate = true;
-        mTouchable = false;
-        mController = null;
+        this(moveRect(x, y, bg.getRect()), bg, true);
+    }
+
+    public Widget(RectF bounds, NinePatchAsset asset) {
+        this(bounds, new NinePatch(asset), false);
+    }
+
+    public Widget(RectF bounds) {
+        this(bounds, null, false);
     }
 
 
@@ -47,7 +55,7 @@ public abstract class Widget extends Group<Widget> {
     }
 
     public void setPos(float x, float y) {
-        mBounds = new RectF(x, y, x+mBounds.width(), y+mBounds.height());
+        moveRect(x, y, mBounds);
         mNeedUpdate = true;
     }
 
@@ -76,6 +84,16 @@ public abstract class Widget extends Group<Widget> {
 
     public boolean isTouchable() {
         return mTouchable;
+    }
+
+    public void hide() {
+        setVisibility(false);
+        setInactive();
+    }
+
+    public void show() {
+        setVisibility(true);
+        setActive();
     }
 
 
@@ -116,6 +134,7 @@ public abstract class Widget extends Group<Widget> {
                             mBounds.left+bgRect.width(),
                             mBounds.top+bgRect.height()
                     );
+                    mBackground.setToRect(mBounds);
                 } else {
                     mBackground.setToRect(mBounds);
                 }
