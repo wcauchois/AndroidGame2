@@ -10,6 +10,7 @@ import net.cloudhacking.androidgame2.engine.element.Renderable;
 import net.cloudhacking.androidgame2.engine.element.TileMap;
 import net.cloudhacking.androidgame2.engine.element.shape.PixelLines;
 import net.cloudhacking.androidgame2.engine.gl.BasicGLScript;
+import net.cloudhacking.androidgame2.engine.gl.QuadDrawer;
 import net.cloudhacking.androidgame2.engine.utils.BufferUtils;
 import net.cloudhacking.androidgame2.engine.gl.GLColor;
 import net.cloudhacking.androidgame2.engine.utils.PointF;
@@ -19,6 +20,8 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Stack;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by Andrew on 1/20/2015.
@@ -299,29 +302,28 @@ public class Grid extends Entity {
     // ref: http://www.redblobgames.com/pathfinding/tower-defense/
     //      http://www.redblobgames.com/pathfinding/a-star/implementation.html#sec-1-4
 
-    private Cell[] neighbors = new Cell[4];
     private Cell[] getCellNeighbors(Cell c) {
-        if ( c.ix-1 >= 0 && !c.isOccupied() ) {
+        Cell[] neighbors = new Cell[4];
+        if ( c.ix-1 >= 0 && !isOccupied(c.ix - 1, c.iy) ) {
             neighbors[0] = getCell(c.ix-1, c.iy);
         } else {
             neighbors[0] = null;
         }
-        if ( c.ix+1 < mColumns && !c.isOccupied() ) {
+        if ( c.ix+1 < mColumns && !isOccupied(c.ix + 1, c.iy) ) {
             neighbors[1] = getCell(c.ix+1, c.iy);
         } else {
             neighbors[1] = null;
         }
-        if ( c.iy+1 < mRows && !c.isOccupied() ) {
+        if ( c.iy+1 < mRows && !isOccupied(c.ix, c.iy + 1) ) {
             neighbors[2] = getCell(c.ix, c.iy+1);
         } else {
             neighbors[2] = null;
         }
-        if ( c.iy-1 >= 0 && !c.isOccupied() ) {
+        if ( c.iy-1 >= 0 && !isOccupied(c.ix, c.iy - 1) ) {
             neighbors[3] = getCell(c.ix, c.iy-1);
         } else {
             neighbors[3] = null;
         }
-
         return neighbors;
     }
 
@@ -395,7 +397,12 @@ public class Grid extends Entity {
         }
 
         public Cell getDestination() {
-            return mPath.getLast();
+            Cell destination = mPath.peekLast();
+            if (destination == null) {
+                // return first if path is length one
+                return mPath.peekFirst();
+            }
+            return destination;
         }
 
         public int length() {
@@ -462,7 +469,7 @@ public class Grid extends Entity {
         members.add(goalIndex);
 
         int nextIndex = history.get(goalIndex);
-        while (nextIndex != -1) {
+        while (nextIndex > 0) {
             path.addFirst(getCell(nextIndex));
             members.add(nextIndex);
             nextIndex = history.get(nextIndex);
@@ -478,7 +485,9 @@ public class Grid extends Entity {
         path.add(getCell(goalIndex));
 
         int nextIndex = history.get(goalIndex);
-        while (nextIndex != -1) {
+        while (nextIndex > 0) {
+            // TODO: not sure why, but sometimes nextIndex becomes 0 (which it shouldn't)
+            // TODO: this started happening when I made the concurrent path-finder
             path.addFirst(getCell(nextIndex));
             nextIndex = history.get(nextIndex);
         }
@@ -597,28 +606,26 @@ public class Grid extends Entity {
 
 
     /**
-     * Class used for active path-finding.  It caches the shortest paths to points progressively
-     * as the user drags their finger across the screen so that we can animated the path
-     * that a unit would potentially take across the map.
+     * Use PathFinder for active path-finding.  It caches the shortest paths so we can
+     * animate the shortest paths for units quickly as a user drags their finger on the screen.
      */
 
     public PathFinder getPathFinder() {
         return new PathFinder();
     }
-    public PathFinder getPathFinder(Cell source) {
-        return new PathFinder(source);
-    }
 
     public class PathFinder {
 
-        private Cell mSource;
+        // async path-finding
+        private final ExecutorService mWorker = Executors.newSingleThreadExecutor();
 
-        private PriorityQueue<CellSortable> mFrontier;
-        private HashSet<Integer> mVisited;
-        private SparseArray<Float> mCosts;
-        private SparseIntArray mHistory;
+        private final PriorityQueue<CellSortable> mFrontier;
+        private final HashSet<Integer> mVisited;
+        private final SparseArray<Float> mCosts;
+        private final SparseIntArray mHistory;
 
-        private SparseArray<CellPath> mPathCache;
+        private final SparseArray<CellPath> mPathCache;
+        private Cell mLastSource;
 
         public PathFinder() {
             mFrontier = new PriorityQueue<CellSortable>();
@@ -626,11 +633,7 @@ public class Grid extends Entity {
             mCosts = new SparseArray<Float>();
             mHistory = new SparseIntArray();
             mPathCache = new SparseArray<CellPath>();
-        }
-
-        public PathFinder(Cell source) {
-            this();
-            setSource(source);
+            mLastSource = null;
         }
 
         public void clear() {
@@ -642,57 +645,60 @@ public class Grid extends Entity {
         }
 
         public void setSource(Cell source) {
-            clear();
-            mSource = source;
-            mFrontier.add(new CellSortable(source.index, 0f));
-            mHistory.put(source.index, -1);
-            mCosts.put(source.index, 0f);
-            mVisited.add(source.index);
-        }
-
-        public Cell getSource() {
-            return mSource;
+            if (source==null) return;
+            mLastSource = source;
+            mWorker.submit(new Explorer(source));
         }
 
         public CellPath getPathTo(Cell target) {
-            if (mSource == null || target.isOccupied()) return null;
+            /*synchronized (mVisited) {
+                if (!mVisited.contains(target.index)) {
+                    return getBestPath(mLastSource, target);
+                }
+            }*/
+            synchronized (mPathCache) {
+                return mPathCache.get(target.index);
+            }
+        }
 
-            // try cache
-            CellPath tmp = mPathCache.get(target.index);
-            if (tmp != null) {
-                return tmp;
+        private class Explorer implements Runnable {
+
+            public Explorer(Cell source) {
+                clear();
+                mFrontier.add(new CellSortable(source.index, 0f));
+                mHistory.put(source.index, -1);
+                mCosts.put(source.index, 0f);
+                mVisited.add(source.index);
             }
 
-            Cell current;
-            float cost;
-            while (!mFrontier.isEmpty()) {
-                // get cell with shortest length in priority queue,
-                // then build path for this cell and cache the path
-                current = getCell( mFrontier.poll().cellIndex );
+            @Override public void run() {
+                CellPath path;
+                Cell current;
+                float cost;
+                while (!mFrontier.isEmpty()) {
+                    current = getCell(mFrontier.poll().cellIndex);
 
-                tmp = buildCellPath(mHistory, current.index);
-                mPathCache.put(current.index, tmp);
+                    path = buildCellPath(mHistory, current.index);
+                    synchronized (mPathCache) {
+                        mPathCache.put(current.index, path);
+                    }
 
-                for (Cell n : getCellNeighbors(current)) {
-                    if (n==null) continue;
+                    for (Cell n : getCellNeighbors(current)) {
+                        if (n == null) continue;
 
-                    cost = mCosts.get(current.index) + /* cost to next cell = */ 1 ;
+                        cost = mCosts.get(current.index) + /* cost to next cell = */ 1;
 
-                    if ( !mVisited.contains(n.index) || cost< mCosts.get(n.index) ) {
-                        mCosts.put(n.index, cost);
-                        // not using heuristic cost here since we have a changing target
-                        mFrontier.add( new CellSortable(n.index, cost) );
-                        mHistory.put(n.index, current.index);
-                        mVisited.add(n.index);
+                        if (!mVisited.contains(n.index) || cost < mCosts.get(n.index)) {
+                            mCosts.put(n.index, cost);
+                            // not using heuristic cost here since we have a changing target
+                            mFrontier.add(new CellSortable(n.index, cost));
+                            mHistory.put(n.index, current.index);
+                            mVisited.add(n.index);
+                        }
+
                     }
                 }
-
-                // need to update neighbors before returning path for target
-                if (current.equals(target)) {
-                    return tmp;
-                }
             }
-            return null;
         }
 
     }
@@ -709,7 +715,7 @@ public class Grid extends Entity {
         private final float BLINK_FREQ = 2;
 
         public SelectorIcon() {
-            super(Assets.SELECTOR_8PX);
+            super(Assets.SELECTOR_16PX);
             setVisibility(false);
         }
 
@@ -771,7 +777,7 @@ public class Grid extends Entity {
     /**
      * Animates a CellPath
      */
-    public static class CellPathAnim extends Renderable {
+    public static class CellPathLineAnim extends Renderable {
 
         private CellPath mPath;
 
@@ -780,13 +786,13 @@ public class Grid extends Entity {
         private int mVertexCount;
         private boolean mNeedBufferUpdate;
 
-        public CellPathAnim(float thickness, GLColor color) {
+        public CellPathLineAnim(float thickness, GLColor color) {
             this(null, thickness, color);
             setInactive();
             setVisibility(false);
         }
 
-        public CellPathAnim(CellPath path, float thickness, GLColor color) {
+        public CellPathLineAnim(CellPath path, float thickness, GLColor color) {
             super(0,0,0,0);
             mPath = path;
             mThickness = thickness;
@@ -902,6 +908,57 @@ public class Grid extends Entity {
         public void draw(BasicGLScript gls) {
             super.draw(gls);
             gls.drawTriangleStrip(mVertexBuffer, 0, mVertexCount);
+        }
+
+    }
+
+
+    /**
+     * Animates a cell path by highlighting cells a certain color
+     */
+    public static class CellHighlighter extends Renderable {
+
+        private CellPath mPath;
+
+        private FloatBuffer mVertexBuffer;
+        private int mQuadCount;
+
+        public CellHighlighter(GLColor color) {
+            super(0,0,0,0);
+            setColor(color);
+            mPath = null;
+            mVertexBuffer = null;
+            mQuadCount = 0;
+        }
+
+        public void setColor(GLColor c) {
+            setColorM(GLColor.TRANSPARENT);
+            setColorA(c);
+        }
+
+        public void setPath(CellPath path) {
+            mPath = path;
+
+            float[] vertices = new float[16];
+            mQuadCount = mPath.length();
+            mVertexBuffer = BufferUtils.makeQuadFloatBuffer(mQuadCount);
+
+            float hw = mPath.peek().getWidth()/2f, hh = mPath.peek().getHeight()/2f;
+            PointF cen;
+            for (Cell c : mPath.getLinkedList()) {
+                cen = c.getCenter();
+                QuadDrawer.fillVertices(vertices, cen.x-hw, cen.y-hh, cen.x+hw, cen.y+hh);
+                QuadDrawer.fillUVCoords(vertices, 0, 0, 0, 0);
+                mVertexBuffer.put(vertices);
+            }
+        }
+
+        @Override
+        public void draw(BasicGLScript gls) {
+            super.draw(gls);
+            if (mVertexBuffer != null) {
+                gls.drawQuadSet(mVertexBuffer, mQuadCount);
+            }
         }
 
     }

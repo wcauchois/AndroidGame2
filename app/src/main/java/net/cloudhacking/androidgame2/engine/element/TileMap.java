@@ -158,13 +158,14 @@ public class TileMap extends PreRenderable {
         int h = (int) getActualHeight();
 
         PreRenderTexture fboTex = new PreRenderTexture(w, h);
-        fbo.start(fboTex);
 
-        update();
-        draw(gls);
+        if (fbo.start(fboTex)) {
+            update();
+            draw(gls);
+            fbo.end();
+            fbo.delete();
+        }
 
-        fbo.end();
-        fbo.delete();
         return fboTex;
     }
 

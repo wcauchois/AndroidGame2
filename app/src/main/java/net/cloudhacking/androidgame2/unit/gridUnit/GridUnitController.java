@@ -19,7 +19,7 @@ public class GridUnitController extends SelectionHandler.SelectionController<Gri
     private Grid.PathFinder mPathFinder;
     private Grid.CellPath mCurrentPath;
     private Grid.Cell mLastNearest;
-    private Grid.CellPathAnim mPathFinderAnim;
+    private Grid.CellHighlighter mPathFinderAnim;
     private Grid.GridOverlay mGridOverlay;
 
 
@@ -29,10 +29,11 @@ public class GridUnitController extends SelectionHandler.SelectionController<Gri
         mPathFinder = mGrid.getPathFinder();
         mLastSelected = null;
         mLastNearest = null;
+        mCurrentPath = null;
 
         mSelectorIcon = new Grid.SelectorIcon();
         mGridOverlay = new Grid.GridOverlay(mGrid, new GLColor(1,1,1,0.5f));
-        mPathFinderAnim = new Grid.CellPathAnim(3.0f, GLColor.RED);
+        mPathFinderAnim = new Grid.CellHighlighter(new GLColor(1,1,1,0.5f));
         mLevel.add(mSelectorIcon);
         mLevel.add(mPathFinderAnim);
         mLevel.add(mGridOverlay);
@@ -52,6 +53,7 @@ public class GridUnitController extends SelectionHandler.SelectionController<Gri
     protected void onStartDrag(GridUnit selected, PointF scenePt) {
         mGridOverlay.show();
         mPathFinder.setSource(selected.getLocation());
+        mLastNearest = selected.getLocation();
     }
 
     @Override
@@ -73,8 +75,13 @@ public class GridUnitController extends SelectionHandler.SelectionController<Gri
         mPathFinder.clear();
         mGridOverlay.hide();
         mPathFinderAnim.hide();
-        selected.moveOnPath(mCurrentPath);
-        selected.setLocation(mCurrentPath.getDestination());
+        if (mCurrentPath!= null) {
+            selected.moveOnPath(mCurrentPath);
+            Grid.Cell destination = mCurrentPath.getDestination();
+            if (destination!=null) {
+                selected.setLocation(destination);
+            }
+        }
     }
 
 

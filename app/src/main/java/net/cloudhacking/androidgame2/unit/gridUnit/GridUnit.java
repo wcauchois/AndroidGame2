@@ -1,5 +1,6 @@
 package net.cloudhacking.androidgame2.unit.gridUnit;
 
+import net.cloudhacking.androidgame2.engine.GameSkeleton;
 import net.cloudhacking.androidgame2.engine.Grid;
 import net.cloudhacking.androidgame2.engine.element.shape.Circle;
 import net.cloudhacking.androidgame2.engine.gl.GLColor;
@@ -84,7 +85,6 @@ public class GridUnit extends ControllableUnit {
         public void update() {
             if (mDestinationReached) {
                 setVelocity(0, 0);
-                setPos(getLocation().getCenter()); // fix for: sometimes units end up offset by 1px
                 mFinished = true;
                 mDestinationAnim.hide();
                 GridUnit.this.setSelectable(true);

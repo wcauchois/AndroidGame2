@@ -7,7 +7,6 @@ import net.cloudhacking.androidgame2.engine.InputManager;
 import net.cloudhacking.androidgame2.engine.Level;
 import net.cloudhacking.androidgame2.engine.element.Image;
 import net.cloudhacking.androidgame2.engine.element.LayeredTileMap;
-import net.cloudhacking.androidgame2.engine.element.TileMap;
 import net.cloudhacking.androidgame2.engine.utils.TiledImporter;
 import net.cloudhacking.androidgame2.unit.CDUnitController;
 import net.cloudhacking.androidgame2.unit.gridUnit.GridUnit;
@@ -29,8 +28,7 @@ public class CDLevel extends Level {
         InputManager inputManager = ColonyDrop.getInputManager();
 
         // import background tile data from json map exported from Tiled
-        TiledImporter.TiledObject imported
-                = TiledImporter.loadMaps(Resources.MINIMAL_TEST);
+        TiledImporter.TiledObject imported = TiledImporter.loadMaps(Resources.MINIMAL_TEST);
 
         LayeredTileMap tileMap = new LayeredTileMap(Assets.MINIMAL, imported);
 

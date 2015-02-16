@@ -70,6 +70,13 @@ public class LayeredTileMap extends PreRenderable {
     }
 
     @Override
+    public void update() {
+        for (TileMap layer : mLayers) {
+            layer.update();
+        }
+    }
+
+    @Override
     public void draw(BasicGLScript gls) {
         for (TileMap layer : mLayers) {
             layer.draw(gls);

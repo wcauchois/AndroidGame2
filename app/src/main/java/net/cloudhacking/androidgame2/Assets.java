@@ -14,6 +14,7 @@ public class Assets {
     public static final SpriteAsset MOTHERSHIP2     = new SpriteAsset("mothership2.png");
     public static final SpriteAsset TEST_TILESET    = new SpriteAsset("simple_tileset.png", 32, 32);
     public static final SpriteAsset SELECTOR_8PX    = new SpriteAsset("cell_selector_8px.png", 12, 12);
+    public static final SpriteAsset SELECTOR_16PX   = new SpriteAsset("cell_selector_16px.png", 20, 20);
     public static final SpriteAsset SELECTOR_32PX   = new SpriteAsset("cell_selector_32px.png", 36, 36);
     public static final SpriteAsset HIGHLIGHTER_8PX = new SpriteAsset("cell_highlighter_8px.png", 8, 8);
     public static final SpriteAsset EXPLOSIONS      = new SpriteAsset("explosions.png", 32, 32);
