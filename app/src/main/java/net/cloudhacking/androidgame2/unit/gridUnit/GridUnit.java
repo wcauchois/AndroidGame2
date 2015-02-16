@@ -1,6 +1,5 @@
 package net.cloudhacking.androidgame2.unit.gridUnit;
 
-import net.cloudhacking.androidgame2.engine.GameSkeleton;
 import net.cloudhacking.androidgame2.engine.Grid;
 import net.cloudhacking.androidgame2.engine.element.shape.Circle;
 import net.cloudhacking.androidgame2.engine.gl.GLColor;

@@ -19,6 +19,10 @@ public class GameUI extends UI {
 
         root.add(new FPSCounter(10, 10));
         root.add(new InfoBar(root, 100));
+
+        // TODO: do pop-up menus for units that appear over their heads, for example you could
+        // TODO: click "attack" and then drag a red attack reticle to an enemy unit (the menu
+        // TODO: would disappear during the drag).
         
     }
 

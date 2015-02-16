@@ -47,13 +47,18 @@ public class GridUnitController extends SelectionHandler.SelectionController<Gri
     protected void onClickDown(GridUnit selected, PointF scenePt) {
         mLastSelected = selected;
         mSelectorIcon.startAnimationAt(selected.getPos());
+        mPathFinder.setSource(selected.getLocation());
+        mLastNearest = selected.getLocation();
+    }
+
+    @Override
+    protected void onClickUp(GridUnit selected, PointF scenePt) {
+        mPathFinder.clear();
     }
 
     @Override
     protected void onStartDrag(GridUnit selected, PointF scenePt) {
         mGridOverlay.show();
-        mPathFinder.setSource(selected.getLocation());
-        mLastNearest = selected.getLocation();
     }
 
     @Override
