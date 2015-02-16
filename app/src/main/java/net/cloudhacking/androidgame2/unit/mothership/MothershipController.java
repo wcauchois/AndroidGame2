@@ -36,7 +36,7 @@ public class MothershipController extends SelectionHandler.SelectionController<M
         mLevel.add(mSelectionAnim);
 
         mDragLine = new Line(new PointF(), new PointF(), 1, grey);
-        mDragReticle = new ColorBlock(8, 8, grey);
+        mDragReticle = new ColorBlock(mGrid.getCellWidth(), mGrid.getCellHeight(), grey);
         mGridOverlay = new Grid.GridOverlay(mGrid, grey);
         mDragLine.hide();
         mDragReticle.hide();

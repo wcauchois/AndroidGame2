@@ -87,7 +87,7 @@ public class Animated extends Renderable implements WidgetBackground {
 
     @Override
     public boolean containsPt(PointF p) {
-        float x=getPos().x, y=getPos().y, hw=getScaledWidth()/2, hh=getScaledHeight()/2;
+        float x=getPos().x, y=getPos().y, hw= getWidth()/2, hh= getHeight()/2;
         return p.x > x-hw && p.x < x+hw && p.y > y-hh && p.y < y+hh;
     }
 

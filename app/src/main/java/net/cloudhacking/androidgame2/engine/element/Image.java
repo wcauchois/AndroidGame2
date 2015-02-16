@@ -72,7 +72,7 @@ public class Image extends Renderable implements WidgetBackground {
     }
 
     public void moveToOrigin() {
-        setPos( getScaledWidth()/2 , getScaledHeight()/2 );
+        setPos( getWidth()/2 , getHeight()/2 );
     }
 
 
@@ -97,7 +97,7 @@ public class Image extends Renderable implements WidgetBackground {
     public void setFrame(RectF frame) {
         mFrame = frame;
 
-        setWidth(frame.width() * mTexture.getWidth());
+        setActualWidth(frame.width() * mTexture.getWidth());
         setActualHeight(frame.height() * mTexture.getHeight());
 
         updateFrame();
@@ -115,7 +115,7 @@ public class Image extends Renderable implements WidgetBackground {
     }
 
     private void updateVertices() {  // scene coordinates, centered on position
-        float hw = getWidth()/2, hh = getHeight()/2;
+        float hw = getActualWidth()/2, hh = getActualHeight()/2;
         QuadDrawer.fillVertices(mVertices, -hw, -hh, hw, hh);
         mNeedBufferUpdate = true;
     }
@@ -145,7 +145,7 @@ public class Image extends Renderable implements WidgetBackground {
         // This test assumes a square bounding box where the position point
         // is at its center, which is the case with this class.
         PointF c=getPos();
-        float hsw = getScaledWidth()/2, hsh = getScaledHeight()/2;
+        float hsw = getWidth()/2, hsh = getHeight()/2;
 
         return p.x > c.x-hsw && p.x < c.x+hsw && p.y > c.y-hsh && p.y < c.y+hsh;
     }

@@ -1,6 +1,6 @@
 package net.cloudhacking.androidgame2.engine.element;
 
-import net.cloudhacking.androidgame2.engine.gl.PreRenderedTexture;
+import net.cloudhacking.androidgame2.engine.gl.PreRenderTexture;
 import net.cloudhacking.androidgame2.engine.utils.AssetCache;
 
 import java.util.concurrent.Callable;
@@ -19,15 +19,15 @@ public abstract class PreRenderable extends Renderable {
     }
 
 
-    abstract public PreRenderedTexture preRender();
+    abstract protected PreRenderTexture preRender();
 
-    public PreRenderedTexture getPreRendered() {
+    public PreRenderTexture getPreRendered() {
 
-        PreRenderedTexture result = preRender();
+        PreRenderTexture result = preRender();
 
-        result.setReloader( new Callable<PreRenderedTexture>() {
+        result.setReloader( new Callable<PreRenderTexture>() {
             @Override
-            public PreRenderedTexture call() throws Exception {
+            public PreRenderTexture call() throws Exception {
                 return preRender();
             }
         });

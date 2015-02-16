@@ -18,23 +18,23 @@ public class LoggableActivity extends Activity {
         _TAG = this.getClass().getSimpleName();
     }
 
-    public void v(String msg) {
+    protected void v(String msg) {
         Log.v(_TAG, msg);
     }
 
-    public void d(String msg) {
+    protected void d(String msg) {
         Log.d(_TAG, msg);
     }
 
-    public void i(String msg) {
+    protected void i(String msg) {
         Log.i(_TAG, msg);
     }
 
-    public void w(String msg) {
+    protected void w(String msg) {
         Log.w(_TAG, msg);
     }
 
-    public void e(String msg) {
+    protected void e(String msg) {
         Log.e(_TAG, msg);
     }
 

@@ -24,6 +24,12 @@ public class JsonMap extends Loggable implements TileMap.Map {
         loadFromResource(resource);
     }
 
+    public JsonMap(int[] tiles, int width, int height) {
+        this.tiles = tiles;
+        this.width = width;
+        this.height = height;
+    }
+
 
     public int getTile(int ix, int iy) {
         return tiles[iy * width + ix];

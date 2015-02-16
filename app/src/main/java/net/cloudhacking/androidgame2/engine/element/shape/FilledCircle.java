@@ -54,7 +54,7 @@ public class FilledCircle extends Renderable {
         setScale(mRadius);
         setActualWidth(2);
         setActualHeight(2);
-        setColorM(GLColor.CLEAR);
+        setColorM(GLColor.TRANSPARENT);
         setColorA(c);
     }
 

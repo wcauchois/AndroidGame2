@@ -47,7 +47,7 @@ public class Renderable extends Entity {
         mOrigin = new PointF();
         mPos = new PointF(x, y);  // center point
         mWidth = width;           // width and height are unscaled,
-        mHeight = height;         // use getScaledWidth(), getScaledHeight() to get scaled width/height
+        mHeight = height;         // use getWidth(), getHeight() to get scaled width/height
 
         mScale = new PointF(1, 1);
         mScalable = false;
@@ -61,7 +61,7 @@ public class Renderable extends Entity {
         mRotatable = false;
 
         mColorM = GLColor.WHITE;
-        mColorA = GLColor.CLEAR;
+        mColorA = GLColor.TRANSPARENT;
 
         mModelMatrix = new float[16];
     }
@@ -86,11 +86,11 @@ public class Renderable extends Entity {
         movePos(new Vec2(x, y));
     }
 
-    public float getWidth() {
+    public float getActualWidth() {
         return mWidth;
     }
 
-    public float getScaledWidth() {
+    public float getWidth() {
         return mWidth * mScale.y;
     }
 
@@ -102,11 +102,11 @@ public class Renderable extends Entity {
         setScaleX( width/mWidth );
     }
 
-    public float getHeight() {
+    public float getActualHeight() {
         return mHeight;
     }
 
-    public float getScaledHeight() {
+    public float getHeight() {
         return mHeight * mScale.x;
     }
 
@@ -123,7 +123,7 @@ public class Renderable extends Entity {
     }
 
     public RectF getScaledRect() {
-        return new RectF(mPos.x, mPos.y, mPos.x + getScaledWidth(), mPos.y + getScaledHeight());
+        return new RectF(mPos.x, mPos.y, mPos.x + getWidth(), mPos.y + getHeight());
     }
 
     public PointF getOrigin() {
@@ -247,7 +247,7 @@ public class Renderable extends Entity {
     }
 
     public boolean containsPt(PointF p) {
-        float x=mPos.x, y = mPos.y, w=getScaledWidth(), h=getScaledHeight();
+        float x=mPos.x, y = mPos.y, w= getWidth(), h= getHeight();
         return p.x >= x && p.x <= x+w && p.y >= y && p.y <= y+h;
     }
 

@@ -36,7 +36,7 @@ public class Circle extends Renderable {
         mRadius = radius;
         mThickness = thickness;
         setPos(mCenter);
-        setColorM(GLColor.CLEAR);
+        setColorM(GLColor.TRANSPARENT);
         setColorA(c);
         updateVertices();
     }

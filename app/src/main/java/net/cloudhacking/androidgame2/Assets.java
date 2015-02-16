@@ -8,8 +8,10 @@ import net.cloudhacking.androidgame2.engine.utils.SpriteAsset;
  */
 public class Assets {
 
+    public static final SpriteAsset MINIMAL         = new SpriteAsset("minimal.png", 16, 16);
     public static final SpriteAsset TEST_TOWER      = new SpriteAsset("tower_animation_test.png", 32, 32);
     public static final SpriteAsset MOTHERSHIP      = new SpriteAsset("mothership.png");
+    public static final SpriteAsset MOTHERSHIP2     = new SpriteAsset("mothership2.png");
     public static final SpriteAsset TEST_TILESET    = new SpriteAsset("simple_tileset.png", 32, 32);
     public static final SpriteAsset SELECTOR_8PX    = new SpriteAsset("cell_selector_8px.png", 12, 12);
     public static final SpriteAsset SELECTOR_32PX   = new SpriteAsset("cell_selector_32px.png", 36, 36);

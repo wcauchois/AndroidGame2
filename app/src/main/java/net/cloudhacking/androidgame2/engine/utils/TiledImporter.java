@@ -2,9 +2,6 @@ package net.cloudhacking.androidgame2.engine.utils;
 
 import android.util.Log;
 
-import net.cloudhacking.androidgame2.engine.element.TileMap;
-import net.cloudhacking.androidgame2.engine.gl.PreRenderedTexture;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,61 +20,32 @@ public class TiledImporter extends Loggable {
 
     public static class TiledObject {
 
-        private ArrayList<Map> mLayers;
-        private Map mCollision;
+        private ArrayList<JsonMap> mLayers;
+        private JsonMap mCollision;
 
-        public TiledObject(ArrayList<Map> layers, Map collision) {
+        public TiledObject(ArrayList<JsonMap> layers, JsonMap collision) {
             mLayers = layers;
             mCollision = collision;
         }
 
-        public ArrayList<Map> getLayers() {
+        public ArrayList<JsonMap> getLayers() {
             return mLayers;
         }
 
-        public Map getCollisionMap() {
+        public JsonMap getLayer(int i) {
+            return mLayers.get(i);
+        }
+
+        public JsonMap getCollisionMap() {
             return mCollision;
         }
     }
 
-    public static class Map implements TileMap.Map {
-
-        private int[] mData;
-        private int mWidth;
-        private int mHeight;
-
-        public Map(int[] data, int w, int h) {
-            mData = data;
-            mWidth = w;
-            mHeight = h;
-        }
-
-        @Override
-        public int getTile(int index) {
-            return mData[index];
-        }
-
-        @Override
-        public int getTile(int ix, int iy) {
-            return mData[ ix + iy * mWidth ];
-        }
-
-        @Override
-        public int getWidth() {
-            return mWidth;
-        }
-
-        @Override
-        public int getHeight() {
-            return mHeight;
-        }
-
-    }
 
 
     public static TiledObject loadMaps(Resource jsonFile) {
         String jsonString = ResourceUtils.readTextFileFromRawResource(jsonFile);
-        ArrayList<Map> maps = new ArrayList<Map>();
+        ArrayList<JsonMap> maps = new ArrayList<JsonMap>();
         int[] collision = null;
 
         try {
@@ -107,7 +75,7 @@ public class TiledImporter extends Loggable {
                         // (see TextureFrameSet)
                     }
 
-                    maps.add(new Map(data, width, height));
+                    maps.add(new JsonMap(data, width, height));
 
                 // case: collision layer
                 } else {
@@ -119,7 +87,7 @@ public class TiledImporter extends Loggable {
                 }
             }
 
-            Map collisionMap = collision!=null ? new Map(collision, width, height) : null;
+            JsonMap collisionMap = collision!=null ? new JsonMap(collision, width, height) : null;
 
             return new TiledObject(maps, collisionMap);
 

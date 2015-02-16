@@ -1,11 +1,13 @@
 package net.cloudhacking.androidgame2.engine.gl;
 
+import android.opengl.GLES20;
+
 import java.util.concurrent.Callable;
 
 /**
  * Created by Andrew on 1/23/2015.
  */
-public class PreRenderedTexture extends Texture {
+public class PreRenderTexture extends Texture {
 
     /**
      * A texture that is not loaded from a bitmap but created by rendering
@@ -17,29 +19,34 @@ public class PreRenderedTexture extends Texture {
      */
 
     private static int ID = 0;
-    public static void resetID() {
+    public static void reset() {
         ID = 0;
     }
 
-    private Callable<PreRenderedTexture> mReloader;
+    private Callable<PreRenderTexture> mReloader;
     private int mID;
 
 
-    public PreRenderedTexture(int w, int h) {
+    public PreRenderTexture(int w, int h) {
         this(w, h, null);
     }
 
-    public PreRenderedTexture(int w, int h, Callable<PreRenderedTexture> reloader) {
+    public PreRenderTexture(int w, int h, Callable<PreRenderTexture> reloader) {
         super(w, h);
         mReloader = reloader;
         mID = ID++;
+
+        // let GL know the size of the texture and the data types
+        this.bind();
+        GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA,
+                w, h, 0, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, null);
     }
 
     public int getId() {
         return mID;
     }
 
-    public void setReloader(Callable<PreRenderedTexture> reloader) {
+    public void setReloader(Callable<PreRenderTexture> reloader) {
         mReloader = reloader;
     }
 

@@ -5,7 +5,7 @@ import android.graphics.RectF;
 import net.cloudhacking.androidgame2.engine.gl.BasicGLScript;
 import net.cloudhacking.androidgame2.engine.GameSkeleton;
 import net.cloudhacking.androidgame2.engine.gl.FrameBufferObject;
-import net.cloudhacking.androidgame2.engine.gl.PreRenderedTexture;
+import net.cloudhacking.androidgame2.engine.gl.PreRenderTexture;
 import net.cloudhacking.androidgame2.engine.gl.QuadDrawer;
 import net.cloudhacking.androidgame2.engine.gl.Texture;
 import net.cloudhacking.androidgame2.engine.utils.Asset;
@@ -149,19 +149,23 @@ public class TileMap extends PreRenderable {
 
 
     @Override
-    public PreRenderedTexture preRender() {
+    protected PreRenderTexture preRender() {
 
         FrameBufferObject fbo = new FrameBufferObject();
         BasicGLScript gls = GameSkeleton.getGLScript();
 
-        int w = (int)getWidth();
-        int h = (int)getHeight();
+        int w = (int) getActualWidth();
+        int h = (int) getActualHeight();
 
-        PreRenderedTexture fboTexture =
-                fbo.renderToTexture(gls, w, h, true, mTexture, mVertexBuffer, mQuadCount);
+        PreRenderTexture fboTex = new PreRenderTexture(w, h);
+        fbo.start(fboTex);
 
+        update();
+        draw(gls);
+
+        fbo.end();
         fbo.delete();
-        return fboTexture;
+        return fboTex;
     }
 
 }

@@ -3,7 +3,6 @@ package net.cloudhacking.androidgame2.ui;
 import android.graphics.RectF;
 
 import net.cloudhacking.androidgame2.Assets;
-import net.cloudhacking.androidgame2.engine.ui.widget.Button;
 import net.cloudhacking.androidgame2.engine.ui.widget.RootWidget;
 import net.cloudhacking.androidgame2.engine.ui.UITouchHandler;
 import net.cloudhacking.androidgame2.engine.ui.widget.Widget;

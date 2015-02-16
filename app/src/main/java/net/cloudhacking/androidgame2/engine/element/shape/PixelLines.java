@@ -36,7 +36,7 @@ public class PixelLines extends Renderable {
     }
 
     public void setColor(GLColor c) {
-        setColorM(GLColor.CLEAR);
+        setColorM(GLColor.TRANSPARENT);
         setColorA(c);
     }
 

@@ -6,6 +6,7 @@ import net.cloudhacking.androidgame2.engine.Grid;
 import net.cloudhacking.androidgame2.engine.InputManager;
 import net.cloudhacking.androidgame2.engine.Level;
 import net.cloudhacking.androidgame2.engine.element.Image;
+import net.cloudhacking.androidgame2.engine.element.LayeredTileMap;
 import net.cloudhacking.androidgame2.engine.element.TileMap;
 import net.cloudhacking.androidgame2.engine.utils.TiledImporter;
 import net.cloudhacking.androidgame2.unit.CDUnitController;
@@ -29,29 +30,19 @@ public class CDLevel extends Level {
 
         // import background tile data from json map exported from Tiled
         TiledImporter.TiledObject imported
-                = TiledImporter.loadMaps(Resources.BIG_MAP);
+                = TiledImporter.loadMaps(Resources.MINIMAL_TEST);
 
-        // create tile maps
-        TileMap mTileMapL1 = new TileMap( Assets.MICRO_TILES, imported.getLayers().get(0) );
-        TileMap mTileMapL2 = new TileMap( Assets.MICRO_TILES, imported.getLayers().get(1) );
+        LayeredTileMap tileMap = new LayeredTileMap(Assets.MINIMAL, imported);
 
-        // pre-render tile maps and add to level
-        Image tileMapWater = new Image( mTileMapL1.getPreRendered() );
-        tileMapWater.moveToOrigin();
-        tileMapWater.update();
-        tileMapWater.setInactive();
-        add(tileMapWater);
+        Image bg = new Image( tileMap.getPreRendered() );
+        bg.moveToOrigin();
+        bg.update();
+        bg.setInactive();
+        add(bg);
 
-        Image tileMapTerrain = new Image( mTileMapL2.getPreRendered() );
-        tileMapTerrain.moveToOrigin();
-        tileMapTerrain.update();
-        tileMapTerrain.setInactive();
-        add(tileMapTerrain);
+        mSize = tileMap.getLayer(0).getRect();
+        mGrid = (Grid) add(Grid.createFromTileMap(tileMap.getLayer(0)));
 
-        mSize = mTileMapL1.getRect();
-
-        // set up game grid from tile map size; set collision map
-        mGrid = (Grid) add(Grid.createFromTileMap(mTileMapL1));
 
         // map collision map to occupied
         mGrid.mapToState(imported.getCollisionMap(), Grid.CellState.EMPTY, Grid.CellState.OCCUPIED);
@@ -64,12 +55,12 @@ public class CDLevel extends Level {
         //------------------------------------------------------------------------------------------
         // init level things
 
-        mChar = new GridUnit(Assets.MINI_CHARS);
-        mChar.setPermanentSpriteFrame(102);
-        mChar.setToCell(mGrid.getCell(50, 50));
+        mChar = new GridUnit(Assets.MINIMAL);
+        mChar.setPermanentSpriteFrame(17);
+        mChar.setToCell(mGrid.getCell(17, 17));
         mController.addUnit(mChar);
 
-        mController.getMothershipController().setPos(mGrid.getCell(50, 50));
+        mController.getMothershipController().setPos(mGrid.getCell(17, 17));
 
     }
 

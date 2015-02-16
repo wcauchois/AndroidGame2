@@ -6,7 +6,7 @@ import android.graphics.BitmapFactory;
 
 import net.cloudhacking.androidgame2.engine.GameSkeleton;
 import net.cloudhacking.androidgame2.engine.element.Sprite;
-import net.cloudhacking.androidgame2.engine.gl.PreRenderedTexture;
+import net.cloudhacking.androidgame2.engine.gl.PreRenderTexture;
 import net.cloudhacking.androidgame2.engine.gl.Texture;
 
 import java.io.IOException;
@@ -42,16 +42,16 @@ public class AssetCache extends Loggable {
     private Context mContext;
 
     private HashMap<Asset, Texture> mTextureCache;
-    private HashMap<Integer, PreRenderedTexture> mPreRenderedCache;
+    private HashMap<Integer, PreRenderTexture> mPreRenderedCache;
     private HashMap<SpriteAsset, Sprite> mSpriteCache;
 
 
     private AssetCache(Context context) {
         mContext = context;
         mTextureCache = new HashMap<Asset, Texture>();
-        mPreRenderedCache = new HashMap<Integer, PreRenderedTexture>();
+        mPreRenderedCache = new HashMap<Integer, PreRenderTexture>();
         mSpriteCache = new HashMap<SpriteAsset, Sprite>();
-        PreRenderedTexture.resetID();
+        PreRenderTexture.reset();
 
         d("initialized asset cache");
     }
@@ -129,7 +129,7 @@ public class AssetCache extends Loggable {
 
     }
 
-    public void addPreRendered(PreRenderedTexture pre) {
+    public void addPreRendered(PreRenderTexture pre) {
         d("adding new pre-rendered texture to cache, ID: " + pre.getId());
         mPreRenderedCache.put(pre.getId(), pre);
     }
@@ -138,7 +138,7 @@ public class AssetCache extends Loggable {
         mPreRenderedCache.remove(id);
     }
 
-    public PreRenderedTexture getPreRendered(int id) {
+    public PreRenderTexture getPreRendered(int id) {
         return mPreRenderedCache.get(id);
     }
 
@@ -147,7 +147,7 @@ public class AssetCache extends Loggable {
             t.reload();
             d("reloading texture: " + t.getAsset().getFileName());
         }
-        for (PreRenderedTexture p : mPreRenderedCache.values()) {
+        for (PreRenderTexture p : mPreRenderedCache.values()) {
             p.reload();
             d("re-rendering texture, ID: "+p.getId());
         }
@@ -185,7 +185,7 @@ public class AssetCache extends Loggable {
         for (Texture t : mTextureCache.values()) {
             t.delete();
         }
-        for (PreRenderedTexture p : mPreRenderedCache.values()) {
+        for (PreRenderTexture p : mPreRenderedCache.values()) {
             p.delete();
         }
         mTextureCache.clear();

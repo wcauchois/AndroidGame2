@@ -21,8 +21,8 @@ public class Mothership extends ControllableUnit {
     }
 
     public Mothership() {
-        super(Assets.MOTHERSHIP);
-        mClickRadius = 1.414f*getScaledWidth()/2;
+        super(Assets.MOTHERSHIP2);
+        mClickRadius = 1.414f* getWidth()/2;
         setMoveSpeed(MAX_V);
         setDefaultRotation((float)Math.PI/2);
     }

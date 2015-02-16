@@ -26,7 +26,7 @@ public class ColorBlock extends Renderable {
         super(0,0,1,1);
         setScaleX(w);
         setScaleY(h);
-        setColorM(GLColor.CLEAR);
+        setColorM(GLColor.TRANSPARENT);
         setColorA(color);
     }
 

@@ -807,7 +807,7 @@ public class Grid extends Entity {
         }
 
         public void setColor(GLColor c) {
-            setColorM(GLColor.CLEAR);
+            setColorM(GLColor.TRANSPARENT);
             setColorA(c);
         }
 
