@@ -40,17 +40,20 @@ public class PointF {
     }
 
 
-    public void moveX(float x) {
+    public PointF moveX(float x) {
         this.x += x;
+        return this;
     }
 
-    public void moveY(float y) {
+    public PointF moveY(float y) {
         this.y += y;
+        return this;
     }
 
-    public void move(Vec2 dir) {
+    public PointF move(Vec2 dir) {
         x += dir.x;
         y += dir.y;
+        return this;
     }
 
 

@@ -1,10 +1,15 @@
 package net.cloudhacking.androidgame2.unit.gridUnit;
 
 import net.cloudhacking.androidgame2.CDLevel;
+import net.cloudhacking.androidgame2.ColonyDrop;
 import net.cloudhacking.androidgame2.engine.Grid;
+import net.cloudhacking.androidgame2.engine.ui.widget.Widget;
 import net.cloudhacking.androidgame2.engine.unit.SelectionHandler;
 import net.cloudhacking.androidgame2.engine.gl.GLColor;
+import net.cloudhacking.androidgame2.engine.utils.CommonUtils;
 import net.cloudhacking.androidgame2.engine.utils.PointF;
+import net.cloudhacking.androidgame2.engine.utils.Vec2;
+import net.cloudhacking.androidgame2.ui.FloatingMenu;
 
 /**
  * Created by Andrew on 1/31/2015.
@@ -21,6 +26,8 @@ public class GridUnitController extends SelectionHandler.SelectionController<Gri
     private Grid.Cell mLastNearest;
     private Grid.CellHighlighter mPathFinderAnim;
     private Grid.GridOverlay mGridOverlay;
+
+    private Widget mFloatingMenu;
 
 
     public GridUnitController(CDLevel level) {
@@ -40,6 +47,11 @@ public class GridUnitController extends SelectionHandler.SelectionController<Gri
         mSelectorIcon.hide();
         mGridOverlay.hide();
         mPathFinderAnim.hide();
+
+        mFloatingMenu = new FloatingMenu(null, CommonUtils.makeRect(new PointF(), 100, 100));
+        mFloatingMenu.hide();
+        ColonyDrop.getScene().getUI().getRoot().add(mFloatingMenu);
+        ColonyDrop.getScene().getUI().getRoot().sendToBack(mFloatingMenu);
     }
 
 
@@ -49,6 +61,10 @@ public class GridUnitController extends SelectionHandler.SelectionController<Gri
         mSelectorIcon.startAnimationAt(selected.getPos());
         mPathFinder.setSource(selected.getLocation());
         mLastNearest = selected.getLocation();
+
+        mFloatingMenu.setScale(1/ColonyDrop.getActiveCamera().getZoom());
+        mFloatingMenu.setPos(selected.getPos());
+        mFloatingMenu.show();
     }
 
     @Override
@@ -98,6 +114,7 @@ public class GridUnitController extends SelectionHandler.SelectionController<Gri
             mLevel.queueBringToFront(mSelectorIcon);
         } else {
             mSelectorIcon.hide();
+            mFloatingMenu.hide();
         }
     }
 

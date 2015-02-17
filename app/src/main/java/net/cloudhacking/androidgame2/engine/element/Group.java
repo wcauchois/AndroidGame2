@@ -175,7 +175,7 @@ public class Group<E extends Entity> extends Entity {
         return e;
     }
 
-    public E sentToBack(E e) {
+    public E sendToBack(E e) {
         if (mEntities.contains(e)) {
             mEntities.remove(e);
             mEntities.add(0, e);

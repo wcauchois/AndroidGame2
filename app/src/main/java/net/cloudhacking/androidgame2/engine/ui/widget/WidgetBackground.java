@@ -10,6 +10,7 @@ import net.cloudhacking.androidgame2.engine.gl.BasicGLScript;
 public interface WidgetBackground {
 
     public void setToRect(RectF rect);
+    public void setScale(float s);
     public RectF getRect();
     public void update();
     public void draw(BasicGLScript gls);

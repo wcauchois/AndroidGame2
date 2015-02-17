@@ -21,10 +21,10 @@ public class Mothership extends ControllableUnit {
     }
 
     public Mothership() {
-        super(Assets.MOTHERSHIP2);
+        super(Assets.MOTHERSHIP3);
         mClickRadius = 1.414f* getWidth()/2;
+        setAlpha(0.6f);
         setMoveSpeed(MAX_V);
-        setDefaultRotation((float)Math.PI/2);
     }
 
     @Override
@@ -55,7 +55,6 @@ public class Mothership extends ControllableUnit {
             }
             Vec2 dir = getPos().vecTowards(mTarget.getCenter());
             setVelocity(dir.setNorm(getMoveSpeed()));
-            setRotation(dir.angle());
         }
 
         @Override
@@ -63,7 +62,6 @@ public class Mothership extends ControllableUnit {
             float d = getPos().distTo(mTarget.getCenter());
             if (d < TARGET_REACHED_THRESHOLD) {
                 setVelocity(0, 0);
-                setRotationSpeed(0);
                 mFinished = true;
             }
         }

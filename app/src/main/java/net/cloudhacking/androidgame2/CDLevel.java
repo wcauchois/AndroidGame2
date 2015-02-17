@@ -53,8 +53,8 @@ public class CDLevel extends Level {
         //------------------------------------------------------------------------------------------
         // init level things
 
-        mChar = new GridUnit(Assets.MINIMAL);
-        mChar.setPermanentSpriteFrame(17);
+        mChar = new GridUnit(Assets.MINIMAL2);
+        mChar.setPermanentSpriteFrame(2);
         mChar.setToCell(mGrid.getCell(17, 17));
         mController.addUnit(mChar);
 

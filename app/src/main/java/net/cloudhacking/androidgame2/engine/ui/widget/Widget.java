@@ -6,6 +6,7 @@ import net.cloudhacking.androidgame2.engine.element.NinePatch;
 import net.cloudhacking.androidgame2.engine.gl.BasicGLScript;
 import net.cloudhacking.androidgame2.engine.element.Group;
 import net.cloudhacking.androidgame2.engine.ui.UITouchHandler.WidgetController;
+import net.cloudhacking.androidgame2.engine.utils.CommonUtils;
 import net.cloudhacking.androidgame2.engine.utils.NinePatchAsset;
 import net.cloudhacking.androidgame2.engine.utils.PointF;
 
@@ -59,6 +60,10 @@ public abstract class Widget extends Group<Widget> {
         mNeedUpdate = true;
     }
 
+    public void setPos(PointF pos) {
+        setPos(pos.x, pos.y);
+    }
+
     public void setWidth(float width) {
         mBounds.right = mBounds.left + width;
         mNeedUpdate = true;
@@ -106,6 +111,12 @@ public abstract class Widget extends Group<Widget> {
     public void show() {
         setVisibility(true);
         setActive();
+    }
+
+    public void setScale(float scale) {
+        setWidth(scale * mBounds.width());
+        setHeight(scale * mBounds.height());
+        mBackground.setScale(scale);
     }
 
 
